@@ -29,8 +29,8 @@ void Academic::upgrade(Player *p) {
 } 
 
 // mortgageProperty
-void Academic::mortgage(Player *p) {
-    p->changeCash(purchase_cost / 2, true);
+void Academic::mortgage() {
+    owner->changeCash(purchase_cost / 2, true);
     mortgaged = true;
 }
 
