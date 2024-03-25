@@ -12,31 +12,38 @@ Academic::Academic(string monopoly_block, string name, int purchase_cost,
 
 
 // getters
-string Academic::getBlock() {return monopoly_block;}
-string Academic::getName() {return name;}
-int Academic::getCost() {return purchase_cost;}
-int Academic::getUpgrade_cost() {return upgrade_cost;}
-int Academic::getUpgradeLevel() {return upgrade_level;}
-bool Academic::isBought() {return bought;}
-bool Academic::isMortgaged() {return mortgaged;}
+string Academic::getBlock() const {return monopoly_block;}
+string Academic::getName() const {return name;}
+int Academic::getCost() const {return purchase_cost;}
+int Academic::getUpgrade_cost() const {return upgrade_cost;}
+int Academic::getUpgradeLevel() const {return upgrade_level;}
+bool Academic::isBought() const {return bought;}
+bool Academic::isMortgaged() const {return mortgaged;}
+int Academic::getRent() const {return rentMoney[upgrade_level];
+}
 
-
+// upgradeProperty
 void Academic::upgrade(Player *p) {
     p->changeCash(upgrade_cost, false);
     upgrade_level++;    
 } 
 
+// mortgageProperty
 void Academic::mortgage(Player *p) {
     p->changeCash(purchase_cost / 2, true);
     mortgaged = true;
 }
 
+//buyProperty
 void Academic::buy(Player *p) {
     p->changeCash(purchase_cost, false); 
     p->addProperty(this);
+    owner = p;
     bought = true;
 }
 
-int Academic::getRent() {
-    return rentMoney[upgrade_level];
+// payRent
+void Academic::payRent(Player *payer) {
+    owner->changeCash(getRent(), true);
+    payer->changeCash(getRent(), false);
 }

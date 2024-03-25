@@ -29,12 +29,12 @@ class Academic: public Square {
     std::string getName() const;
     bool isBought() const;
     bool isMortgaged() const;
+    int getRent() const;
 
     void upgrade(Player *p); // upgrading property
     void mortgage(Player *p); // mortgage
     void buy(Player *p); // buying
-    int getRent();
-    void payRent(Player *renter, Player *payer);
+    void payRent(Player *payer);
 
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };
