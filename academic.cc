@@ -7,8 +7,8 @@ using namespace std;
 
 Academic::Academic(string monopoly_block, string name, int purchase_cost, 
              int upgrade_cost, int upgrade_level, vector<int> rentMoney): 
-             monopoly_block{monopoly_block}, name{name}, purchase_cost{purchase_cost}, upgrade_cost{upgrade_cost},
-             upgrade_level{upgrade_level}, rentMoney{rentMoney}, bought{false}, mortgaged{false} {}
+             monopoly_block{monopoly_block}, name{name}, purchase_cost{purchase_cost}, 
+             upgrade_cost{upgrade_cost},upgrade_level{upgrade_level}, rentMoney{rentMoney} {}
 
 
 // getters
