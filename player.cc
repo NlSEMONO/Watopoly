@@ -2,6 +2,7 @@
 #include <vector>
 #include "player.h"
 
+using namespace std;
 
 Player::Player(string name, int liquidCash, int assetsValue, int playerPosition) :
   name{name},
@@ -10,7 +11,7 @@ Player::Player(string name, int liquidCash, int assetsValue, int playerPosition)
   playerPosition{playerPosition} {}
 
 
-int Player::movePlayer(int diceRoll){
+int Player::movePlayer(int diceRoll) {
   playerPosition += diceRoll;
   return playerPosition;
 }

@@ -6,15 +6,16 @@
 #include "property.h"
 
 class Player {
-  string name;
+  std::string name;
   int liquidCash;
   int mortageValue;
   int playerPosition;
-  std::vector<property> ownedProperties;
+  std::vector<Property> ownedProperties;
 public:
-  Player(string name, int liquidCash, int assetsValue, int playerPosition);
+  Player(std::string name, int liquidCash, int assetsValue, int playerPosition);
   int movePlayer(int diceRoll);
   bool canAfford(int propertyPrice);
+  void reduceAssets(int value);
 };
 
 #endif
