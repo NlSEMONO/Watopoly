@@ -21,10 +21,16 @@ string Academic::getName() {
 }
 
 void Academic::upgrade(Player *p) {
-    p->reduceAssets(upgrade_cost);
+    p->changeCash(upgrade_cost, false);
     upgrade_level++;    
 } 
 
 void Academic::mortgage(Player *p) {
-    p->
+    p->changeCash(purchase_cost / 2, true);
+    mortgaged = true;
+}
+
+void Academic::buy(Player * p) {
+    p->changeCash(purchase_cost, false); 
+    bought = true;
 }

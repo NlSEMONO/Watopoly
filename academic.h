@@ -3,8 +3,9 @@
 #include <vector>
 #include <string>
 #include "player.h"
+#include "square.h"
 
-class Academic {
+class Academic: public Square {
     std::string monopoly_block;
     std::string name;
     int purchase_cost;
