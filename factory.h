@@ -8,7 +8,7 @@
 #include <random>
 #include <chrono>
 
-enum Event {NONE, MB3, MB2, MB1, MF1, MF2, MF3, MF4, MF5, MF6, MDC_TIMS, MCOLLECT_OSAP, CM200, CM100, CM50, CP25, CP50, CP100, CP200};
+enum Event {NONE, MB3, MB2, MB1, MF1, MF2, MF3, MF4, MF5, MF6, MDC_TIMS, MCOLLECT_OSAP, CM200, CM100, CM50, CP25, CP50, CP100, CP200, OUTOFTIMS};
 
 class Factory {
     protected: 
