@@ -8,12 +8,13 @@
 class Academic: public Square {
     std::string monopoly_block;
     std::string name;
+    Player *owner = nullptr;
     int purchase_cost;
     int upgrade_cost;
     int upgrade_level;
     std::vector<int> rentMoney;
-    bool bought;
-    bool mortgaged;
+    bool bought = false;
+    bool mortgaged = false;
 
     public:
 
@@ -21,12 +22,19 @@ class Academic: public Square {
              int upgrade_cost, int upgrade_level, std::vector<int> rentMoney);
     
 
-    std::string getBlock();
-    std::string getName();
-    void upgrade(Player *p);
+    int getCost() const;
+    int getUpgrade_cost() const;
+    int getUpgradeLevel() const;
+    std::string getBlock() const;
+    std::string getName() const;
+    bool isBought() const;
+    bool isMortgaged() const;
 
-    void mortgage(Player *p);
-    void buy(Player *p);
+    void upgrade(Player *p); // upgrading property
+    void mortgage(Player *p); // mortgage
+    void buy(Player *p); // buying
+    int getRent();
+    void payRent(Player *renter, Player *payer);
 
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };
