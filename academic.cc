@@ -36,3 +36,7 @@ void Academic::buy(Player *p) {
     p->addProperty(this);
     bought = true;
 }
+
+int Academic::getRent() {
+    return rentMoney[upgrade_level];
+}
