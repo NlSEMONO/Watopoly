@@ -19,12 +19,12 @@ int Academic::getUpgrade_cost() const {return upgrade_cost;}
 int Academic::getUpgradeLevel() const {return upgrade_level;}
 bool Academic::isBought() const {return bought;}
 bool Academic::isMortgaged() const {return mortgaged;}
-int Academic::getRent() const {return rentMoney[upgrade_level];
-}
+int Academic::getRent() const {return rentMoney[upgrade_level];}
+Player *Academic::getOwner() const {return owner;}
 
 // upgradeProperty
-void Academic::upgrade(Player *p) {
-    p->changeCash(upgrade_cost, false);
+void Academic::upgrade() {
+    owner->changeCash(upgrade_cost, false);
     upgrade_level++;    
 } 
 
