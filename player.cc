@@ -2,14 +2,14 @@
 #include <vector>
 #include "player.h"
 
+using namespace std;
 
 Player::Player(string name, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition) :
   name{name},
   liquidCash{liquidCash},
   mortageValue{mortageValue},
   totalAssetsValue{totalAssetsValue},
-  playerPosition{playerPosition},
-  ownedProperties{ownedProperties} {}
+  playerPosition{playerPosition} {}
 
 
 
@@ -26,9 +26,7 @@ int Player::movePlayer(int diceRoll){
 
 
 bool Player::canAfford(int propertyPrice){
-  if (liquidCash >= propertyPrice){
-    return true;
-  } else if ( liquidCash + mortageValue >= propertyPrice){
+  if (liquidCash + mortageValue >= propertyPrice){
     return true;
   } else {
     return false;
@@ -41,4 +39,50 @@ void Player::changeCash(int value, bool increase){
   } else {
     liquidCash -= value;
   }
+}
+
+void Player::addProperty(Square * s){
+  ownedProperties.push_back(s);
+}
+
+  //Getters
+string Player::getPlayerName() const{
+  return name;
+}
+
+int Player::getLiquidCash() const {
+  return liquidCash;
+}
+
+int Player::getMortageValue() const {
+  return mortageValue;
+}
+
+int Player::getTotalAssetsValue() const {
+  return totalAssetsValue;
+}
+
+int Player::getPlayerPostion() const {
+  return playerPosition;
+}
+
+//Setters
+void Player::setPlayerName(string setName){
+  this->name = setName;
+}
+
+void Player::setLiquidCash(int liquidCash){
+  this->liquidCash = liquidCash;
+}
+
+void Player::setMortageValue(int mortageValue){
+  this->mortageValue = mortageValue;
+}
+
+void Player::setTotalAssetsValue(int totalAssetsValue){
+  this->totalAssetsValue = totalAssetsValue;
+}
+
+void Player::setPlayerPostion(int position){
+  this->playerPosition = position;
 }
