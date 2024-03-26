@@ -5,6 +5,8 @@
 #include <vector>
 #include "square.h"
 
+class Square;
+
 class Player {
   std::string name;
   int liquidCash;
