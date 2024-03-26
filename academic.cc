@@ -34,6 +34,11 @@ void Academic::mortgage() {
     mortgaged = true;
 }
 
+void Academic::unmortgage() {
+    mortgaged = false;
+    owner->changeCash((purchase_cost * 6) / 10, true);
+}
+
 //buyProperty
 void Academic::buy(Player *p) {
     p->changeCash(purchase_cost, false); 

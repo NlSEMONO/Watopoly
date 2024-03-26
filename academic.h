@@ -34,6 +34,7 @@ class Academic: public Square {
 
     void upgrade(); // upgrading property
     void mortgage(); // mortgage
+    void unmortgage();
     void buy(Player *p); // buying
     void payRent(Player *payer);
 
