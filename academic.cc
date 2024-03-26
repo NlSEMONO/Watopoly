@@ -2,12 +2,9 @@
 #include <string>
 #include "player.h"
 #include "academic.h"
-#include <iostream>
 using namespace std;
 
-Academic::~Academic() {
-    cout << "academic destructor" << endl;
-}
+Academic::~Academic() {}
 
 Academic::Academic(string monopoly_block, string name, int purchase_cost, 
              int upgrade_cost, int upgrade_level, vector<int> rentMoney): 

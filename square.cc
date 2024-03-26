@@ -1,12 +1,8 @@
 #include "square.h"
-#include <iostream>
-using namespace std;
 
 Square::Square(std::string name): name{name}, players{} {}
 
-Square::~Square() {
-    cout << "ASDJKLASD" << endl;
-};
+Square::~Square() {};
 
 std::string Square::getName() const {
     return name;
