@@ -7,7 +7,10 @@
 
 
 class Square {
-
+    std::string name;
+    
+    public:
+    Square(std::string name);
 };
 
 #endif

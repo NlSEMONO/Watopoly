@@ -21,7 +21,6 @@ class Academic: public Square {
     Academic(std::string monopoly_block, std::string name, int purchase_cost, 
              int upgrade_cost, int upgrade_level, std::vector<int> rentMoney);
     
-
     int getCost() const;
     int getUpgrade_cost() const;
     int getUpgradeLevel() const;

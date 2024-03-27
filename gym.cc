@@ -35,6 +35,7 @@ void Gym::unmortgage() {
 
 //buyProperty
 void Gym::buy(Player *p) {
+    gymsOwned = 1;
     p->changeCash(purchase_cost, false); 
     p->addProperty(this);
     owner = p;
