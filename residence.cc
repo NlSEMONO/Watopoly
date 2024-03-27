@@ -5,7 +5,7 @@
 using namespace std;
 
 
-Residence::Residence(string name, int purchase_cost, std::vector<int> rentMoney) : name{name}, purchase_cost{purchase_cost}, rentMoney{rentMoney} {}
+Residence::Residence(string name, int purchase_cost, std::vector<int> rentMoney) : Square{name}, purchase_cost{purchase_cost}, rentMoney{rentMoney} {}
     
 
 string Residence::getName() const {return name;}

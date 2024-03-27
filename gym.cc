@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Gym::Gym(std::string name, int purchase_cost): name{name}, purchase_cost{purchase_cost} {}
+Gym::Gym(std::string name, int purchase_cost): Square{name}, purchase_cost{purchase_cost} {}
 
 
 // getters

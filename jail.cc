@@ -1,6 +1,6 @@
 #include "jail.h"
 
-Jail::Jail(): Square{}, jailedTurns{} {}
+Jail::Jail(): Square{"Tims"}, jailedTurns{} {}
 
 void Jail::sendToJail(Player* player) {
     jailedTurns[player] = 0;
