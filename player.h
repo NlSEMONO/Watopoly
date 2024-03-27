@@ -30,11 +30,11 @@ public:
   int getPlayerPostion() const;
 
   //Setters
-  void setPlayerName(std::string setName);
+  void setPlayerName(std::string name);
   void setLiquidCash(int liquidCash);
   void setMortageValue(int mortageValue);
   void setTotalAssetsValue(int totalAssetsValue);
-  void setPlayerPostion(int position);
+  void setPlayerPostion(int playerPosition);
 
 
 };

@@ -67,8 +67,8 @@ int Player::getPlayerPostion() const {
 }
 
 //Setters
-void Player::setPlayerName(string setName){
-  this->name = setName;
+void Player::setPlayerName(string name){
+  this->name = name;
 }
 
 void Player::setLiquidCash(int liquidCash){
@@ -83,6 +83,6 @@ void Player::setTotalAssetsValue(int totalAssetsValue){
   this->totalAssetsValue = totalAssetsValue;
 }
 
-void Player::setPlayerPostion(int position){
-  this->playerPosition = position;
+void Player::setPlayerPostion(int playerPosition){
+  this->playerPosition = playerPosition;
 }
