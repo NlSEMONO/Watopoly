@@ -1,7 +1,7 @@
 #include "factory.h"
 #include "needlesrng.h"
 
-NeedlesRng::NeedlesRng(): Factory{}, rngRange{}, distribution(0.0, 1.0) {
+NeedlesRng::NeedlesRng(): Factory{}, rngRange{}, distribution((float)0, (float)1) {
     // initialize possible events
     const int eventCount = 7;
     possibleEvents.push_back(Event::CM200);
