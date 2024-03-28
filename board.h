@@ -17,6 +17,9 @@ class Board {
 
     public: 
         Board();
+        int rollDice();
+        void makeMove(Player *p);
+        void addPlayer(std::string name);
 };
 
 #endif

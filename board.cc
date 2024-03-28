@@ -78,3 +78,14 @@ int Board::rollDice(){
     int roll2 = Dice1.eventToInt(e2);
     return roll1 + roll2;
 }
+
+void Board::makeMove(Player *p) {
+    int diceRoll = rollDice();
+    p->movePlayer(diceRoll);
+}
+
+void Board::addPlayer(std::string name) {
+    players.push_back(std::unique_ptr<Player>{new Player{name, 0, 0, 0, 0}});
+    currentPlayer++;
+}
+ 
