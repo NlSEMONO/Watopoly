@@ -7,7 +7,6 @@
 
 class Academic: public Square {
     std::string monopoly_block;
-    std::string name;
     Player *owner = nullptr;
     int purchase_cost;
     int upgrade_cost;
@@ -36,6 +35,7 @@ class Academic: public Square {
     void unmortgage();
     void buy(Player *p); // buying
     void payRent(Player *payer);
+    virtual ~Academic();
 
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };

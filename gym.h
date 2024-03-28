@@ -6,7 +6,6 @@
 #include "square.h"
 
 class Gym: public Square {
-    std::string name;
     Player *owner = nullptr;
     int purchase_cost;
     int gymsOwned = 0;

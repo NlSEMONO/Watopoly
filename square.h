@@ -3,14 +3,20 @@
 
 #include <string>
 #include <vector>
-#include "property.h"
+#include "player.h"
 
+class Player;
 
 class Square {
-    std::string name;
-    
+    protected:
+        std::string name;
+        Square(std::string name);
+        std::vector<Player*> players;
     public:
-    Square(std::string name);
+        void addPlayer(Player* player); // removes all instances of player in players
+        void removePlayer(Player* player); // removes all instances of player in players
+        std::string getName() const;
+        virtual ~Square() = 0;
 };
 
 #endif

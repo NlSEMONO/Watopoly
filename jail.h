@@ -4,13 +4,14 @@
 #include "square.h"
 #include "player.h"
 
-class Jail : public Square {
-    std::map<Player*, int> jailedTurns;
+class Jail : public Square
+{
+    std::map<Player *, int> jailedTurns;
 
-    public: 
-        Jail();
-        void sendToJail(Player* player);
-        bool handleMove(Player* player);
+public:
+    Jail();
+    void sendToJail(Player *player);
+    bool handleMove(Player *player);
 };
 
 #endif
