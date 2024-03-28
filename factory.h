@@ -18,6 +18,7 @@ class Factory {
         std::default_random_engine rng; // rng seed
     public:
         virtual Event generateEvent() = 0; // function to generate possible events
+        virtual int eventToInt(Event e) = 0; 
 };
 
 #endif

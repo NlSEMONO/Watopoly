@@ -6,6 +6,7 @@ class Dice : public Factory {
     public:
         Dice();
         virtual Event generateEvent() override;
+        virtual int eventToInt(Event e) override;
 };
 
 #endif
