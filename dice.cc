@@ -15,7 +15,7 @@ Event Dice::generateEvent() {
     return possibleEvents[0];
 }
 
-Int Dice::eventToInt(Event e){
+int Dice::eventToInt(Event e) {
 	if (e == Event::MF1){
 		return 1;
 	} else if (e == Event::MF2) {
@@ -28,5 +28,6 @@ Int Dice::eventToInt(Event e){
 		return 5;
 	} else if (e == Event::MF6) {
 		return 6;
+	}
 	return -1;
 }
