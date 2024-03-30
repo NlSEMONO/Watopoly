@@ -50,7 +50,12 @@ int main(int argc, char** argv) {
     string line;
     game.setPlayers(numPlayers);
     if (file != "") {
-        game.loadFile(in);
+        try {
+            game.loadFile(in);
+        }
+        catch (...) {
+            return 3;
+        }
     }
     game.play();
 }
