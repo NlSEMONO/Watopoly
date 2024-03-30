@@ -6,12 +6,10 @@
 
 class Jail : public Square
 {
-    std::map<Player *, int> jailedTurns;
 
 public:
     Jail();
-    void sendToJail(Player *player);
-    bool handleMove(Player *player);
+    virtual ~Jail() override;
 };
 
 #endif
