@@ -2,6 +2,7 @@
 #include <string>
 #include "player.h"
 #include "academic.h"
+#include <iostream>
 using namespace std;
 
 Academic::~Academic() {}
