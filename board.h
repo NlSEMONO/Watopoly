@@ -20,6 +20,7 @@ class Board {
         int rollDice();
         void makeMove(Player *p);
         void addPlayer(std::string name);
+        void initBuilding(std::string name, Player* owner, int upgrades);
 };
 
 #endif

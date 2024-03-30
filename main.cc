@@ -53,8 +53,13 @@ int main(int argc, char** argv) {
         try {
             game.loadFile(in);
         }
-        catch (...) {
+        catch (std::bad_cast&) {
+            cerr << "Building that cannot be owned was inputted. Please try again." << endl;
             return 3;
+        }
+        catch (std::exception& e) {
+            cerr << e.what() << endl;
+            return 4;
         }
     }
     game.play();
