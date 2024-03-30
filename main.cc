@@ -1,6 +1,7 @@
 #include "board.h"
 #include "academic.h"
 #include "square.h"
+#include "game.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -11,7 +12,7 @@ using namespace std;
 int main(int argc, char** argv) {
     bool testing = false;
     string file = "";
-    Board b;
+    Game game;
 
     if (argc > 1) {
         for (int i = 1; i < argc; ++i) {
@@ -41,19 +42,15 @@ int main(int argc, char** argv) {
     int numPlayers = -1;
     cout << "Enter # of players: " << endl;
     while (!(in >> numPlayers)) {
-        cout << "Invalid # of players, please try again." << endl;
         in.clear();
         in.ignore();
     }
 
     // load state
     string line;
+    game.setPlayers(numPlayers);
     if (file != "") {
-        while (getline(in, line)) {
-            istringstream iss{line};
-            string cmd;
-            iss >> cmd;
-            
-        }
+        game.loadFile(in);
     }
+    game.play();
 }
