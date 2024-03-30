@@ -53,3 +53,7 @@ void Academic::payRent(Player *payer) {
     owner->changeCash(getRent(), true);
     payer->changeCash(getRent(), false);
 }
+
+void Academic::setOwner(Player* p) {owner = p; } 
+
+void Academic::setUpgrades(int u) { upgrade_level = u; }

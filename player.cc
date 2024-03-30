@@ -4,8 +4,9 @@
 
 using namespace std;
 
-Player::Player(string name, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition) :
+Player::Player(string name, char chr, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition) :
   name{name},
+  chr{chr},
   liquidCash{liquidCash},
   mortageValue{mortageValue},
   totalAssetsValue{totalAssetsValue},

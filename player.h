@@ -9,6 +9,7 @@ class Square;
 
 class Player {
   std::string name;
+  char chr;
   int liquidCash;
   int mortageValue;
   int totalAssetsValue;
@@ -16,7 +17,7 @@ class Player {
   std::vector<Square*> ownedProperties;
 
 public:
-  Player(std::string name, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition);
+  Player(std::string name, char chr, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition);
   int movePlayer(int diceRoll);
   bool canAfford(int propertyPrice);
   void changeCash(int value, bool increase);
@@ -35,7 +36,6 @@ public:
   void setMortageValue(int mortageValue);
   void setTotalAssetsValue(int totalAssetsValue);
   void setPlayerPostion(int playerPosition);
-
 
 };
 

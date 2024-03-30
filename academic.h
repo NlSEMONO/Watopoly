@@ -37,6 +37,9 @@ class Academic: public Square {
     void payRent(Player *payer);
     virtual ~Academic();
 
+    void setOwner(Player *p);
+    void setUpgrades(int u);
+
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };
 
