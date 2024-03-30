@@ -3,6 +3,20 @@
 #include "residence.h"
 #include "dice.h"
 #include <iostream>
+#include <string>
+
+using namespace std;
+
+const int sqr_len = 7;
+const int board_len = 11;
+
+const char divider = '|';
+const string academic_border = string("-",sqr_len) + divider;
+const string empty_block = string(" ", sqr_len) + divider;
+const string block_bottom = string("_",sqr_len) + divider;
+const string three_empty = string(" ", 3) + divider;
+const string four_empty = string(" ", 4) + divider;
+const string five_empty = string(" ", 5) + divider;
 
 Board::Board(): squares{}, nameToIndex{}, monopolies{}, players{}, currentPlayer{0}, dice{} {
     // hardcoding all buildings
@@ -88,4 +102,49 @@ void Board::addPlayer(std::string name) {
     players.push_back(std::unique_ptr<Player>{new Player{name, 0, 0, 0, 0}});
     currentPlayer++;
 }
- 
+
+ostream &operator<<(ostream &out, Board &board) {
+    // printing the top layer of the board
+    for (int i = 0; i < board_len; ++i) {
+        for (int j = 0; j < sqr_len; ++j){
+            out << "_";
+        }
+    }
+
+    // printing the first row of blocks 
+    // printing the first row of board
+    out << "|Goose  |" << empty_block << "|NEEDLES|" << empty_block;
+    out << empty_block << "V1" << five_empty << empty_block;
+    out << empty_block << "CIF" << four_empty << empty_block;
+    out << "GO TO  |" << endl;
+
+    // printing the second row of board
+    out << divider << "Nesting" << divider << academic_border << "HALL" << three_empty;
+    out << academic_border << academic_border << empty_block << academic_border;
+    out << academic_border << empty_block << academic_border << "TIMS" << three_empty << endl;
+
+    // printing the third row of board
+    out << divider << empty_block << "EV1" << four_empty << empty_block << "EV2";
+    out << "EV3" << four_empty << empty_block << "PHYS" << three_empty << "B1" << five_empty;
+    out << empty_block << "B1" << five_empty << empty_block << endl;
+
+    // printing the fourth and fifth row of board
+    out << divider;
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 11; ++j) {
+            out << empty_block;
+        }
+        out << endl;
+    }
+
+    // printing bottom of top row
+    out << divider;
+    for (int i = 0; i < 11; ++i) {
+        out << block_bottom;
+    }
+    out << endl;
+
+
+
+    return out;
+}
