@@ -2,6 +2,15 @@
 #include "academic.h"
 #include "residence.h"
 #include "dice.h"
+#include "osap.h"
+#include "slc.h"
+#include "needleshall.h"
+#include "tuition.h"
+#include "jail.h"
+#include "gym.h"
+#include "coop.h"
+#include "goosenest.h"
+#include "gototims.h"
 #include <iostream>
 #include <string>
 
@@ -23,47 +32,51 @@ const string middle_block_bottom = divider + block_bottom + empty_middle_section
 const string middle_academic_border = divider + academic_border + empty_middle_section + academic_border;
 const string wat_surround = string(" ", 12) + divider;
 
-Board::Board(): squares{}, nameToIndex{}, monopolies{}, players{}, currentPlayer{0}, dice{} {
+Board::Board(): squares{}, nameToIndex{}, monopolies{} {
+    const vector<int> residenceRents{25, 50, 100, 200};
+    const int gymCost = 150;
+    const int residenceCost = 200;
     // hardcoding all buildings
-    // OSAP
+
+    squares.push_back(std::unique_ptr<OSAP>{new OSAP{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts1", "AL", 40, 50, 0, {2, 10, 30, 90, 160, 250}}});
-    // SLC
+    squares.push_back(std::unique_ptr<SLC>{new SLC{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts1", "ML", 60, 50, 0, {4, 20, 60, 180, 320, 450}}});
-    // TUITION
-    // RESIDENCE [MKV]
+    squares.push_back(std::unique_ptr<Tuition>{new Tuition{}});
+    squares.push_back(std::unique_ptr<Residence>{new Residence{"MKV", residenceCost, residenceRents}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts2", "ECH", 100, 50, 0, {6, 30, 90, 270, 400, 550}}});
-    // NEEDLES
+    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts2", "PAS", 100, 50, 0, {6, 30, 90, 270, 400, 550}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts2", "HH", 120, 50, 0, {8, 40, 100, 300, 450, 600}}});
-    // DC Tims Line
+    squares.push_back(std::unique_ptr<Jail>{new Jail{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Eng", "RCH", 140, 100, 0, {10, 50, 150, 450, 625, 750}}});
-    // GYM [PAC]
+    squares.push_back(std::unique_ptr<Gym>{new Gym{"PAC", gymCost}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Eng", "DWE", 140, 100, 0, {10, 50, 150, 450, 625, 750}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Eng", "CPH", 160, 100, 0, {12, 60, 180, 500, 700, 900}}});
-    // RESIDENCE [UWP]
+    squares.push_back(std::unique_ptr<Residence>{new Residence{"UWP", residenceCost, residenceRents}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Health", "LHI", 180, 100, 0, {14, 70, 200, 550, 750, 950}}});
-    // SLC
+    squares.push_back(std::unique_ptr<SLC>{new SLC{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Health", "BMH", 180, 100, 0, {14, 70, 200, 550, 750, 950}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Health", "OPT", 200, 100, 0, {16, 80, 220, 600, 800, 1000}}});
-    // GOOSE NESTING
+    squares.push_back(std::unique_ptr<GooseNest>{new GooseNest{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Env", "EV1", 220, 150, 0, {18, 90, 250, 700, 875, 1050}}});
-    // NEEDLES
+    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Env", "EV2", 220, 150, 0, {18, 90, 250, 700, 875, 1050}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Env", "EV3", 240, 150, 0, {20, 100, 300, 750, 925, 1100}}});
-    // RESIDENCE [V1]
+    squares.push_back(std::unique_ptr<Residence>{new Residence{"V1", residenceCost, residenceRents}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci1", "PHYS", 260, 150, 0, {22, 110, 330, 800, 975, 1150}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci1", "B1", 260, 150, 0, {22, 110, 330, 800, 975, 1150}}});
-    // GYM [CIF]
+    squares.push_back(std::unique_ptr<Gym>{new Gym{"CIF", gymCost}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci1", "B2", 280, 150, 0, {24, 120, 360, 850, 1025, 1200}}});
-    // GOTOTIMS
+    squares.push_back(std::unique_ptr<GoToTims>{new GoToTims{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci2", "EIT", 300, 200, 0, {26, 130, 390, 900, 1100, 1275}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci2", "ESC", 300, 200, 0, {26, 130, 390, 900, 1100, 1275}}});
-    // SLC
+    squares.push_back(std::unique_ptr<SLC>{new SLC{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci2", "C2", 320, 200, 0, {28, 150, 450, 1000, 1200, 1400}}});
-    // RESIDENCE [REV]
-    // NEEDLES
+    squares.push_back(std::unique_ptr<Residence>{new Residence{"REV", residenceCost, residenceRents}});
+    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Math", "MC", 350, 200, 0, {35, 175, 500, 1100, 1300, 1500}}});
-    // COOP FEE
+    squares.push_back(std::unique_ptr<Coop>{new Coop{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Math", "DC", 400, 200, 0, {50, 200, 600, 1400, 1700, 2000}}});
 
     // store names to relevant index in a map (so we don't have to loop during game execution)
@@ -88,20 +101,20 @@ Board::Board(): squares{}, nameToIndex{}, monopolies{}, players{}, currentPlayer
     monopolies["Needles"] = {7, 22, 36};
 }
 
-int Board::rollDice(){
-    Dice Dice1;
-    Dice Dice2;
-    Event e1 = Dice1.generateEvent();
-    Event e2 = Dice2.generateEvent();
-    int roll1 = Dice1.eventToInt(e1);
-    int roll2 = Dice1.eventToInt(e2);
-    return roll1 + roll2;
-}
+// int Board::rollDice(){
+//     Dice Dice1;
+//     Dice Dice2;
+//     Event e1 = Dice1.generateEvent();
+//     Event e2 = Dice2.generateEvent();
+//     int roll1 = Dice1.eventToInt(e1);
+//     int roll2 = Dice1.eventToInt(e2);
+//     return roll1 + roll2;
+// }
 
-void Board::makeMove(Player *p) {
-    int diceRoll = rollDice();
-    p->movePlayer(diceRoll);
-}
+// void Board::makeMove(Player *p) {
+//     int diceRoll = rollDice();
+//     p->movePlayer(diceRoll);
+// }
 
 // void Board::addPlayer(std::string name) {
 //     players.push_back(std::unique_ptr<Player>{new Player{name, 0, 0, 0, 0}});
@@ -244,4 +257,33 @@ ostream &operator<<(ostream &out, Board &board) {
     out << endl;
 
     return out;
+}
+
+bool Board::isType(string type, int buildingCode) {
+    if (monopolies.count(type) == 0) return false;
+    vector<int>& toSearch = monopolies[type];
+
+    return find(toSearch.begin(), toSearch.end(), buildingCode) != toSearch.end();
+}
+
+void Board::initBuilding(std::string name, Player* owner, int upgrades) {
+    if (nameToIndex.count(name) == 0) return;
+    int buildingCode = nameToIndex[name];
+
+    if (isType("Residence", buildingCode)) {
+        Residence& toChange = dynamic_cast<Residence&>(*squares[buildingCode].get());
+        toChange.setOwner(owner);
+        if (upgrades == -1) toChange.setMortgaged();
+    } else if (isType("Gyms", buildingCode)) {
+        Gym& toChange = dynamic_cast<Gym&>(*squares[buildingCode].get());
+        toChange.setOwner(owner);
+        if (upgrades == -1) toChange.setMortgaged();
+    } else if (isType("Arts1", buildingCode) || isType("Arts2", buildingCode) || isType("Eng", buildingCode) || 
+            isType("Health", buildingCode) || isType("Env", buildingCode) || isType("Sci1", buildingCode) || 
+            isType("Sci2", buildingCode) || isType("Math", buildingCode)) {
+        Academic& toChange = dynamic_cast<Academic&>(*squares[buildingCode].get());
+        toChange.setOwner(owner);
+        if (upgrades > -1) toChange.setUpgrades(upgrades);
+        else toChange.setMortgaged();
+    }
 }

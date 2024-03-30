@@ -37,3 +37,7 @@ void Residence::payRent(Player *payer){
     owner->changeCash(getRent(), true);
     payer->changeCash(getRent(), false);
 }
+
+void Residence::setOwner(Player* p) {owner = p; }
+
+void Residence::setMortgaged() {mortgaged = true; }

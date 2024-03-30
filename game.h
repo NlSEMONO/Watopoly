@@ -18,6 +18,8 @@ class Game {
     SLCRng rngSLC;
     NeedlesRng rngNH;
     int cupsDistributed;
+    int currPlayer;
+
     Board b;
 
     public:

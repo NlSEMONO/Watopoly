@@ -29,6 +29,9 @@ class Gym: public Square {
     void buy(Player *p); // buying
     void payRent(Player *payer, int diceRoll) const;
 
+    void setOwner(Player* p);
+    void setMortgaged();
+
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };
 

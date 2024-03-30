@@ -58,3 +58,5 @@ void Academic::payRent(Player *payer) {
 void Academic::setOwner(Player* p) {owner = p; } 
 
 void Academic::setUpgrades(int u) { upgrade_level = u; }
+
+void Academic::setMortgaged() {mortgaged = true; }

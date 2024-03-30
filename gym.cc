@@ -52,3 +52,7 @@ void Gym::payRent(Player *payer, int diceRoll) const {
         payer->changeCash(10 * diceRoll, false);
     }
 }
+
+void Gym::setOwner(Player* p) {owner = p; }
+
+void Gym::setMortgaged() {mortgaged = true; }
