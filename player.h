@@ -36,6 +36,7 @@ public:
   void setMortageValue(int mortageValue);
   void setTotalAssetsValue(int totalAssetsValue);
   void setPlayerPostion(int playerPosition);
+  void setSymbol(char symbol);
 
 };
 

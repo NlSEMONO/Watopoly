@@ -87,3 +87,5 @@ void Player::setTotalAssetsValue(int totalAssetsValue){
 void Player::setPlayerPostion(int playerPosition){
   this->playerPosition = playerPosition;
 }
+
+void Player::setSymbol(char symbol) {chr = symbol; }
