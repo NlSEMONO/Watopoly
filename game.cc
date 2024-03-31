@@ -134,11 +134,51 @@ void Game::play() {
         } else if (cmd == "next"){
 
         } else if (cmd == "trade"){
-            string param1;
-            string param2;
-            iss2 >> param1;
-            iss2 >> param2;
-            
+            string player_2;
+            string to_give;
+            string to_get;
+            iss2 >> player_2 >> to_give >> to_get;
+            Player *trade_from = nameToPlayer[player_2];
+
+            if (isdigit(to_give[0]) && isdigit(to_get[0])) {
+                // trading money for money
+                throw runtime_error("Invalid trade");
+            } else if (isdigit(to_give[0])) {
+                int money_given = stoi(to_give);
+                if (players[playerTurn]->canAfford(money_given)) {
+                    string response;
+                    iss2 >> response;
+
+                    if (response == "accept") {
+                        // accept
+                    } else {
+                        break;
+                    }
+                }
+            } else if (isdigit(to_get[0])) {
+                int money_recieved = stoi(to_get);
+                if (trade_from->canAfford(money_recieved)){
+                    string response;
+                    iss2 >> response;
+
+                    if (response == "accept") {
+                        // accept
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                string response;
+                iss2 >> response;
+
+                if (response == "accept") {
+                    // accept
+                } else {
+                    break;
+                }
+            }
+
+           
         } else if (cmd == "improve"){
             
         } else if (cmd == "mortgage"){

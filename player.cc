@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 #include "player.h"
+#include <bits/stdc++.h> 
+
 
 using namespace std;
 

@@ -37,7 +37,6 @@ public:
   void setTotalAssetsValue(int totalAssetsValue);
   void setPlayerPostion(int playerPosition);
   void setSymbol(char symbol);
-
 };
 
 #endif
