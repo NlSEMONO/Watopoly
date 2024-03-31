@@ -26,6 +26,10 @@ class Game {
         void loadFile(std::istream& in);
         void play();
         void setPlayers(int pCount);
+
+    friend std::ostream &operator<<(std::ostream &out, Game &game);    
 };
 
 #endif
+
+std::ostream &operator<<(std::ostream &out, Game &game);

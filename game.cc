@@ -168,24 +168,24 @@ const int sqr_len = 7;
 const int board_len = 11;
 
 const char divider = '|';
-const string academic_border = string("-",sqr_len) + divider;
-const string empty_block = string(" ", sqr_len) + divider;
-const string block_bottom = string("_",sqr_len) + divider;
-const string three_empty = string(" ", 3) + divider;
-const string four_empty = string(" ", 4) + divider;
-const string five_empty = string(" ", 5) + divider;
-const string empty_middle_section = string(" ", (8 * 9) - 1) + divider;
+const string academic_border = string(sqr_len, '-') + divider;
+const string empty_block = string(sqr_len, ' ') + divider;
+const string block_bottom = string(sqr_len, '_') + divider;
+const string three_empty = string(3, ' ') + divider;
+const string four_empty = string(4, ' ') + divider;
+const string five_empty = string(5, ' ') + divider;
+const string empty_middle_section = string((8 * 9) - 1, ' ') + divider;
 const string blank_middle_section = divider + empty_block + empty_middle_section + empty_block;
 const string middle_block_bottom = divider + block_bottom + empty_middle_section + block_bottom;
 const string middle_academic_border = divider + academic_border + empty_middle_section + academic_border;
-const string wat_surround = string(" ", 12) + divider;
+const string wat_surround = string(12, ' ') + divider;
 
-ostream &operator<<(ostream &out, Board &board) {
-    out << string("_" , 8 * 11) << endl; // top border
+ostream &operator<<(ostream &out, Game &game) {
+    out << string(8 * 11, '_') << endl; // top border
 
     // first row of blocks 
     // printing the first row of board
-    out << "|Goose  |" << empty_block << "|NEEDLES|" << empty_block;
+    out << "|Goose  |" << empty_block << "NEEDLES|" << empty_block;
     out << empty_block << "V1" << five_empty << empty_block;
     out << empty_block << "CIF" << four_empty << empty_block;
     out << "GO TO  |" << endl;
@@ -196,18 +196,16 @@ ostream &operator<<(ostream &out, Board &board) {
     out << academic_border << empty_block << academic_border << "TIMS" << three_empty << endl;
 
     // printing the third row of board
-    out << divider << empty_block << "EV1" << four_empty << empty_block << "EV2";
+    out << divider << empty_block << "EV1" << four_empty << empty_block << "EV2" << four_empty;
     out << "EV3" << four_empty << empty_block << "PHYS" << three_empty << "B1" << five_empty;
     out << empty_block << "B1" << five_empty << empty_block << endl;
 
-    // printing the fourth and fifth row of board
+    // printing the fourth row of board
     out << divider;
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 11; ++j) {
-            out << empty_block;
-        }
-        out << endl;
+    for (int j = 0; j < 11; ++j) {
+        out << empty_block;
     }
+    out << endl;
 
     // printing bottom of top row
     out << divider;
@@ -244,9 +242,9 @@ ostream &operator<<(ostream &out, Board &board) {
     out << blank_middle_section << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
     out << divider << "LHI" << four_empty << empty_middle_section << "C2" << five_empty << endl; // block_row3
-    out << divider << empty_block << wat_surround << string("_", 45); // block_row4
+    out << divider << empty_block << wat_surround << string(45, '_'); // block_row4
     out << " " << wat_surround << empty_block << endl;
-    out << divider << empty_block << wat_surround << string(" ", 45) << divider;
+    out << divider << empty_block << wat_surround << string(45, '_') << divider;
     out << wat_surround << block_bottom << endl;
 
     // sixth row of blocks
@@ -258,11 +256,11 @@ ostream &operator<<(ostream &out, Board &board) {
     out << "   # #    # #  |" << wat_surround << empty_block << endl;
     out << divider << empty_block << wat_surround << " # # # #  #   #   #   # #"; // block_row4
     out << "    #   # #     #   |" << wat_surround << empty_block << endl;
-    out << divider << block_bottom << wat_surround << " #### #  #   #    ###  #"; // block_row5
+    out << divider << block_bottom << wat_surround << " ##### #  #   #    ###  #"; // block_row5
     out << "     ###  ## #  #   |" << wat_surround << block_bottom << endl;
 
     // seventh row of blocks
-    out << divider << empty_block << wat_surround << string("_", 45) << divider; // block_row1
+    out << divider << empty_block << wat_surround << string(45, '_') << divider; // block_row1
     out << wat_surround << "NEEDLES" << divider << endl;
     out << divider << academic_border << empty_middle_section << "HALL" << three_empty << endl; // block_row2
     out << divider << "CPH" << four_empty << empty_middle_section << empty_block << endl; // block_row3
@@ -272,7 +270,7 @@ ostream &operator<<(ostream &out, Board &board) {
     // eighth row of blocks
     out << blank_middle_section << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
-    out << divider << "DWE" << four_empty << empty_middle_section << "|MC" << five_empty << endl; // block_row3 
+    out << divider << "DWE" << four_empty << empty_middle_section << "MC" << five_empty << endl; // block_row3 
     out << blank_middle_section << endl; // block_row4
     out << middle_block_bottom << endl; // block_row5
 
@@ -288,18 +286,18 @@ ostream &operator<<(ostream &out, Board &board) {
     out << middle_academic_border << endl;
     out << divider << "RCH" << four_empty << empty_middle_section << "DC" << five_empty << endl;
     out << blank_middle_section << endl;
-    out << divider << block_bottom << string(string("_", sqr_len), 9) << divider << block_bottom << endl;
+    out << divider << block_bottom << string(9 * (sqr_len + 1) - 1, '_') << divider << block_bottom << endl;
 
     // last row of blocks
     out << divider << "DC TIMS|" << empty_block << empty_block << "NEEDLES" << divider; // row_1
     out << empty_block << "MKV" << four_empty << "TUITION" << divider << empty_block;
     out << "SLC" << four_empty << empty_block << "COLLECT" << divider << endl;
 
-    out << "Line" << three_empty << academic_border << academic_border << "HALL"; // row_2
+    out << divider << "Line" << three_empty << academic_border << academic_border << "HALL" << three_empty; // row_2
     out << academic_border << empty_block << empty_block << academic_border << empty_block;
     out << academic_border << "OSAP" << three_empty << endl;
 
-    out << empty_block << "HH" << five_empty << "PAS" << four_empty << empty_block; // row_3
+    out << divider << empty_block << "HH" << five_empty << "PAS" << four_empty << empty_block; // row_3
     out << "ECH" << four_empty << empty_block << empty_block << "ML" << five_empty;
     out << empty_block << "AL" << five_empty << empty_block << endl;
 
