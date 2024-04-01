@@ -181,7 +181,7 @@ void Game::play() {
                 }
             }
 
-           
+
         } else if (cmd == "improve"){
             
         } else if (cmd == "mortgage"){
