@@ -137,7 +137,7 @@ void Game::play() {
                 int money_given = stoi(to_give);
                 if (players[playerTurn]->canAfford(money_given)) {
                     string response;
-                    iss2 >> response;
+                    cin >> response;
 
                     if (response == "accept") {
                         trade_from->changeCash(money_given, true);
@@ -153,7 +153,7 @@ void Game::play() {
                 int money_recieved = stoi(to_get);
                 if (trade_from->canAfford(money_recieved)){
                     string response;
-                    iss2 >> response;
+                    cin >> response;
 
                     if (response == "accept") {
                         trade_from->changeCash(money_recieved, false);
