@@ -187,9 +187,27 @@ void Game::play() {
             
         } else if (cmd == "bankrupt"){
             
-        } else if (cmd == "assets"){
             
+        } else if (cmd == "assets"){
+            //Logic to check is player is paying tuition if yes:
+            cout << "Player " << players[playerTurn]->getPlayerName() << " has this much cash: " << players[playerTurn]->getLiquidCash() << endl;
+            cout << "Player " << players[playerTurn]->getPlayerName() << " has these properties " << endl;
+            for (int i = 0; i < players[playerTurn]->getPlayerProperties().size(); i++){
+                cout << players[playerTurn]->getPlayerProperties()[i]->getName() << endl;
+            }
+            cout << "Player " << players[playerTurn]->getPlayerName() << " total assets are: " << players[playerTurn]->getTotalAssetsValue() << endl;
+
         } else if (cmd == "all"){
+            //Logic to check is player is paying tuition if yes:
+            for (int j = 0; j < numPlayers; j++){
+                cout << "Player " << players[j]->getPlayerName() << " has this much cash: " << players[j]->getLiquidCash() << endl;
+                cout << "Player " << players[j]->getPlayerName() << " has these properties " << endl;
+                for (int i = 0; i < players[j]->getPlayerProperties().size(); i++){
+                    cout << players[j]->getPlayerProperties()[i]->getName() << endl;
+                }
+                cout << "Player " << players[j]->getPlayerName() << " total assets are: " << players[j]->getTotalAssetsValue() << endl;
+                cout << endl;
+            }
             
         } else if (cmd == "save"){
             

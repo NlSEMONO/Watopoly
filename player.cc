@@ -69,6 +69,10 @@ int Player::getPlayerPostion() const {
   return playerPosition;
 }
 
+const vector<Square*>& Player::getPlayerProperties() const {
+  return ownedProperties;
+}
+
 //Setters
 void Player::setPlayerName(string name){
   this->name = name;

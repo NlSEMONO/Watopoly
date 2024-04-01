@@ -29,6 +29,7 @@ public:
   int getMortageValue() const;
   int getTotalAssetsValue() const;
   int getPlayerPostion() const;
+  const std::vector<Square*> &getPlayerProperties() const;
 
   //Setters
   void setPlayerName(std::string name);
