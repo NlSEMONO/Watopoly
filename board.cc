@@ -151,5 +151,18 @@ Square *Board::getSquare(string name) {
 Square *Board::getSquare(int buildingCode) {return squares[buildingCode].get(); } 
 
 void Board::getOwnedSquares(Player* owner, vector<Square *>& dest) const {
-    for (int i = 0; i < squares.size(); ++i) if (squares[i].get()->getOwner() == owner) dest.push_back(squares[i].get());
+    for (size_t i = 0; i < squares.size(); ++i) if (squares[i].get()->getOwner() == owner) dest.push_back(squares[i].get());
+}
+
+void Board::saveProperties(ostream& out) {
+    for (size_t i = 0; i < squares.size(); ++i) {
+        if (isOwnable(i)) {
+            Square* curr = squares[i].get();
+            out << curr->getName() << " " << (curr->getOwner() == nullptr ? "BANK" : curr->getOwner()->getPlayerName()) << " ";
+            if (isGym(i)) {
+                Gym* temp = dynamic_cast<Gym*>(curr);
+                temp->isMortgaged();
+            } 
+        }
+    }
 }
