@@ -120,6 +120,8 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
         players[playerTurn]->changeCash(money_traded, false);
         trader->changeCash(money_traded, true);
 
+        b.getSquare(to_get)->setOwner(players[playerTurn].get());
+
         // changing property
         if (b.isAcademic(b.getIndex(to_get))) {
         } else if (b.isGym(b.getIndex(to_get))) {
