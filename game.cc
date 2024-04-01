@@ -167,8 +167,6 @@ void Game::play() {
         istringstream iss2{cmdWhole};
         string cmd;
         iss2 >> cmd;
-
-
         if (cmd == "roll"){
             // b.makeMove(players[playerTurn].get());  
             int roll1 = dice.eventToInt(dice.generateEvent());
@@ -294,8 +292,13 @@ void Game::play() {
             iss2 >> filename;
             ofstream out;
             out.open(filename);
-            // for (int i = 0; i < players.size(); ++i) players[i] 
-            // b.saveProperties(out);
+
+            // player1 char TimsCups money position
+            for (int i = 0; i < players.size(); ++i) {
+                Player* curr = players[i].get();
+                out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << curr->getPlayerPostion() << endl;
+            }
+            b.saveProperties(out);
             out.close();
         } 
         // else {

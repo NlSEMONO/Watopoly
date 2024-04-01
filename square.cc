@@ -39,3 +39,7 @@ string Square::printPlayers() {
 void Square::setOwner(Player *player) {
 // do nothing    
 }
+
+bool Square::isMortgaged() const {
+    return false;
+}

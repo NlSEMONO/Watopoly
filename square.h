@@ -19,8 +19,8 @@ class Square {
         std::string getName() const;
         virtual ~Square() = 0;
         std::string printPlayers();
-        virtual void setOwner(Player *player) = 0;
-        virtual bool isMortgaged() const = 0;
+        virtual void setOwner(Player *player);
+        virtual bool isMortgaged() const;
 };
 
 #endif
