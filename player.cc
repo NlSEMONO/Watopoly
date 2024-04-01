@@ -6,9 +6,9 @@
 
 using namespace std;
 
-Player::Player(string name, char chr, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition) :
+Player::Player(string name, char symbol, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition) :
   name{name},
-  chr{chr},
+  symbol{symbol},
   liquidCash{liquidCash},
   mortageValue{mortageValue},
   totalAssetsValue{totalAssetsValue},
@@ -49,49 +49,21 @@ void Player::changeCash(int value, bool increase){
 // }
 
   //Getters
-string Player::getPlayerName() const{
-  return name;
-}
-
-int Player::getLiquidCash() const {
-  return liquidCash;
-}
-
-int Player::getMortageValue() const {
-  return mortageValue;
-}
-
-int Player::getTotalAssetsValue() const {
-  return totalAssetsValue;
-}
-
-int Player::getPlayerPostion() const {
-  return playerPosition;
-}
+string Player::getPlayerName() const{return name;}
+int Player::getLiquidCash() const {return liquidCash;}
+int Player::getMortageValue() const {return mortageValue;}
+int Player::getTotalAssetsValue() const {return totalAssetsValue;}
+int Player::getPlayerPostion() const {return playerPosition;}
+char Player::getSymbol() const {return symbol;}
 
 // const vector<Square*>& Player::getPlayerProperties() const {
 //   return ownedProperties;
 // }
 
 //Setters
-void Player::setPlayerName(string name){
-  this->name = name;
-}
-
-void Player::setLiquidCash(int liquidCash){
-  this->liquidCash = liquidCash;
-}
-
-void Player::setMortageValue(int mortageValue){
-  this->mortageValue = mortageValue;
-}
-
-void Player::setTotalAssetsValue(int totalAssetsValue){
-  this->totalAssetsValue = totalAssetsValue;
-}
-
-void Player::setPlayerPostion(int playerPosition){
-  this->playerPosition = playerPosition;
-}
-
-void Player::setSymbol(char symbol) {chr = symbol; }
+void Player::setPlayerName(string name){this->name = name;}
+void Player::setLiquidCash(int liquidCash){this->liquidCash = liquidCash;}
+void Player::setMortageValue(int mortageValue){this->mortageValue = mortageValue;}
+void Player::setTotalAssetsValue(int totalAssetsValue){this->totalAssetsValue = totalAssetsValue;}
+void Player::setPlayerPostion(int playerPosition){this->playerPosition = playerPosition;}
+void Player::setSymbol(char symbol) {symbol = symbol; }
