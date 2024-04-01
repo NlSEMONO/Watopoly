@@ -28,7 +28,7 @@ void Residence::mortgage(){
 
 void Residence::buy(Player *p){
     p->changeCash(purchase_cost, false); 
-    p->addProperty(this);
+    // p->addProperty(this);
     owner = p;
     bought = true;   
 }

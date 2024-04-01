@@ -44,7 +44,7 @@ void Academic::unmortgage() {
 //buyProperty
 void Academic::buy(Player *p) {
     p->changeCash(purchase_cost, false); 
-    p->addProperty(this);
+    // p->addProperty(this);
     owner = p;
     bought = true;
 }

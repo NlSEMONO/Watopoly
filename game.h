@@ -22,9 +22,12 @@ class Game {
 
     Board b;
 
+    std::vector<Square*>& getAssets(Player* p) const;
+
     public:
         void loadFile(std::istream& in);
         void play();
+        void initPlayers();
         void setPlayers(int pCount);
 
     friend std::ostream &operator<<(std::ostream &out, Game &game);    

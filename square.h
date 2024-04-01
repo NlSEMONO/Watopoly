@@ -15,6 +15,7 @@ class Square {
     public:
         void addPlayer(Player* player); // removes all instances of player in players
         void removePlayer(Player* player); // removes all instances of player in players
+        virtual Player* getOwner() const;
         std::string getName() const;
         virtual ~Square() = 0;
 };

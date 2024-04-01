@@ -20,7 +20,7 @@ public:
   int movePlayer(int diceRoll);
   bool canAfford(int propertyPrice);
   void changeCash(int value, bool increase);
-  void addProperty(Square * s);
+  // void addProperty(Square * s);
 
   //Getters
   std::string getPlayerName() const;

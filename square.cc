@@ -18,3 +18,7 @@ void Square::removePlayer(Player* player) {
         else ++it;
     }
 }
+
+Player* Square::getOwner() const {
+    return nullptr;
+}

@@ -54,31 +54,19 @@ void Game::loadFile(istream& in) {
     }
 }
 
-void Game::play() {
-    cout << "How many players will be playing the game?" << endl;
-    string s;
-    int numPlayers;
-    while (cin >> s){
-        istringstream iss{s};
-        if (iss >> numPlayers){
-            if ((1 <= numPlayers) && (numPlayers <= 8)){
-                break;
-            }
-        }
-        throw runtime_error{"Please enter a valid number between 1 and 8"};
-    }
-
+void Game::initPlayers() {
     //Player Name Init
     string nameOfPLayer;
     int i = 0;
     vector<char> possibleSymbols = {'G', 'B', 'D', 'P', 'S', '$', 'L', 'T'};
     vector<string> names = {};
     int cnt = 0;
-    while(i < numPlayers){
+    while(i < playerCount){
         cout << "Name of player " << i << ":" << endl;
+        cin >> nameOfPLayer;
         cnt = count(names.begin(), names.end(), nameOfPLayer);
-        if ((cin >> nameOfPLayer) && (cnt == 0)){
-          players[i] = unique_ptr<Player>{new Player{nameOfPLayer, '\0', 1500, 0, 0, 0}};
+        if (cin && cnt == 0){
+          players.push_back(unique_ptr<Player>{new Player{nameOfPLayer, '\0', 1500, 0, 0, 0}});
           i++;
           names.push_back(nameOfPLayer);
         } else {
@@ -91,7 +79,7 @@ void Game::play() {
     string s1;
     char playerSymbol;
     int cnt1 = 0;
-    while(j < numPlayers){
+    while(j < playerCount){
         cout << "Symbol of player " << j << ":" << endl;
         cin >> s1;
         istringstream iss{s1};
@@ -99,27 +87,29 @@ void Game::play() {
             cnt1 = count(possibleSymbols.begin(), possibleSymbols.end(), playerSymbol);
             if (((playerSymbol == 'G') || (playerSymbol == 'B') || (playerSymbol == 'D') ||(playerSymbol == 'P') || (playerSymbol == 'S') ||
                 (playerSymbol == '$') || (playerSymbol == 'L') || (playerSymbol == 'T')) && (cnt1 == 1)) {
-                    players[j]->setSymbol(playerSymbol);
-                    for (int i = 0; i < possibleSymbols.size(); i++){
-                        if (possibleSymbols[i] == playerSymbol){
-                            possibleSymbols.erase(possibleSymbols.begin() + i);
-                            break;
-                        }
+                players[j]->setSymbol(playerSymbol);
+                for (int i = 0; i < possibleSymbols.size(); i++){
+                    if (possibleSymbols[i] == playerSymbol){
+                        possibleSymbols.erase(possibleSymbols.begin() + i);
+                        break;
                     }
-                    i++;
-                    continue;
-                } else {
-                    throw runtime_error{"Please enter a valid symbol that has not been selected"};
-                    continue;
                 }
+                j++;
+                continue;
+            } else {
+                throw runtime_error{"Please enter a valid symbol that has not been selected"};
+                continue;
+            }
         } else {
             throw runtime_error{"Please enter a valid symbol that has not been selected"};
             continue;
         }
     }
 
-    cout << "Game has been intialized with " << numPlayers << "!" << endl;
+    cout << "Game has been intialized with " << playerCount << "!" << endl;
+}
 
+void Game::play() {
     //CLI Interpreter
     string cmdWhole;
     int playerTurn = 0;
@@ -205,18 +195,22 @@ void Game::play() {
             //Logic to check is player is paying tuition if yes:
             cout << "Player " << players[playerTurn]->getPlayerName() << " has this much cash: " << players[playerTurn]->getLiquidCash() << endl;
             cout << "Player " << players[playerTurn]->getPlayerName() << " has these properties " << endl;
-            for (int i = 0; i < players[playerTurn]->getPlayerProperties().size(); i++){
-                cout << players[playerTurn]->getPlayerProperties()[i]->getName() << endl;
+            vector<Square*> playerAssets;
+            b.getOwnedSquares(players[playerTurn].get(), playerAssets);
+            for (int i = 0; i < playerAssets.size(); i++){
+                cout << playerAssets[i]->getName() << endl;
             }
             cout << "Player " << players[playerTurn]->getPlayerName() << " total assets are: " << players[playerTurn]->getTotalAssetsValue() << endl;
 
         } else if (cmd == "all"){
             //Logic to check is player is paying tuition if yes:
-            for (int j = 0; j < numPlayers; j++){
+            for (int j = 0; j < playerCount; j++){
                 cout << "Player " << players[j]->getPlayerName() << " has this much cash: " << players[j]->getLiquidCash() << endl;
                 cout << "Player " << players[j]->getPlayerName() << " has these properties " << endl;
-                for (int i = 0; i < players[j]->getPlayerProperties().size(); i++){
-                    cout << players[j]->getPlayerProperties()[i]->getName() << endl;
+                vector<Square*> playerAssets;
+                b.getOwnedSquares(players[j].get(), playerAssets);
+                for (int i = 0; i < playerAssets.size(); i++){
+                    cout << playerAssets[i]->getName() << endl;
                 }
                 cout << "Player " << players[j]->getPlayerName() << " total assets are: " << players[j]->getTotalAssetsValue() << endl;
                 cout << endl;
@@ -224,12 +218,13 @@ void Game::play() {
             
         } else if (cmd == "save"){
             
-        } else {
-            throw runtime_error{"Not a valid command"};
-        }
+        } 
+        // else {
+        //     throw runtime_error{"Not a valid command"};
+        // }
 
         playerTurn++;
-        if (playerTurn == numPlayers){
+        if (playerTurn == playerCount){
             playerTurn = 0;
         }
     }

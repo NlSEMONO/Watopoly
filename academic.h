@@ -28,7 +28,7 @@ class Academic: public Square {
     bool isBought() const;
     bool isMortgaged() const;
     int getRent() const;
-    Player *getOwner() const;
+    virtual Player *getOwner() const override;
 
     void upgrade(); // upgrading property
     void mortgage(); // mortgage

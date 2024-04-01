@@ -44,9 +44,9 @@ void Player::changeCash(int value, bool increase){
   }
 }
 
-void Player::addProperty(Square * s){
-  ownedProperties.push_back(s);
-}
+// void Player::addProperty(Square * s){
+//   ownedProperties.push_back(s);
+// }
 
   //Getters
 string Player::getPlayerName() const{
@@ -69,9 +69,9 @@ int Player::getPlayerPostion() const {
   return playerPosition;
 }
 
-const vector<Square*>& Player::getPlayerProperties() const {
-  return ownedProperties;
-}
+// const vector<Square*>& Player::getPlayerProperties() const {
+//   return ownedProperties;
+// }
 
 //Setters
 void Player::setPlayerName(string name){

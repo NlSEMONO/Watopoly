@@ -40,10 +40,16 @@ int main(int argc, char** argv) {
     // get # of players
     istream& in = *input;
     int numPlayers = -1;
-    cout << "Enter # of players: " << endl;
-    while (!(in >> numPlayers)) {
-        in.clear();
-        in.ignore();
+    cout << "How many players will be playing the game?" << endl;
+    string s;
+    while (in >> s){
+        istringstream iss{s};
+        if (iss >> numPlayers){
+            if ((1 <= numPlayers) && (numPlayers <= 8)){
+                break;
+            }
+        }
+        throw runtime_error{"Please enter a valid number between 1 and 8"};
     }
 
     // load state
@@ -61,7 +67,16 @@ int main(int argc, char** argv) {
             cerr << e.what() << endl;
             return 4;
         }
+    } else {
+        try {
+            game.initPlayers();
+        }
+        catch (std::exception& e) {
+            cerr << e.what() << endl;
+            return 5;
+        }
     }
     cout << game;
+    cout << "hi";
     game.play();
 }

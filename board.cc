@@ -112,6 +112,12 @@ bool Board::isType(string type, int buildingCode) {
     return find(toSearch.begin(), toSearch.end(), buildingCode) != toSearch.end();
 }
 
+bool Board::isAcademic(int buildingCode) {
+    return isType("Arts1", buildingCode) || isType("Arts2", buildingCode) || isType("Eng", buildingCode) || 
+            isType("Health", buildingCode) || isType("Env", buildingCode) || isType("Sci1", buildingCode) || 
+            isType("Sci2", buildingCode) || isType("Math", buildingCode);
+}
+
 void Board::initBuilding(std::string name, Player* owner, int upgrades) {
     if (nameToIndex.count(name) == 0) return;
     int buildingCode = nameToIndex[name];
@@ -124,9 +130,7 @@ void Board::initBuilding(std::string name, Player* owner, int upgrades) {
         Gym& toChange = dynamic_cast<Gym&>(*squares[buildingCode].get());
         toChange.setOwner(owner);
         if (upgrades == -1) toChange.setMortgaged();
-    } else if (isType("Arts1", buildingCode) || isType("Arts2", buildingCode) || isType("Eng", buildingCode) || 
-            isType("Health", buildingCode) || isType("Env", buildingCode) || isType("Sci1", buildingCode) || 
-            isType("Sci2", buildingCode) || isType("Math", buildingCode)) {
+    } else if (isAcademic(buildingCode)) {
         Academic& toChange = dynamic_cast<Academic&>(*squares[buildingCode].get());
         toChange.setOwner(owner);
         if (upgrades > -1) toChange.setUpgrades(upgrades);
@@ -136,4 +140,8 @@ void Board::initBuilding(std::string name, Player* owner, int upgrades) {
 
 Square *Board::getSquare(string name) {
     return squares[nameToIndex[name]].get();
+}
+
+void Board::getOwnedSquares(Player* owner, vector<Square *>& dest) const {
+    for (int i = 0; i < squares.size(); ++i) if (squares[i].get()->getOwner() == owner) dest.push_back(squares[i].get());
 }

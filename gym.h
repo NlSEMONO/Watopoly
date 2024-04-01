@@ -17,7 +17,7 @@ class Gym: public Square {
     
 
     std::string getName() const;
-    Player *getOwner() const;
+    virtual Player *getOwner() const override;
     int getCost() const;
     int getGymsOwned() const;
     bool isBought() const;
