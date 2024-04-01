@@ -35,3 +35,7 @@ string Square::printPlayers() {
     }
     return tmp + "|";
 }
+
+void Square::setOwner(Player *player) {
+// do nothing    
+}
