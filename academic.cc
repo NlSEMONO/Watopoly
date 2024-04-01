@@ -30,6 +30,11 @@ void Academic::upgrade() {
     upgrade_level++;    
 } 
 
+void Academic::sellUpgrade() {
+    owner->changeCash(upgrade_cost / 2);
+    --upgrade_level;
+}
+
 // mortgageProperty
 void Academic::mortgage() {
     owner->changeCash(purchase_cost / 2, true);

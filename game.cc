@@ -1,7 +1,9 @@
 #include <sstream>
+#include <fstream>
 #include "game.h"
 #include "slcrng.h"
 #include "needlesrng.h"
+#include "academic.h"
 #include <stdexcept>
 using namespace std;
 
@@ -113,16 +115,25 @@ void Game::play() {
     //CLI Interpreter
     string cmdWhole;
     int playerTurn = 0;
+    int moneyOwed = 0;
+    bool hasRolled = false;
 
     while(getline(cin, cmdWhole)){
         istringstream iss2{cmdWhole};
         string cmd;
         iss2 >> cmd;
 
+
         if (cmd == "roll"){
             // b.makeMove(players[playerTurn].get());  
+            int roll1 = dice.eventToInt(dice.generateEvent());
+            int roll2 = dice.eventToInt(dice.generateEvent());
         } else if (cmd == "next"){
-
+            playerTurn++;
+            if (playerTurn == playerCount){
+                playerTurn = 0;
+            }
+            hasRolled = false;
         } else if (cmd == "trade"){
             string player_2;
             string to_give;
@@ -181,9 +192,26 @@ void Game::play() {
                 }
             }
 
-           
+
         } else if (cmd == "improve"){
+            Player* curr = players[playerTurn].get();
+            int pos = curr->getPlayerPostion();
             
+            if (b.isAcademic(pos)) {
+                Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
+                if (sq->getOwner() == curr) {
+                    string setting; 
+                    iss2 >> setting;
+
+                    if (setting == "buy" && curr->canAfford(sq->getUpgrade_cost())) { 
+                        if (sq->getUpgradeLevel() < 5) sq->upgrade();
+                        else cerr << "You can't upgrade this property anymore." << endl;
+                    } else if (setting == "sell") {
+                        if (sq->getUpgradeLevel() > 0) sq->sellUpgrade();
+                        else cerr << "You can't sell any more upgardes from this property." << endl; 
+                    } else cerr << "you can't afford to upgrade this property." << endl;
+                } else cerr << "You don't own this property!" << endl;
+            } else cerr << "You can't upgrade this property." << endl;
         } else if (cmd == "mortgage"){
             
         } else if (cmd == "unmortgage"){
@@ -217,16 +245,17 @@ void Game::play() {
             }
             
         } else if (cmd == "save"){
-            
+            string filename;
+            iss2 >> filename;
+            ofstream out;
+            out.open(filename);
+            // for (int i = 0; i < players.size(); ++i) players[i] 
+            // b.saveProperties(out);
+            out.close();
         } 
         // else {
         //     throw runtime_error{"Not a valid command"};
         // }
-
-        playerTurn++;
-        if (playerTurn == playerCount){
-            playerTurn = 0;
-        }
     }
 }
 

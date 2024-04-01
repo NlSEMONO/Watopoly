@@ -31,6 +31,7 @@ class Academic: public Square {
     virtual Player *getOwner() const override;
 
     void upgrade(); // upgrading property
+    void sellUpgrade();
     void mortgage(); // mortgage
     void unmortgage();
     void buy(Player *p); // buying
