@@ -26,7 +26,7 @@ class Academic: public Square {
     std::string getBlock() const;
     std::string getName() const;
     bool isBought() const;
-    bool isMortgaged() const;
+    virtual bool isMortgaged() const override;
     int getRent() const;
     virtual Player *getOwner() const override;
 
@@ -38,7 +38,7 @@ class Academic: public Square {
     void payRent(Player *payer);
     virtual ~Academic();
 
-    void setOwner(Player *p);
+    virtual void setOwner(Player *p) override;
     void setUpgrades(int u);
     void setMortgaged();
 

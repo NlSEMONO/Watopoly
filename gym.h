@@ -21,7 +21,7 @@ class Gym: public Square {
     int getCost() const;
     int getGymsOwned() const;
     bool isBought() const;
-    bool isMortgaged() const;
+    virtual bool isMortgaged() const override;
 
     void upgrade(); // upgrading property
     void mortgage(); // mortgage
@@ -29,11 +29,10 @@ class Gym: public Square {
     void buy(Player *p); // buying
     void payRent(Player *payer, int diceRoll) const;
 
-    void setOwner(Player* p);
+    virtual void setOwner(Player* p) override;
     void setMortgaged();
 
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };
 
 #endif
-

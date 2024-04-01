@@ -144,12 +144,9 @@ void Board::initBuilding(std::string name, Player* owner, int upgrades) {
     }
 }
 
-Square *Board::getSquare(string name) {
-    return squares[nameToIndex[name]].get();
-}
-
+Square *Board::getSquare(string name) {return squares[nameToIndex[name]].get();}
 Square *Board::getSquare(int buildingCode) {return squares[buildingCode].get(); } 
-
+int Board::getIndex(string name) { return nameToIndex[name];}
 void Board::getOwnedSquares(Player* owner, vector<Square *>& dest) const {
     for (size_t i = 0; i < squares.size(); ++i) if (squares[i].get()->getOwner() == owner) dest.push_back(squares[i].get());
 }
