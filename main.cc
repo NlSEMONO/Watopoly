@@ -16,13 +16,20 @@ int main(int argc, char** argv) {
 
     if (argc > 1) {
         for (int i = 1; i < argc; ++i) {
-            if (argv[i] == "-testing") testing = true;
-            else if (argv[i] == "-load") {
+            istringstream iss{argv[i]};
+            string str;
+            iss >> str;
+            // cout << str << endl;
+            if (str == "-testing") testing = true;
+            else if (str == "-load") {
                 if (i + 1 >= argc) {
                     cerr << "Please specify a file name" << endl;
                     return 1;
                 }
+                // cout << "lol" << endl;
+                // cout << argv[i + 1] << endl;
                 file = argv[i + 1];
+                // cout << argv[i] << endl;
                 ++i;
             }
         }
@@ -42,8 +49,9 @@ int main(int argc, char** argv) {
     int numPlayers = -1;
     cout << "How many players will be playing the game?" << endl;
     string s;
-    while (in >> s){
+    while (getline(in, s)){
         istringstream iss{s};
+        // cout << s << endl;
         if (iss >> numPlayers){
             if ((1 <= numPlayers) && (numPlayers <= 8)){
                 break;
@@ -53,8 +61,9 @@ int main(int argc, char** argv) {
     }
 
     // load state
-    string line;
+    // string line;
     game.setPlayers(numPlayers);
+    // cout << file << endl;
     if (file != "") {
         try {
             game.loadFile(in);
@@ -77,6 +86,5 @@ int main(int argc, char** argv) {
         }
     }
     cout << game;
-    cout << "hi";
     game.play();
 }

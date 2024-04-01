@@ -8,6 +8,7 @@
 #include "needlesrng.h"
 #include "player.h"
 #include "board.h"
+#include "dice.h"
 
 class Game {
     int playerCount;
@@ -19,6 +20,7 @@ class Game {
     NeedlesRng rngNH;
     int cupsDistributed;
     int currPlayer;
+    Dice dice;
 
     Board b;
 
