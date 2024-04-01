@@ -12,8 +12,6 @@ class Board {
     std::map<std::string, int> nameToIndex;
     std::map<std::string, std::vector<int>> monopolies;
     bool isType(std::string type, int buildingCode);
-    bool isAcademic(int buildingCode);
-    // bool isOwnable(int buildingCode) const;
     // std::vector<std::unique_ptr<Player>> players;
     // int currentPlayer;
     // Dice dice;
@@ -25,7 +23,12 @@ class Board {
         // void addPlayer(std::string name);
         void initBuilding(std::string name, Player* owner, int upgrades);
         Square *getSquare(std::string name);
+        Square *getSquare(int buildingCode);
         void getOwnedSquares(Player* owner, std::vector<Square *>& dest) const;
+        bool isOwnable(int buildingCode);
+        bool isAcademic(int buildingCode);
+        bool isGym(int buildingCode);
+        bool isResidence(int buildingCode);
 };
 
 #endif

@@ -112,11 +112,17 @@ bool Board::isType(string type, int buildingCode) {
     return find(toSearch.begin(), toSearch.end(), buildingCode) != toSearch.end();
 }
 
+bool Board::isGym(int buildingCode) { return isType("Gyms", buildingCode); }
+
+bool Board::isResidence(int buildingCode) { return isType("Residence", buildingCode); }
+
 bool Board::isAcademic(int buildingCode) {
     return isType("Arts1", buildingCode) || isType("Arts2", buildingCode) || isType("Eng", buildingCode) || 
             isType("Health", buildingCode) || isType("Env", buildingCode) || isType("Sci1", buildingCode) || 
             isType("Sci2", buildingCode) || isType("Math", buildingCode);
 }
+
+bool Board::isOwnable(int buildingCode) {return isAcademic(buildingCode) || isType("Gyms", buildingCode) || isType("Residence", buildingCode); } 
 
 void Board::initBuilding(std::string name, Player* owner, int upgrades) {
     if (nameToIndex.count(name) == 0) return;
@@ -141,6 +147,8 @@ void Board::initBuilding(std::string name, Player* owner, int upgrades) {
 Square *Board::getSquare(string name) {
     return squares[nameToIndex[name]].get();
 }
+
+Square *Board::getSquare(int buildingCode) {return squares[buildingCode].get(); } 
 
 void Board::getOwnedSquares(Player* owner, vector<Square *>& dest) const {
     for (int i = 0; i < squares.size(); ++i) if (squares[i].get()->getOwner() == owner) dest.push_back(squares[i].get());
