@@ -31,6 +31,7 @@ class Game {
         void play();
         void initPlayers();
         void setPlayers(int pCount);
+        void transaction(Player *trader, std::string to_trade, std::string to_get, int playerTurn);
 
     friend std::ostream &operator<<(std::ostream &out, Game &game);    
 };

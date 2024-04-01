@@ -23,7 +23,7 @@ public:
     int getUpgradeLevel() const;
     std::string getName() const;
     bool isBought() const;
-    bool isMortgaged() const;
+    virtual bool isMortgaged() const override;
     int getRent() const;
     virtual Player *getOwner() const override;
 
@@ -32,7 +32,7 @@ public:
     void buy(Player *p); // buying
     void payRent(Player *payer);
 
-    void setOwner(Player *p);
+    virtual void setOwner(Player *p) override;
     void setMortgaged();
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };

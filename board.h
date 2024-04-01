@@ -24,6 +24,7 @@ class Board {
         void initBuilding(std::string name, Player* owner, int upgrades);
         Square *getSquare(std::string name);
         Square *getSquare(int buildingCode);
+        int getIndex(std::string name);
         void getOwnedSquares(Player* owner, std::vector<Square *>& dest) const;
         bool isOwnable(int buildingCode);
         bool isAcademic(int buildingCode);
