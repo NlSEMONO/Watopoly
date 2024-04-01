@@ -19,7 +19,7 @@ public:
   Player(std::string name, char chr, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition);
   int movePlayer(int diceRoll);
   bool canAfford(int propertyPrice);
-  void changeCash(int value, bool increase);
+  void changeCash(int value, bool increase = true);
   // void addProperty(Square * s);
 
   //Getters
