@@ -122,8 +122,6 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
 
         // changing property
         if (b.isAcademic(b.getIndex(to_get))) {
-            Academic *building = dynamic_cast<Academic *>(b.getSquare(to_get));
-            building->setOwner(players[playerTurn].get());
         } else if (b.isGym(b.getIndex(to_get))) {
             Gym *gym = dynamic_cast<Gym *>(b.getSquare(to_get));
             gym->setOwner(players[playerTurn].get());
@@ -139,7 +137,6 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
 
         // changing property
         if (b.isAcademic(b.getIndex(to_trade))) {
-            Academic *building = dynamic_cast<Academic *>(b.getSquare(to_trade));
             building->setOwner(trader);
         } else if (b.isGym(b.getIndex(to_trade))) {
             Gym *gym = dynamic_cast<Gym *>(b.getSquare(to_get));
