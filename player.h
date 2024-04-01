@@ -9,7 +9,7 @@ class Square;
 
 class Player {
   std::string name;
-  char chr;
+  char symbol;
   int liquidCash;
   int mortageValue;
   int totalAssetsValue;
@@ -29,6 +29,7 @@ public:
   int getTotalAssetsValue() const;
   int getPlayerPostion() const;
   const std::vector<Square*> &getPlayerProperties() const;
+  char getSymbol() const;
 
   //Setters
   void setPlayerName(std::string name);

@@ -18,6 +18,7 @@ class Square {
         virtual Player* getOwner() const;
         std::string getName() const;
         virtual ~Square() = 0;
+        std::string printPlayers();
 };
 
 #endif

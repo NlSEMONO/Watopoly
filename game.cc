@@ -244,7 +244,20 @@ const string empty_middle_section = string((8 * 9) - 1, ' ') + divider;
 const string blank_middle_section = divider + empty_block + empty_middle_section + empty_block;
 const string middle_block_bottom = divider + block_bottom + empty_middle_section + block_bottom;
 const string middle_academic_border = divider + academic_border + empty_middle_section + academic_border;
-const string wat_surround = string(12, ' ') + divider;
+const string wat_surround = string(12, ' ');
+
+// Watopoly Strings
+const string wat_1 = " #   #  ##  #####";
+const string wat_2 = "  ###  ###   ###  #   #   # |";
+const string wat_3 = " #   # #  #   #   #   # #  #";
+const string wat_4 = " #   # #   #   # |";
+const string wat_5 = " # # # ####   #   #   # ###  #";
+const string wat_6 = "   # #    # #  |";
+const string wat_7 = " # # # #  #   #   #   # #";
+const string wat_8 = "    #   # #     #   |";
+const string wat_9 = " ##### #  #   #    ###  #";
+const string wat_10 = "     ###  ## #  #   |";
+
 
 ostream &operator<<(ostream &out, Game &game) {
     out << string(8 * 11, '_') << endl; // top border
@@ -266,11 +279,19 @@ ostream &operator<<(ostream &out, Game &game) {
     out << "EV3" << four_empty << empty_block << "PHYS" << three_empty << "B1" << five_empty;
     out << empty_block << "B1" << five_empty << empty_block << endl;
 
-    // printing the fourth row of board
+    // printing the fourth row of board (Players per board)
     out << divider;
-    for (int j = 0; j < 11; ++j) {
-        out << empty_block;
-    }
+    out << game.b.getSquare("Goose Nesting")->printPlayers();
+    out << game.b.getSquare("EV1")->printPlayers();
+    out << game.b.getSquare("NEEDLES HALL2")->printPlayers();
+    out << game.b.getSquare("EV2")->printPlayers();
+    out << game.b.getSquare("EV3")->printPlayers();
+    out << game.b.getSquare("V1")->printPlayers();
+    out << game.b.getSquare("PHYS")->printPlayers();
+    out << game.b.getSquare("B1")->printPlayers();
+    out << game.b.getSquare("CIF")->printPlayers();
+    out << game.b.getSquare("B2")->printPlayers();
+    out << game.b.getSquare("GO TO TIMS")->printPlayers();
     out << endl;
 
     // printing bottom of top row
@@ -285,74 +306,84 @@ ostream &operator<<(ostream &out, Game &game) {
     out << blank_middle_section << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
     out << divider << "OPT" << four_empty << empty_middle_section << "EIT" << four_empty << endl; // block_row3
-    out << blank_middle_section << endl; // block_row4
+    out << divider << game.b.getSquare("OPT")->printPlayers() << empty_middle_section; // block_row4
+    out << game.b.getSquare("EIT")->printPlayers() << endl;
     out << middle_block_bottom << endl; // block_row5
 
     // third row of blocks
     out << blank_middle_section << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
-    out << divider << "BMH" << four_empty << empty_middle_section << "EIT" << four_empty << endl; // block_row3
-    out << blank_middle_section << endl; // block_row4
+    out << divider << "BMH" << four_empty << empty_middle_section << "ESC" << four_empty << endl; // block_row3
+    out << divider << game.b.getSquare("BMH")->printPlayers() << empty_middle_section; // block_row4
+    out << game.b.getSquare("ESC")->printPlayers() << endl;
     out << middle_block_bottom << endl; // block_row5
 
     // fourth row of blocks
-    out << divider << "SLC" << four_empty << empty_middle_section << "SLC" << four_empty << endl;
-    for (int i = 0; i < 3; ++i) {
+    out << divider << "SLC" << four_empty << empty_middle_section << "SLC" << four_empty << endl; // block_row1
+    for (int i = 0; i < 2; ++i) {
         // printing the empty section in the middle
         out << blank_middle_section << endl;
     }
-    out << middle_block_bottom;
+
+    out << divider << game.b.getSquare("SLC2")->printPlayers() << empty_middle_section; // block_row4
+    out << game.b.getSquare("SLC3")->printPlayers() << endl;
+    out << middle_block_bottom << endl; // block_row5
 
 
     // fifth row of blocks
     out << blank_middle_section << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
     out << divider << "LHI" << four_empty << empty_middle_section << "C2" << five_empty << endl; // block_row3
-    out << divider << empty_block << wat_surround << string(45, '_'); // block_row4
-    out << " " << wat_surround << empty_block << endl;
-    out << divider << empty_block << wat_surround << string(45, '_') << divider;
-    out << wat_surround << block_bottom << endl;
+    out << divider << game.b.getSquare("LHI")->printPlayers() << wat_surround << " " << string(45, '_'); // block_row4
+    out << " " << wat_surround + divider << game.b.getSquare("C2")->printPlayers() << endl;
+    out << divider << block_bottom << wat_surround + divider << string(45, '_') << divider; // block_row5
+    out << wat_surround + divider << block_bottom << endl;
+
 
     // sixth row of blocks
-    out << divider << "UWP" << four_empty << wat_surround << " #   #  ##  #####"; // block_row1
-    out << "  ###  ###   ###  #   #   # |" << wat_surround << "REV" << four_empty << endl;
-    out << divider << empty_block << wat_surround << " #   # #  #   #   #   # #  #"; // block_row2
-    out << " #   # #   #   # |" << wat_surround << empty_block << endl;
-    out << divider << empty_block << wat_surround << " # # # ####   #   #   # ###  #"; // block_row3
-    out << "   # #    # #  |" << wat_surround << empty_block << endl;
-    out << divider << empty_block << wat_surround << " # # # #  #   #   #   # #"; // block_row4
-    out << "    #   # #     #   |" << wat_surround << empty_block << endl;
-    out << divider << block_bottom << wat_surround << " ##### #  #   #    ###  #"; // block_row5
-    out << "     ###  ## #  #   |" << wat_surround << block_bottom << endl;
+    out << divider << "UWP" << four_empty << wat_surround + divider << wat_1; // block_row1
+    out << wat_2 << wat_surround + divider << "REV" << four_empty << endl;
+    out << divider << empty_block << wat_surround + divider << wat_3; // block_row2
+    out << wat_4 << wat_surround + divider << empty_block << endl;
+    out << divider << empty_block << wat_surround + divider << wat_5; // block_row3
+    out << wat_6 << wat_surround + divider << empty_block << endl;
+    out << divider << game.b.getSquare("UWP")->printPlayers() << wat_surround + divider << wat_7; // block_row4
+    out << wat_8 << wat_surround + divider << game.b.getSquare("REV")->printPlayers() << endl;
+    out << divider << block_bottom << wat_surround + divider << wat_9; // block_row5
+    out << wat_10 << wat_surround + divider << block_bottom << endl;
 
     // seventh row of blocks
-    out << divider << empty_block << wat_surround << string(45, '_') << divider; // block_row1
-    out << wat_surround << "NEEDLES" << divider << endl;
+    out << divider << empty_block << wat_surround + divider << string(45, '_') << divider; // block_row1
+    out << wat_surround + divider << "NEEDLES" << divider << endl;
     out << divider << academic_border << empty_middle_section << "HALL" << three_empty << endl; // block_row2
     out << divider << "CPH" << four_empty << empty_middle_section << empty_block << endl; // block_row3
-    out << blank_middle_section << endl; // block_row4
+    out << divider << game.b.getSquare("CPH")->printPlayers() << empty_middle_section; // block_row4
+    out << game.b.getSquare("NEEDLES HALL3")->printPlayers() << endl;
     out << middle_block_bottom << endl; // block_row5
 
     // eighth row of blocks
     out << blank_middle_section << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
-    out << divider << "DWE" << four_empty << empty_middle_section << "MC" << five_empty << endl; // block_row3 
-    out << blank_middle_section << endl; // block_row4
+    out << divider << "DWE" << four_empty << empty_middle_section << "MC" << five_empty << endl; // block_row3
+    out << divider << game.b.getSquare("DWE")->printPlayers() << empty_middle_section; // block_row4
+    out << game.b.getSquare("MC")->printPlayers() << endl; 
     out << middle_block_bottom << endl; // block_row5
 
     // ninth row of blocks
     out << divider << "PAC" << four_empty << empty_middle_section << "COOP" << three_empty << endl; // block_row1
-    out << divider << empty_block << empty_middle_section << "FEE" << four_empty << endl;
-    out << blank_middle_section << endl;
-    out << blank_middle_section << endl;
-    out << middle_block_bottom << endl;
+    out << divider << empty_block << empty_middle_section << "FEE" << four_empty << endl; // block_row2
+    out << blank_middle_section << endl; // block_row3
+    out << divider << game.b.getSquare("PAC")->printPlayers() << empty_middle_section; // block_row4
+    out << game.b.getSquare("COOP FEE")->printPlayers() << endl; 
+    out << middle_block_bottom << endl; // block_row5
 
     // tenth row of blocks
-    out << blank_middle_section << endl;
-    out << middle_academic_border << endl;
-    out << divider << "RCH" << four_empty << empty_middle_section << "DC" << five_empty << endl;
-    out << blank_middle_section << endl;
-    out << divider << block_bottom << string(9 * (sqr_len + 1) - 1, '_') << divider << block_bottom << endl;
+    out << blank_middle_section << endl; // block_row1
+    out << middle_academic_border << endl; // block_row2
+    out << divider << "RCH" << four_empty << empty_middle_section << "DC" << five_empty << endl; // block_row3
+    out << divider << game.b.getSquare("RCH")->printPlayers() << empty_middle_section; // block_row4
+    out << game.b.getSquare("DC")->printPlayers() << endl; 
+    out << divider << block_bottom << string(9 * (sqr_len + 1) - 1, '_') << divider << block_bottom << endl; // block_row5
 
     // last row of blocks
     out << divider << "DC TIMS|" << empty_block << empty_block << "NEEDLES" << divider; // row_1
@@ -367,10 +398,19 @@ ostream &operator<<(ostream &out, Game &game) {
     out << "ECH" << four_empty << empty_block << empty_block << "ML" << five_empty;
     out << empty_block << "AL" << five_empty << empty_block << endl;
 
-    out << divider; // row_4
-    for (int i = 0; i < 11; ++i) {
-        out << empty_block;
-    }
+    // printing row4
+    out << divider;
+    out << game.b.getSquare("DC Tims Line")->printPlayers();
+    out << game.b.getSquare("HH")->printPlayers();
+    out << game.b.getSquare("PAS")->printPlayers();
+    out << game.b.getSquare("NEEDLESHALL1")->printPlayers();
+    out << game.b.getSquare("ECH")->printPlayers();
+    out << game.b.getSquare("MKV")->printPlayers();
+    out << game.b.getSquare("TUITION")->printPlayers();
+    out << game.b.getSquare("ML")->printPlayers();
+    out << game.b.getSquare("SLC1")->printPlayers();
+    out << game.b.getSquare("AL")->printPlayers();
+    out << game.b.getSquare("COLLECT OSAP")->printPlayers();
     out << endl;
 
     out << divider;
