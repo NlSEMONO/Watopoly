@@ -133,3 +133,7 @@ void Board::initBuilding(std::string name, Player* owner, int upgrades) {
         else toChange.setMortgaged();
     }
 }
+
+Square *Board::getSquare(string name) {
+    return squares[nameToIndex[name]].get();
+}

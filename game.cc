@@ -150,6 +150,10 @@ void Game::play() {
                     iss2 >> response;
 
                     if (response == "accept") {
+                        trade_from->changeCash(money_given, true);
+                        players[playerTurn]->changeCash(money_given, false);
+                        b.getSquare(to_get)->addPlayer(players[playerTurn].get());
+                        b.getSquare(to_get)->removePlayer(trade_from);
                         // accept
                     } else {
                         break;
@@ -162,6 +166,10 @@ void Game::play() {
                     iss2 >> response;
 
                     if (response == "accept") {
+                        trade_from->changeCash(money_recieved, false);
+                        players[playerTurn]->changeCash(money_recieved, true);
+                        b.getSquare(to_give)->addPlayer(trade_from);
+                        b.getSquare(to_give)->removePlayer(players[playerTurn].get());
                         // accept
                     } else {
                         break;
@@ -172,6 +180,11 @@ void Game::play() {
                 iss2 >> response;
 
                 if (response == "accept") {
+                    b.getSquare(to_give)->addPlayer(trade_from);
+                    b.getSquare(to_give)->removePlayer(players[playerTurn].get());
+
+                    b.getSquare(to_get)->addPlayer(players[playerTurn].get());
+                    b.getSquare(to_get)->removePlayer(trade_from);
                     // accept
                 } else {
                     break;

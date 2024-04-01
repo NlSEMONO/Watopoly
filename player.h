@@ -14,7 +14,6 @@ class Player {
   int mortageValue;
   int totalAssetsValue;
   int playerPosition;
-  std::vector<Square*> ownedProperties;
 
 public:
   Player(std::string name, char chr, int liquidCash, int mortageValue, int totalAssetsValue, int playerPosition);

@@ -22,6 +22,7 @@ class Board {
         // void makeMove(Player *p);
         // void addPlayer(std::string name);
         void initBuilding(std::string name, Player* owner, int upgrades);
+        Square *getSquare(std::string name);
 };
 
 #endif
