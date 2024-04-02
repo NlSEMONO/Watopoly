@@ -508,13 +508,38 @@ const string wat_10 = "     ###  ## #  #   |";
 
 
 ostream &operator<<(ostream &out, Game &game) {
+
+    // dynamically casted blocks
+    Academic *EV1 = dynamic_cast<Academic *>(game.b.getSquare("EV1"));
+    Academic *EV2 = dynamic_cast<Academic *>(game.b.getSquare("EV2"));
+    Academic *EV3 = dynamic_cast<Academic *>(game.b.getSquare("EV3"));
+    Academic *PHYS = dynamic_cast<Academic *>(game.b.getSquare("PHYS"));
+    Academic *B1 = dynamic_cast<Academic *>(game.b.getSquare("B1"));
+    Academic *B2 = dynamic_cast<Academic *>(game.b.getSquare("B2"));
+    Academic *OPT = dynamic_cast<Academic *>(game.b.getSquare("OPT"));
+    Academic *EIT = dynamic_cast<Academic *>(game.b.getSquare("EIT"));
+    Academic *BMH = dynamic_cast<Academic *>(game.b.getSquare("BMH"));
+    Academic *ESC = dynamic_cast<Academic *>(game.b.getSquare("ESC"));
+    Academic *LHI = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *C2 = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *CPH = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *DWE = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *MC = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *RCH = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *DC = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *HH = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *PAS = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *ECH = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *ML = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *AL = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    
     out << string(8 * 11, '_') << endl; // top border
 
     // first row of blocks 
     // printing the first row of board
-    out << "|Goose  |" << empty_block << "NEEDLES|" << empty_block;
-    out << empty_block << "V1" << five_empty << empty_block;
-    out << empty_block << "CIF" << four_empty << empty_block;
+    out << "|Goose  |" << EV1->printImprovements() << "NEEDLES|" << EV2->printImprovements();
+    out << EV3->printImprovements() << "V1" << five_empty << PHYS->printImprovements();
+    out << B1->printImprovements() << "CIF" << four_empty << B2->printImprovements();
     out << "GO TO  |" << endl;
 
     // printing the second row of board
@@ -551,7 +576,7 @@ ostream &operator<<(ostream &out, Game &game) {
 
 
     // second row of blocks
-    out << blank_middle_section << endl; // block_row1
+    out << divider << OPT->printImprovements() << empty_middle_section << EIT->printImprovements() << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
     out << divider << "OPT" << four_empty << empty_middle_section << "EIT" << four_empty << endl; // block_row3
     out << divider << game.b.getSquare("OPT")->printPlayers() << empty_middle_section; // block_row4
@@ -559,7 +584,7 @@ ostream &operator<<(ostream &out, Game &game) {
     out << middle_block_bottom << endl; // block_row5
 
     // third row of blocks
-    out << blank_middle_section << endl; // block_row1
+    out << divider << BMH->printImprovements() << empty_middle_section << ESC->printImprovements() << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
     out << divider << "BMH" << four_empty << empty_middle_section << "ESC" << four_empty << endl; // block_row3
     out << divider << game.b.getSquare("BMH")->printPlayers() << empty_middle_section; // block_row4
@@ -579,7 +604,7 @@ ostream &operator<<(ostream &out, Game &game) {
 
 
     // fifth row of blocks
-    out << blank_middle_section << endl; // block_row1
+    out << divider << LHI->printImprovements() << empty_middle_section << C2->printImprovements() << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
     out << divider << "LHI" << four_empty << empty_middle_section << "C2" << five_empty << endl; // block_row3
     out << divider << game.b.getSquare("LHI")->printPlayers() << wat_surround << " " << string(45, '_'); // block_row4
@@ -601,7 +626,7 @@ ostream &operator<<(ostream &out, Game &game) {
     out << wat_10 << wat_surround + divider << block_bottom << endl;
 
     // seventh row of blocks
-    out << divider << empty_block << wat_surround + divider << string(45, '_') << divider; // block_row1
+    out << divider << CPH->printImprovements() << wat_surround + divider << string(45, '_') << divider; // block_row1
     out << wat_surround + divider << "NEEDLES" << divider << endl;
     out << divider << academic_border << empty_middle_section << "HALL" << three_empty << endl; // block_row2
     out << divider << "CPH" << four_empty << empty_middle_section << empty_block << endl; // block_row3
@@ -610,7 +635,7 @@ ostream &operator<<(ostream &out, Game &game) {
     out << middle_block_bottom << endl; // block_row5
 
     // eighth row of blocks
-    out << blank_middle_section << endl; // block_row1
+    out << divider << DWE->printImprovements() << empty_middle_section << MC->printImprovements() << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
     out << divider << "DWE" << four_empty << empty_middle_section << "MC" << five_empty << endl; // block_row3
     out << divider << game.b.getSquare("DWE")->printPlayers() << empty_middle_section; // block_row4
@@ -626,7 +651,7 @@ ostream &operator<<(ostream &out, Game &game) {
     out << middle_block_bottom << endl; // block_row5
 
     // tenth row of blocks
-    out << blank_middle_section << endl; // block_row1
+    out << divider << RCH->printImprovements() << empty_middle_section << DC->printImprovements() << endl; // block_row1
     out << middle_academic_border << endl; // block_row2
     out << divider << "RCH" << four_empty << empty_middle_section << "DC" << five_empty << endl; // block_row3
     out << divider << game.b.getSquare("RCH")->printPlayers() << empty_middle_section; // block_row4
@@ -634,9 +659,9 @@ ostream &operator<<(ostream &out, Game &game) {
     out << divider << block_bottom << string(9 * (sqr_len + 1) - 1, '_') << divider << block_bottom << endl; // block_row5
 
     // last row of blocks
-    out << divider << "DC TIMS|" << empty_block << empty_block << "NEEDLES" << divider; // row_1
-    out << empty_block << "MKV" << four_empty << "TUITION" << divider << empty_block;
-    out << "SLC" << four_empty << empty_block << "COLLECT" << divider << endl;
+    out << divider << "DC TIMS|" << HH->printImprovements() << PAS->printImprovements() << "NEEDLES" << divider; // row_1
+    out << ECH->printImprovements() << "MKV" << four_empty << "TUITION" << divider << ML->printImprovements();
+    out << "SLC" << four_empty << AL->printImprovements() << "COLLECT" << divider << endl;
 
     out << divider << "Line" << three_empty << academic_border << academic_border << "HALL" << three_empty; // row_2
     out << academic_border << empty_block << empty_block << academic_border << empty_block;

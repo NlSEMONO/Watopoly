@@ -70,6 +70,14 @@ void Academic::payRent(Player *payer, bool monopoly_Owned) {
     }
 }
 
+string Academic::printImprovements() const {
+    string tmp = "";
+    tmp += string("I", upgrade_level);
+    tmp += string(" ", 7 - upgrade_level);
+    tmp += "|";
+    return tmp;
+}
+
 void Academic::setOwner(Player* p) {owner = p; } 
 
 void Academic::setUpgrades(int u) { upgrade_level = u; }

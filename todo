@@ -6,3 +6,4 @@
 + fix mortgage method for academic, required to sell all upgrades on mortgage //done see Academic::Mortgage
 + fix how residence/gym pay rent works (don't use upgrade to increment them anymore, just make them take amt owned by value)
 + getter for rent, based on diceroll + owned for gym, based on owned for residence
++ method to print improvements
