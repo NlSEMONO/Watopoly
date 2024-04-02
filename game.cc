@@ -19,7 +19,7 @@ void Game::loadFile(istream& in) {
     string line;
 
     // load players 
-    for (size_t i = 0; i < playerCount; ++i) {
+    for (int i = 0; i < playerCount; ++i) {
         getline(in, line);
         istringstream iss{line};
         string name = "";

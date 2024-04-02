@@ -71,8 +71,8 @@ void Academic::payRent(Player *payer, bool monopoly_Owned) {
 
 string Academic::printImprovements() const {
     string tmp = "";
-    tmp += string("I", upgrade_level);
-    tmp += string(" ", 7 - upgrade_level);
+    tmp += string(upgrade_level, 'I');
+    tmp += string(7 - upgrade_level, ' ');
     tmp += "|";
     return tmp;
 }
