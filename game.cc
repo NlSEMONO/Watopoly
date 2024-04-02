@@ -502,7 +502,37 @@ void Game::play() {
                 } else cerr << "You don't own this property!" << endl;
             } else cerr << "You can't upgrade this property." << endl;
         } else if (cmd == "mortgage"){
-            
+            Player* curr = players[playerTurn].get();
+            int pos = curr->getPlayerPostion();
+            string propertyName;
+            iss2 >> propertyName;
+            if ((b.isAcademic(pos)) || (b.isGym(pos)) || (b.isResidence(pos))) {
+                Square* sq = nullptr;
+                if (b.isAcademic(pos)){
+                    Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
+                } else if (b.isGym(pos)){
+                    Gym* sq = dynamic_cast<Gym*>(b.getSquare(pos));
+                } else {
+                    Residence *sq = dynamic_cast<Residence*>(b.getSquare(pos));
+                }
+
+                if (sq->getOwner() == curr) {
+                    if (!(sq->isMortgaged())){
+                        sq->setMortgage(true);
+                        int moneyFromMortgage = sq->
+                        moneyOwed -= 
+                        sq->getOwner()->setLiquidCash();
+                    } else {
+                        cerr << "This property is already mortgaged!" << endl;
+                    }
+                } else {
+                    cerr << "You don't own this property!" << endl;
+                }
+            } else {
+                cerr << "You can't mortgage this property." << endl;
+            }
+
+
         } else if (cmd == "unmortgage"){
             
         } else if (cmd == "bankrupt"){

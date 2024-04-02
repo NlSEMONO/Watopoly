@@ -38,4 +38,4 @@ void Residence::payRent(Player *payer, int residencesOwned){
 
 void Residence::setOwner(Player* p) {owner = p; }
 
-void Residence::setMortgaged() {mortgaged = true; }
+void Residence::setMortgage(bool mortgage) {mortgaged = mortgage; }

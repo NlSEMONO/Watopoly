@@ -82,4 +82,4 @@ void Academic::setOwner(Player* p) {owner = p; }
 
 void Academic::setUpgrades(int u) { upgrade_level = u; }
 
-void Academic::setMortgaged() {mortgaged = true; }
+void Academic::setMortgage(bool mortgage) {mortgaged = mortgage; }

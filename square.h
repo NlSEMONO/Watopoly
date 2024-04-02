@@ -20,6 +20,7 @@ class Square {
         virtual ~Square() = 0;
         std::string printPlayers();
         virtual void setOwner(Player *player);
+        virtual void setMortgage(bool mortgage);
         virtual bool isMortgaged() const;
         virtual void buy(Player* p);
         virtual int getCost() const;

@@ -31,7 +31,7 @@ public:
     void payRent(Player *payer, int residencesOwned);
 
     virtual void setOwner(Player *p) override;
-    void setMortgaged();
+    virtual void setMortgage(bool mortagage) override;
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };
 

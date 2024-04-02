@@ -40,7 +40,7 @@ class Academic: public Square {
 
     virtual void setOwner(Player *p) override;
     void setUpgrades(int u);
-    void setMortgaged();
+    virtual void setMortgage(bool mortgage) override;
     std::string printImprovements() const;
 
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
