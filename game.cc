@@ -120,38 +120,19 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
         players[playerTurn]->changeCash(money_traded, false);
         trader->changeCash(money_traded, true);
 
-        b.getSquare(to_get)->setOwner(players[playerTurn].get());
-
         // changing property
-        if (b.isAcademic(b.getIndex(to_get))) {
-        } else if (b.isGym(b.getIndex(to_get))) {
-            Gym *gym = dynamic_cast<Gym *>(b.getSquare(to_get));
-            gym->setOwner(players[playerTurn].get());
-        } else {
-            Residence *res = dynamic_cast<Residence *>(b.getSquare(to_get));
-            res->setOwner(players[playerTurn].get());
-        }
+        b.getSquare(to_get)->setOwner(players[playerTurn].get());
     } else if (isdigit(to_get[0])) {
         // changing money
         int money_recieved = stoi(to_get);
         players[playerTurn]->changeCash(money_recieved, true);
         trader->changeCash(money_recieved, false);
-
         // changing property
-        if (b.isAcademic(b.getIndex(to_trade))) {
-            building->setOwner(trader);
-        } else if (b.isGym(b.getIndex(to_trade))) {
-            Gym *gym = dynamic_cast<Gym *>(b.getSquare(to_get));
-            gym->setOwner(trader);
-        } else {
-            Residence *res = dynamic_cast<Residence *>(b.getSquare(to_get));
-            res->setOwner(trader);
-        }
+        b.getSquare(to_trade)->setOwner(trader);
+
     } else {
-        if (b.isAcademic(b.getIndex(to_get))) {
-            Academic *building = dynamic_cast<Academic *>(b.getSquare(to_get));
-            if (b.isAcademic())
-        }
+        b.getSquare(to_get)->setOwner(players[playerTurn].get());
+        b.getSquare(to_trade)->setOwner(trader);
     }
 }
 
@@ -194,11 +175,7 @@ void Game::play() {
                     cin >> response;
 
                     if (response == "accept") {
-                        trade_from->changeCash(money_given, true);
-                        players[playerTurn]->changeCash(money_given, false);
-                        b.getSquare(to_get)->addPlayer(players[playerTurn].get());
-                        b.getSquare(to_get)->removePlayer(trade_from);
-                        // accept
+                        transaction(trade_from, to_give, to_get, playerTurn);
                     } else {
                         break;
                     }
@@ -210,10 +187,7 @@ void Game::play() {
                     cin >> response;
 
                     if (response == "accept") {
-                        trade_from->changeCash(money_recieved, false);
-                        players[playerTurn]->changeCash(money_recieved, true);
-                        b.getSquare(to_give)->addPlayer(trade_from);
-                        b.getSquare(to_give)->removePlayer(players[playerTurn].get());
+                        transaction(trade_from, to_give, to_get, playerTurn);
                         // accept
                     } else {
                         break;
@@ -224,11 +198,7 @@ void Game::play() {
                 iss2 >> response;
 
                 if (response == "accept") {
-                    b.getSquare(to_give)->addPlayer(trade_from);
-                    b.getSquare(to_give)->removePlayer(players[playerTurn].get());
-
-                    b.getSquare(to_get)->addPlayer(players[playerTurn].get());
-                    b.getSquare(to_get)->removePlayer(trade_from);
+                    transaction(trade_from, to_give, to_get, playerTurn);
                     // accept
                 } else {
                     break;
