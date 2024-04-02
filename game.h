@@ -16,6 +16,8 @@ class Game {
     std::vector<std::unique_ptr<Player>> players;
     std::map<Player *, int> jailedTurns;
     std::map<Player *, int> numCups;
+    std::map<Player*, int> residenceOwned;
+    std::map<Player*, int> gymsOwned;
     SLCRng rngSLC;
     NeedlesRng rngNH;
     int cupsDistributed;
@@ -25,6 +27,11 @@ class Game {
     Board b;
 
     std::vector<Square*>& getAssets(Player* p) const;
+    int handleMove(Player* p, int rollSum);
+    void sendToJail(Player* p);
+    int handleOwnable(Player* p, int newPos, int rollSum);
+    int handleSLC(Player* p);
+    int handleNeedles(Player* p);
 
     public:
         void loadFile(std::istream& in);
