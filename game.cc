@@ -174,6 +174,8 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
             if (b.isGym(newPos)) gymsOwned[p]++;
             else if (b.isResidence(newPos)) residenceOwned[p]++;
             return processOwed(p, "the bank");
+        } else {
+            return -1;
         }
     }
     // owned property
@@ -291,7 +293,9 @@ int Game::handleMove(Player* p, int rollSum) {
     p->setPlayerPostion(newPos);
 
     if (b.isOwnable(newPos)) { // academic/residence/gym
-        return handleOwnable(p, newPos, rollSum);
+        int owed = handleOwnable(p, newPos, rollSum);
+        if (owed == -1) return handleAuction();
+        return owed;
     } else if (b.isSLC(newPos)) { // SLC square
         return handleSLC(p);
     } else if (b.isNeedles(newPos)) { // Needles Hall square
