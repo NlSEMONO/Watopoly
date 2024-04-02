@@ -8,7 +8,6 @@
 class Gym: public Square {
     Player *owner = nullptr;
     int purchase_cost;
-    int gymsOwned = 0;
     bool bought = false;
     bool mortgaged = false;
 
@@ -24,11 +23,10 @@ class Gym: public Square {
     int getRent(int gymsOwned, int diceRoll) const;
     virtual bool isMortgaged() const override;
 
-    void upgrade(); // upgrading property
     void mortgage(); // mortgage
     void unmortgage(); // unmortgage
     void buy(Player *p) override; // buying
-    void payRent(Player *payer, int diceRoll) const;
+    void payRent(Player *payer, int gymsOwned, int diceRoll) const;
 
     virtual void setOwner(Player* p) override;
     void setMortgaged();

@@ -8,6 +8,7 @@
 #include "residence.h"
 #include "goosenest.h"
 #include <stdexcept>
+#include <iostream>
 using namespace std;
 
 const int BOARD_SIZE = 40;

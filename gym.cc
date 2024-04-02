@@ -13,7 +13,6 @@ Gym::Gym(std::string name, int purchase_cost): Square{name}, purchase_cost{purch
 string Gym::getName() const {return name;}
 Player *Gym::getOwner() const {return owner;}
 int Gym::getCost() const {return purchase_cost;}
-int Gym::getGymsOwned() const {return gymsOwned;}
 bool Gym::isBought() const {return bought;}
 bool Gym::isMortgaged() const {return mortgaged;}
 int Gym::getRent(int gymsOwned, int diceRoll) const {
@@ -24,9 +23,6 @@ int Gym::getRent(int gymsOwned, int diceRoll) const {
     }
 }
 
-void Gym::upgrade() {
-    gymsOwned++;    
-} 
 
 // mortgageProperty
 void Gym::mortgage() {
@@ -41,7 +37,6 @@ void Gym::unmortgage() {
 
 //buyProperty
 void Gym::buy(Player *p) {
-    gymsOwned = 1;
     p->changeCash(purchase_cost, false); 
     // p->addProperty(this);
     owner = p;
@@ -49,7 +44,7 @@ void Gym::buy(Player *p) {
 }
 
 // payRent
-void Gym::payRent(Player *payer, int diceRoll) const {
+void Gym::payRent(Player *payer, int gymsOwned, int diceRoll) const {
     owner->changeCash(getRent(gymsOwned, diceRoll), true);
     payer->changeCash(getRent(gymsOwned, diceRoll), false);
 }

@@ -10,15 +10,13 @@ Residence::Residence(string name, int purchase_cost, std::vector<int> rentMoney)
 
 string Residence::getName() const {return name;}
 int Residence::getCost() const {return purchase_cost;}
-int Residence::getUpgradeLevel() const {return residences_owned;}
 bool Residence::isBought() const {return bought;}
 bool Residence::isMortgaged() const {return mortgaged;}
-int Residence::getRent() const {return rentMoney[residences_owned];}
+int Residence::getRent(int residencesOwned) const {return rentMoney[residencesOwned];}
 Player *Residence::getOwner() const {return owner;}
 
 void Residence::upgrade(){
     owner->changeCash(purchase_cost, false);
-    residences_owned++;
 }
 
 void Residence::mortgage(){
@@ -33,9 +31,9 @@ void Residence::buy(Player *p){
     bought = true;   
 }
 
-void Residence::payRent(Player *payer){
-    owner->changeCash(getRent(), true);
-    payer->changeCash(getRent(), false);
+void Residence::payRent(Player *payer, int residencesOwned){
+    owner->changeCash(getRent(residencesOwned), true);
+    payer->changeCash(getRent(residencesOwned), false);
 }
 
 void Residence::setOwner(Player* p) {owner = p; }
