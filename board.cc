@@ -156,10 +156,12 @@ void Board::saveProperties(ostream& out) {
         if (isOwnable(i)) {
             Square* curr = squares[i].get();
             out << curr->getName() << " " << (curr->getOwner() == nullptr ? "BANK" : curr->getOwner()->getPlayerName()) << " ";
-            if (isGym(i)) {
-                Gym* temp = dynamic_cast<Gym*>(curr);
-                temp->isMortgaged();
-            } 
+            if (curr->isMortgaged()) out << -1 << endl;
+            else if (isGym(i) || isResidence(i)) out << 0 << endl;
+            else {
+                Academic* temp = dynamic_cast<Academic*>(curr);
+                out << temp->getUpgradeLevel() << endl;
+            }
         }
     }
 }
