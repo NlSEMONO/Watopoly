@@ -546,14 +546,14 @@ void Game::play() {
             string propertyName;
             iss2 >> propertyName;
             if ((b.isAcademic(pos)) || (b.isGym(pos)) || (b.isResidence(pos))) {
-                Square* sq = nullptr;
-                if (b.isAcademic(pos)){
-                    Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
-                } else if (b.isGym(pos)){
-                    Gym* sq = dynamic_cast<Gym*>(b.getSquare(pos));
-                } else {
-                    Residence *sq = dynamic_cast<Residence*>(b.getSquare(pos));
-                }
+                Square* sq = b.getSquare(pos);
+                // if (b.isAcademic(pos)){
+                //     Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
+                // } else if (b.isGym(pos)){
+                //     Gym* sq = dynamic_cast<Gym*>(b.getSquare(pos));
+                // } else {
+                //     Residence *sq = dynamic_cast<Residence*>(b.getSquare(pos));
+                // }
 
                 if (sq->getOwner() == curr) {
                     if ((sq->isMortgaged())){
