@@ -36,10 +36,12 @@ void Game::loadFile(istream& in) {
             if (!(iss >> mode)) throw runtime_error{"Please provide whether jailed/not jailed."};
             // add player data into players
             players.push_back(unique_ptr<Player>(new Player{name, chr, money, 0, 0, position}));
-            numCups[players[i].get()] = cups;
+            Player* p = players[i].get();
+            numCups[p] = cups;
+            b.getSquare(0)->addPlayer(p);
             if (mode == 1) {
                 if (!(iss >> turns)) throw runtime_error{"Please specify # of turns in jail."};
-                jailedTurns[players[i].get()] = turns;
+                jailedTurns[p] = turns;
             }
         } else {
             players.push_back(unique_ptr<Player>(new Player{name, chr, money, 0, 0, position}));
@@ -74,6 +76,7 @@ void Game::initPlayers() {
         cnt = count(names.begin(), names.end(), nameOfPLayer);
         if (cin && cnt == 0){
           players.push_back(unique_ptr<Player>{new Player{nameOfPLayer, '\0', 1500, 0, 0, 0}});
+          b.getSquare(0)->addPlayer(players[i].get());
           i++;
           names.push_back(nameOfPLayer);
         } else {
@@ -206,6 +209,7 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
         string resp;
         std::cin >> resp;
         while (resp != "y" && resp != "n") {
+            cin.clear();
             cerr << "Invalid input, please enter again (y/n)." << endl;
             cin >> resp;
         }
@@ -325,12 +329,14 @@ int Game::handleNeedles(Player* p) {
 
 int Game::handleMove(Player* p, int rollSum) {
     int newPos = p->getPlayerPostion() + rollSum;
+    b.getSquare(p->getPlayerPostion())->removePlayer(p);
     if (newPos >= 40) {
         newPos %= 40;
         cout << "Collected OSAP." << endl;
         p->changeCash(200);
     }
     p->setPlayerPostion(newPos);
+    b.getSquare(newPos)->addPlayer(p);
 
     if (b.isOwnable(newPos)) { // academic/residence/gym
         return handleOwnable(p, newPos, rollSum);
@@ -343,11 +349,12 @@ int Game::handleMove(Player* p, int rollSum) {
         cout << "You landed on Goose Nesting. Collecting $" << gn->getAccumulated() << "." << endl;
         p->changeCash(gn->getAccumulated());
         gn->setAccumulated(0);
-    } else if (b.getIndex("Tuition") == newPos) { // tuition
+    } else if (b.getIndex("TUITION") == newPos) { // tuition
         cout << "Pay tuition. Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
         int opt = -1;
         cin >> opt;
         while (opt != 1 && opt != 2) {
+            cin.clear();
             cout << "Please enter 1 or 2" << endl;
             cin >> opt;
         }
@@ -381,8 +388,12 @@ void Game::play() {
     bool hasRolled = false;
     int snakeEyes = 0;
     bool jailMsg = false;
+    string prevCmd = "garbage value";
+    vector<string> printAgain = {"roll", "improve", "bankrupt", "garbage value"};
+    const auto pAgainEnd = printAgain.end();
 
     while(getline(cin, cmdWhole)){
+        if (find(printAgain.begin(), printAgain.end(), prevCmd) != pAgainEnd) cout << *this;
         istringstream iss2{cmdWhole};
         string cmd;
         iss2 >> cmd;
@@ -420,34 +431,34 @@ void Game::play() {
         cout << (moneyOwed > 0 ? "bankrupt" : "assets,all") << endl;
         // implement
         if (cmd == "roll"){
+            prevCmd = cmd;
             // b.makeMove(players[playerTurn].get());  
             int roll1 = dice.eventToInt(dice.generateEvent());
             int roll2 = dice.eventToInt(dice.generateEvent());
 
-            cout << "You rolled " << roll1 << " and " << roll2 << "." << endl;
-            if (jailedTurns.count(currPlayer) == 1) {
-                if (roll1 == roll2) {
+            if (!hasRolled) {
+                cout << "You rolled " << roll1 << " and " << roll2 << "." << endl;
+                if (roll1 == roll2 && jailedTurns.count(currPlayer) == 1) {
                     cout << "You rolled snake eyes and are now out of jail." << endl;
                     jailedTurns.erase(currPlayer);
-                }
-                else {
+                } else if (jailedTurns.count(currPlayer) == 1) {
                     cout << "You did not roll snake eyes, you are still in jail." << endl;
                     ++jailedTurns[currPlayer];
                 }
-                hasRolled = true;
-            } else if (!hasRolled) {
-                if (roll1 == roll2 && snakeEyes == 2) {
+                else if (roll1 == roll2 && snakeEyes == 2) {
                     cout << "3 snake eyes in a row, sending you to jail!" << endl;
                 } else if (roll1 == roll2) {
                     cout << "You rolled snake eyes and must roll again before ending your turn." << endl;
                     moneyOwed += handleMove(currPlayer, roll1 + roll2);
                     ++snakeEyes;
+                    continue;
                 } else {
                     moneyOwed += handleMove(currPlayer, roll1 + roll2);
-                    hasRolled = true;
                 }
+                hasRolled = true;
             } else cerr << "You've already rolled this turn." << endl;
         } else if (cmd == "next"){
+            prevCmd = cmd;
             if (!hasRolled) {
                 cerr << "You must roll before ending your turn!" << endl;
                 continue;
@@ -614,6 +625,7 @@ void Game::play() {
         // else {
         //     throw runtime_error{"Not a valid command"};
         // }
+        prevCmd = cmd;
     }
 }
 
@@ -660,17 +672,17 @@ ostream &operator<<(ostream &out, Game &game) {
     Academic *BMH = dynamic_cast<Academic *>(game.b.getSquare("BMH"));
     Academic *ESC = dynamic_cast<Academic *>(game.b.getSquare("ESC"));
     Academic *LHI = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *C2 = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *CPH = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *DWE = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *MC = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *RCH = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *DC = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *HH = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *PAS = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *ECH = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *ML = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
-    Academic *AL = dynamic_cast<Academic *>(game.b.getSquare("LHI"));
+    Academic *C2 = dynamic_cast<Academic *>(game.b.getSquare("C2"));
+    Academic *CPH = dynamic_cast<Academic *>(game.b.getSquare("CPH"));
+    Academic *DWE = dynamic_cast<Academic *>(game.b.getSquare("DWE"));
+    Academic *MC = dynamic_cast<Academic *>(game.b.getSquare("MC"));
+    Academic *RCH = dynamic_cast<Academic *>(game.b.getSquare("RCH"));
+    Academic *DC = dynamic_cast<Academic *>(game.b.getSquare("DC"));
+    Academic *HH = dynamic_cast<Academic *>(game.b.getSquare("HH"));
+    Academic *PAS = dynamic_cast<Academic *>(game.b.getSquare("PAS"));
+    Academic *ECH = dynamic_cast<Academic *>(game.b.getSquare("ECH"));
+    Academic *ML = dynamic_cast<Academic *>(game.b.getSquare("ML"));
+    Academic *AL = dynamic_cast<Academic *>(game.b.getSquare("AL"));
     
     out << string(8 * 11, '_') << endl; // top border
 
@@ -786,7 +798,7 @@ ostream &operator<<(ostream &out, Game &game) {
     out << divider << empty_block << empty_middle_section << "FEE" << four_empty << endl; // block_row2
     out << blank_middle_section << endl; // block_row3
     out << divider << game.b.getSquare("PAC")->printPlayers() << empty_middle_section; // block_row4
-    out << game.b.getSquare("COOP FEE")->printPlayers() << endl; 
+    out << game.b.getSquare("Coop Fee")->printPlayers() << endl; 
     out << middle_block_bottom << endl; // block_row5
 
     // tenth row of blocks
@@ -812,10 +824,10 @@ ostream &operator<<(ostream &out, Game &game) {
 
     // printing row4
     out << divider;
-    out << game.b.getSquare("DC Tims Line")->printPlayers();
+    out << game.b.getSquare("Go To Tims")->printPlayers();
     out << game.b.getSquare("HH")->printPlayers();
     out << game.b.getSquare("PAS")->printPlayers();
-    out << game.b.getSquare("NEEDLESHALL1")->printPlayers();
+    out << game.b.getSquare("NEEDLES HALL1")->printPlayers();
     out << game.b.getSquare("ECH")->printPlayers();
     out << game.b.getSquare("MKV")->printPlayers();
     out << game.b.getSquare("TUITION")->printPlayers();

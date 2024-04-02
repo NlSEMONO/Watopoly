@@ -4,10 +4,8 @@
 #include "needlesrng.h"
 
 class NeedlesHall : public Square {
-    NeedlesRng rng;
     public:
         virtual ~NeedlesHall() override;
-        NeedlesHall();
-        Event generateEvent(int cupsGiven);
+        NeedlesHall(std::string name);
 };
 #endif

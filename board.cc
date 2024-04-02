@@ -24,12 +24,12 @@ Board::Board(): squares{}, nameToIndex{}, monopolies{} {
 
     squares.push_back(std::unique_ptr<OSAP>{new OSAP{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts1", "AL", 40, 50, 0, {2, 10, 30, 90, 160, 250}}});
-    squares.push_back(std::unique_ptr<SLC>{new SLC{}});
+    squares.push_back(std::unique_ptr<SLC>{new SLC{"SLC1"}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts1", "ML", 60, 50, 0, {4, 20, 60, 180, 320, 450}}});
     squares.push_back(std::unique_ptr<Tuition>{new Tuition{}});
     squares.push_back(std::unique_ptr<Residence>{new Residence{"MKV", residenceCost, residenceRents}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts2", "ECH", 100, 50, 0, {6, 30, 90, 270, 400, 550}}});
-    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{}});
+    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{"NEEDLES HALL1"}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts2", "PAS", 100, 50, 0, {6, 30, 90, 270, 400, 550}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Arts2", "HH", 120, 50, 0, {8, 40, 100, 300, 450, 600}}});
     squares.push_back(std::unique_ptr<Jail>{new Jail{}});
@@ -39,12 +39,12 @@ Board::Board(): squares{}, nameToIndex{}, monopolies{} {
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Eng", "CPH", 160, 100, 0, {12, 60, 180, 500, 700, 900}}});
     squares.push_back(std::unique_ptr<Residence>{new Residence{"UWP", residenceCost, residenceRents}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Health", "LHI", 180, 100, 0, {14, 70, 200, 550, 750, 950}}});
-    squares.push_back(std::unique_ptr<SLC>{new SLC{}});
+    squares.push_back(std::unique_ptr<SLC>{new SLC{"SLC2"}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Health", "BMH", 180, 100, 0, {14, 70, 200, 550, 750, 950}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Health", "OPT", 200, 100, 0, {16, 80, 220, 600, 800, 1000}}});
     squares.push_back(std::unique_ptr<GooseNest>{new GooseNest{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Env", "EV1", 220, 150, 0, {18, 90, 250, 700, 875, 1050}}});
-    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{}});
+    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{"NEEDLES HALL2"}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Env", "EV2", 220, 150, 0, {18, 90, 250, 700, 875, 1050}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Env", "EV3", 240, 150, 0, {20, 100, 300, 750, 925, 1100}}});
     squares.push_back(std::unique_ptr<Residence>{new Residence{"V1", residenceCost, residenceRents}});
@@ -55,10 +55,10 @@ Board::Board(): squares{}, nameToIndex{}, monopolies{} {
     squares.push_back(std::unique_ptr<GoToTims>{new GoToTims{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci2", "EIT", 300, 200, 0, {26, 130, 390, 900, 1100, 1275}}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci2", "ESC", 300, 200, 0, {26, 130, 390, 900, 1100, 1275}}});
-    squares.push_back(std::unique_ptr<SLC>{new SLC{}});
+    squares.push_back(std::unique_ptr<SLC>{new SLC{"SLC3"}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Sci2", "C2", 320, 200, 0, {28, 150, 450, 1000, 1200, 1400}}});
     squares.push_back(std::unique_ptr<Residence>{new Residence{"REV", residenceCost, residenceRents}});
-    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{}});
+    squares.push_back(std::unique_ptr<NeedlesHall>{new NeedlesHall{"NEEDLES HALL3"}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Math", "MC", 350, 200, 0, {35, 175, 500, 1100, 1300, 1500}}});
     squares.push_back(std::unique_ptr<Coop>{new Coop{}});
     squares.push_back(std::unique_ptr<Academic>{new Academic{"Math", "DC", 400, 200, 0, {50, 200, 600, 1400, 1700, 2000}}});

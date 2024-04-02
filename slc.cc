@@ -1,13 +1,6 @@
 #include "slc.h"
+using namespace std;
 
-SLC::SLC(): Square{"SLC"}, rng{} {}
+SLC::SLC(string name): Square{name} {}
 
 SLC::~SLC() {}
-
-Event SLC::generateEvent(int cupsGiven) {
-    Event toReturn = rng.generateEvent();
-    while (toReturn == Event::OUTOFTIMS && cupsGiven >= 4) {
-        toReturn = rng.generateEvent();
-    }
-    return toReturn;
-}

@@ -1,7 +1,7 @@
 #include "osap.h"
 #include "player.h"
 
-OSAP::OSAP(): Square{"Collect OSAP"} {}
+OSAP::OSAP(): Square{"COLLECT OSAP"} {}
 
 OSAP::~OSAP() {}
 

@@ -66,4 +66,4 @@ void Player::setLiquidCash(int liquidCash){this->liquidCash = liquidCash;}
 void Player::setMortageValue(int mortageValue){this->mortageValue = mortageValue;}
 void Player::setTotalAssetsValue(int totalAssetsValue){this->totalAssetsValue = totalAssetsValue;}
 void Player::setPlayerPostion(int playerPosition){this->playerPosition = playerPosition;}
-void Player::setSymbol(char symbol) {symbol = symbol; }
+void Player::setSymbol(char symbol) {this->symbol = symbol; }

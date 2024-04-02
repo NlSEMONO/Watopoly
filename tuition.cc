@@ -2,4 +2,4 @@
 
 Tuition::~Tuition() {}
 
-Tuition::Tuition(): Square{"Tuition"} {}
+Tuition::Tuition(): Square{"TUITION"} {}

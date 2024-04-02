@@ -1,7 +1,7 @@
 #include "square.h"
 using namespace std;
 
-Square::Square(std::string name): name{name}, players{} {}
+Square::Square(std::string name): name{name}, players{} { players.clear(); }
 
 Square::~Square() {};
 
@@ -21,7 +21,7 @@ Player* Square::getOwner() const { return nullptr; }
 string Square::printPlayers() {
     string tmp; 
     for (size_t i = 0; i < players.size(); ++i) {
-        tmp += players[i]->getSymbol();
+        tmp += string(1, players[i]->getSymbol());
     }
 
     for (size_t j = 0; j < 7-players.size(); ++j) {
