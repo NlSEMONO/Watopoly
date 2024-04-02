@@ -19,7 +19,7 @@ class Gym: public Square {
     virtual Player *getOwner() const override;
     int getCost() const override;
     int getGymsOwned() const;
-    bool isBought() const;
+    bool isBought() const; // void buy(Player *p) override;
     int getRent(int gymsOwned, int diceRoll) const;
     virtual bool isMortgaged() const override;
 
