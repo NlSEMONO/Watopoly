@@ -40,4 +40,4 @@ void Residence::setOwner(Player* p) {owner = p; }
 
 void Residence::setMortgage(bool mortgage) {mortgaged = mortgage; }
 
-int Residence::getPurchaseCost() const {return purchase_cost;}
+int Residence::getMortgageCost() const {return purchase_cost/2;}

@@ -83,4 +83,4 @@ void Academic::setUpgrades(int u) { upgrade_level = u; }
 
 void Academic::setMortgage(bool mortgage) {mortgaged = mortgage; }
 
-int Academic::getPurchaseCost() const {return purchase_cost;}
+int Academic::getMortgageCost() const {return purchase_cost/2 + (upgrade_level * upgrade_cost);}

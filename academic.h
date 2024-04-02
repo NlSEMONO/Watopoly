@@ -42,7 +42,7 @@ class Academic: public Square {
     void setUpgrades(int u);
     virtual void setMortgage(bool mortgage) override;
      std::string printImprovements() const;
-     virtual int getPurchaseCost() const override;
+     virtual int getMortgageCost() const override;
 
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };
