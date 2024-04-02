@@ -174,14 +174,14 @@ int Game::handleAuction(size_t start, Square* prize) {
             outOfAuction[curr] = true;
             continue;
         }
-        cout << "How much do you want to bid?" << endl;
+        cout << "How much do you want to bid? Your cash is: $" << curr->getLiquidCash() << endl;
         int amt = -100;
         std::cin >> amt;
-        if (amt != -100 && highest < amt) {
+        if (amt != -100 && highest < amt && amt <= curr->getLiquidCash()) {
             highest = amt;
             winner = curr;
         } else {
-            cerr << "Bid is too low, withdrawing from auction." << endl;
+            cerr << "Bid is too low/invalid, withdrawing from auction." << endl;
             outOfAuction[curr] = true;
             continue;
         }
@@ -375,17 +375,27 @@ void Game::play() {
         string cmd;
         iss2 >> cmd;
         Player* currPlayer = players[playerTurn].get();
-        
-        
         // implement jail
         if (jailedTurns.count(currPlayer) == 1 && !jailMsg) {
             cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
-
-            string resp;
-            cin >> resp;
+            int resp = 55;
+            do {
+                cout << "(1) - Use cup" << endl;
+                cout << "(2) - Pay $50" << endl;
+                cout << "other - proceed to rolling" << endl;
+                cin >> resp;
+            } while (resp == 1 && numCups[currPlayer] == 0);
+            if (resp == 1 || resp == 2) {
+                if (resp == 1) --numCups[currPlayer];
+                else currPlayer->changeCash(-50);
+            } 
 
             jailMsg = true;
+            moneyOwed = processOwed(currPlayer, "the bank");
         }
+
+        cout << currPlayer->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next," : "roll,") << "trade,improve,mortgage,mortgage,unmortgage,save,";
+        cout << (moneyOwed > 0 ? "bankrupt" : "assets,all") << endl;
         // implement
         if (cmd == "roll"){
             // b.makeMove(players[playerTurn].get());  
@@ -405,8 +415,12 @@ void Game::play() {
                 }
             } else cerr << "You've already rolled this turn." << endl;
         } else if (cmd == "next"){
-            if (!hasRolled || moneyOwed > 0) {
-                cerr << "You can't end your turn yet!" << endl;
+            if (!hasRolled) {
+                cerr << "You must roll before ending your turn!" << endl;
+                continue;
+            }
+            if (moneyOwed > 0) {
+                cerr << "You still owe money, please buy/sell improvements, mortgage a property or declare bankruptcy." << endl;
                 continue;
             }
             playerTurn++;
