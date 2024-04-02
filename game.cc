@@ -113,6 +113,10 @@ void Game::initPlayers() {
     cout << "Game has been intialized with " << playerCount << "!" << endl;
 }
 
+// transaction(trader, to_trade, to_get, playerTurn) will initiate a trade transaction
+// between the currentPlayer who can be accessed through playerTurn and trader.
+// The current player will send to_trade to trader and will get to_get in return from
+// trader.
 void Game::transaction(Player *trader, string to_trade, string to_get, int playerTurn) {
     if (isdigit(to_trade[0])) {
         // changing money
@@ -135,7 +139,6 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
         b.getSquare(to_trade)->setOwner(trader);
     }
 }
-
 
 void Game::play() {
     //CLI Interpreter
@@ -428,7 +431,7 @@ ostream &operator<<(ostream &out, Game &game) {
     out << game.b.getSquare("COLLECT OSAP")->printPlayers();
     out << endl;
 
-    out << divider;
+    out << divider; // block_row5
     for (int i = 0; i < 11; ++i) {
         out << block_bottom;
     }
