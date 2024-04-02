@@ -30,6 +30,8 @@ class Board {
         bool isAcademic(int buildingCode);
         bool isGym(int buildingCode);
         bool isResidence(int buildingCode);
+        bool isSLC(int buildingCode);
+        bool isNeedles(int buildingCode);
         void saveProperties(ostream& out);
 };
 

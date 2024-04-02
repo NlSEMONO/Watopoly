@@ -43,3 +43,5 @@ void Square::setOwner(Player *player) {
 bool Square::isMortgaged() const {
     return false;
 }
+
+void Square::buy(Player* p) {}

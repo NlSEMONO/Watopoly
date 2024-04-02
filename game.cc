@@ -9,6 +9,8 @@
 #include <stdexcept>
 using namespace std;
 
+const int BOARD_SIZE = 40;
+
 void Game::setPlayers(int pCount) { playerCount = pCount; }
 
 void Game::loadFile(istream& in) {
@@ -155,6 +157,55 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
     }
 }
 
+int Game::handleMove(Player* p, int rollSum) {
+    int newPos = (p->getPlayerPostion() + rollSum) % BOARD_SIZE;
+    p->setPlayerPostion(newPos);
+    Square* tile = b.getSquare(newPos);
+    if (b.isOwnable(newPos)) {
+        // unowned property
+        if (tile->getOwner() == nullptr) {
+            cout << tile->getName() << " is unowned. Your balance is " << p->getLiquidCash();
+            cout << ". It costs " << tile->getCost() << ". Would you like to buy it? (y/n)" << endl;
+            string resp;
+            cin >> resp;
+            if (resp == "y") {
+                tile->buy(p);
+                if (b.isGym(newPos)) gymsOwned[p]++;
+                else if (b.isResidence(newPos)) residenceOwned[p]++;
+                int owed = p->getLiquidCash() * -1;
+                if (owed > 0) {
+                    cout << "You owe the bank " << owed << " money. Please mortgage properties, sell improvements or declare bankruptcy." << endl;
+                    p->setLiquidCash(0);
+                    return owed;
+                }
+                return 0;
+            }
+        }
+        // owned property
+        else {
+            int rentOwed = 0;
+            Player* owner = tile->getOwner();
+            if (b.isGym(newPos)) {
+                Gym* gymPtr = dynamic_cast<Gym*>(tile);
+                rentOwed = gymPtr->getRent(gymsOwned[owner], rollSum);
+            } else if (b.isResidence(newPos)) {
+                Residence* resPtr = dynamic_cast<Residence*>(tile);
+                rentOwed = resPtr->getRent(residenceOwned[owner]);
+            } else {
+                Academic* acaPtr = dynamic_cast<Academic*>(tile);
+                rentOwed = acaPtr->getRent();
+            }
+            cout << tile->getName() << " is owned by: " << owner->getPlayerName() << " paying them: " << rentOwed << endl;
+            
+            // TODO: finish paying owner
+        }
+    } else if (b.isSLC(newPos)) {
+
+    } else if (b.isNeedles(newPos)) {
+
+    }
+    return 0;
+}
 
 void Game::play() {
     //CLI Interpreter
@@ -187,12 +238,20 @@ void Game::play() {
             int roll1 = dice.eventToInt(dice.generateEvent());
             int roll2 = dice.eventToInt(dice.generateEvent());
 
-            if (roll1 == roll2 && snakeEyes == 2) {
-                cout << "3 snake eyes in a row, sending you to jail!" << endl;
-                currPlayer->setPlayerPostion(b.getIndex("DC Tims"));
-            } 
-        } else if (cmd == "next"){
             if (hasRolled) {
+                if (roll1 == roll2 && snakeEyes == 2) {
+                    cout << "3 snake eyes in a row, sending you to jail!" << endl;
+                    currPlayer->setPlayerPostion(b.getIndex("DC Tims Line"));
+                } else if (roll1 == roll2) {
+                    moneyOwed = handleMove(currPlayer, roll1 + roll2);
+                    ++snakeEyes;
+                } else {
+                    moneyOwed = handleMove(currPlayer, roll1 + roll2);
+                    hasRolled = true;
+                }
+            } else cerr << "You've already rolled this turn." << endl;
+        } else if (cmd == "next"){
+            if (!hasRolled || moneyOwed > 0) {
                 cerr << "You can't end your turn yet!" << endl;
                 continue;
             }
