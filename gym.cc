@@ -16,7 +16,13 @@ int Gym::getCost() const {return purchase_cost;}
 int Gym::getGymsOwned() const {return gymsOwned;}
 bool Gym::isBought() const {return bought;}
 bool Gym::isMortgaged() const {return mortgaged;}
-
+int Gym::getRent(int gymsOwned, int diceRoll) const {
+    if (gymsOwned == 2) {
+        return diceRoll * 10;
+    } else {
+        return diceRoll * 4;
+    }
+}
 
 void Gym::upgrade() {
     gymsOwned++;    
@@ -44,13 +50,8 @@ void Gym::buy(Player *p) {
 
 // payRent
 void Gym::payRent(Player *payer, int diceRoll) const {
-    if (gymsOwned == 1) {
-        owner->changeCash(4 * diceRoll, true);
-        payer->changeCash(4 * diceRoll, false);
-    } else {
-        owner->changeCash(10 * diceRoll, true);
-        payer->changeCash(10 * diceRoll, false);
-    }
+    owner->changeCash(getRent(gymsOwned, diceRoll), true);
+    payer->changeCash(getRent(gymsOwned, diceRoll), false);
 }
 
 void Gym::setOwner(Player* p) {owner = p; }
