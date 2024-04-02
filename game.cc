@@ -162,21 +162,47 @@ void Game::play() {
     int playerTurn = 0;
     int moneyOwed = 0;
     bool hasRolled = false;
+    int snakeEyes = 0;
+    bool jailMsg = false;
 
     while(getline(cin, cmdWhole)){
         istringstream iss2{cmdWhole};
         string cmd;
         iss2 >> cmd;
+        Player* currPlayer = players[playerTurn].get();
+        
+        
+        // implement jail
+        if (jailedTurns.count(currPlayer) == 1 && !jailMsg) {
+            cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+
+            string resp;
+            cin >> resp;
+
+            jailMsg = true;
+        }
+        // implement
         if (cmd == "roll"){
             // b.makeMove(players[playerTurn].get());  
             int roll1 = dice.eventToInt(dice.generateEvent());
             int roll2 = dice.eventToInt(dice.generateEvent());
+
+            if (roll1 == roll2 && snakeEyes == 2) {
+                cout << "3 snake eyes in a row, sending you to jail!" << endl;
+                currPlayer->setPlayerPostion(b.getIndex("DC Tims"));
+            } 
         } else if (cmd == "next"){
+            if (hasRolled) {
+                cerr << "You can't end your turn yet!" << endl;
+                continue;
+            }
             playerTurn++;
             if (playerTurn == playerCount){
                 playerTurn = 0;
             }
             hasRolled = false;
+            jailMsg = false;
+            snakeEyes = 0;
         } else if (cmd == "trade"){
             string player_2;
             string to_give;
