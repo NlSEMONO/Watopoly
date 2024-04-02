@@ -516,18 +516,18 @@ void Game::play() {
                     Residence *sq = dynamic_cast<Residence*>(b.getSquare(pos));
                 }
 
-                if (sq->getOwner() == curr) {
-                    if (!(sq->isMortgaged())){
-                        sq->setMortgage(true);  //Redunant not needed 
-                        int mortgageBack = sq->getPur
-                        if (moneyOwed <= sq->getPu)
-                        moneyOwed -= 
-                    } else {
-                        cerr << "This property is already mortgaged!" << endl;
-                    }
-                } else {
-                    cerr << "You don't own this property!" << endl;
-                }
+                // if (sq->getOwner() == curr) {
+                //     if (!(sq->isMortgaged())){
+                //         sq->setMortgage(true);  //Redunant not needed 
+                //         int mortgageBack = sq->getPur
+                //         if (moneyOwed <= sq->getPu)
+                //         moneyOwed -= 
+                //     } else {
+                //         cerr << "This property is already mortgaged!" << endl;
+                //     }
+                // } else {
+                //     cerr << "You don't own this property!" << endl;
+                // }
             } else {
                 cerr << "You can't mortgage this property." << endl;
             }

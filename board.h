@@ -32,7 +32,7 @@ class Board {
         bool isResidence(int buildingCode);
         bool isSLC(int buildingCode);
         bool isNeedles(int buildingCode);
-        void saveProperties(ostream& out);
+        void saveProperties(std::ostream& out);
         bool ownsAll(Player* p, int position);
 };
 

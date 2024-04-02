@@ -112,6 +112,10 @@ bool Board::isType(string type, int buildingCode) {
     return find(toSearch.begin(), toSearch.end(), buildingCode) != toSearch.end();
 }
 
+bool Board::isSLC(int buildingCode) {return isType("SLC", buildingCode); }
+
+bool Board::isNeedles(int buildingCode) {return isType("Needles", buildingCode); }
+
 bool Board::isGym(int buildingCode) { return isType("Gyms", buildingCode); }
 
 bool Board::isResidence(int buildingCode) { return isType("Residence", buildingCode); }
