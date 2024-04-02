@@ -55,9 +55,17 @@ void Academic::buy(Player *p) {
 }
 
 // payRent
-void Academic::payRent(Player *payer) {
-    owner->changeCash(getRent(), true);
-    payer->changeCash(getRent(), false);
+void Academic::payRent(Player *payer, bool monopoly_Owned) {
+    if (!monopoly_Owned) {
+        owner->changeCash(getRent(), true);
+        payer->changeCash(getRent(), false);
+    } else if (monopoly_Owned && (upgrade_level == 0)) {
+        owner->changeCash(getRent() * 2, true);
+        payer->changeCash(getRent() * 2, false);
+    } else {
+        owner->changeCash(getRent(), true);
+        payer->changeCash(getRent(), false);
+    }
 }
 
 void Academic::setOwner(Player* p) {owner = p; } 

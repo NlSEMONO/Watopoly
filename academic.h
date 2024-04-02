@@ -20,7 +20,7 @@ class Academic: public Square {
     Academic(std::string monopoly_block, std::string name, int purchase_cost, 
              int upgrade_cost, int upgrade_level, std::vector<int> rentMoney);
     
-    int getCost() const;
+    int getCost() const override;
     int getUpgrade_cost() const;
     int getUpgradeLevel() const;
     std::string getBlock() const;
@@ -34,8 +34,8 @@ class Academic: public Square {
     void sellUpgrade();
     void mortgage(); // mortgage
     void unmortgage();
-    virtual void buy(Player *p); // buying
-    void payRent(Player *payer);
+    virtual void buy(Player *p) override; // buying
+    void payRent(Player *payer, bool monopoly_owned);
     virtual ~Academic();
 
     virtual void setOwner(Player *p) override;
