@@ -164,7 +164,7 @@ int Game::handleAuction(size_t start, Square* prize) {
     std::map<Player*, bool> outOfAuction;
     cout << "Starting auction for " << prize->getName() << endl;
     int highest = 0;
-    Player* winner = nullptr;
+    Player* winner = players[start].get();
     while (outOfAuction.size() < players.size() - 1) {
         Player* curr = players[start].get();
         if (outOfAuction.count(curr) != 0) continue; // go next player if player is out
@@ -190,6 +190,9 @@ int Game::handleAuction(size_t start, Square* prize) {
             continue;
         }
     }
+    cout << "Winner is: " << winner->getPlayerName() << " with bid $" << highest << "." << endl;
+    winner->setLiquidCash(winner->getLiquidCash() - highest);
+    prize->setOwner(winner);
     return processOwed(winner, "the bank");
 }
 
@@ -335,12 +338,13 @@ int Game::handleMove(Player* p, int rollSum) {
         return handleSLC(p);
     } else if (b.isNeedles(newPos)) { // Needles Hall square
         return handleNeedles(p);
-    } else if (b.getIndex("Goose Nesting") == newPos) {
+    } else if (b.getIndex("Goose Nesting") == newPos) { // free parking
         GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        cout << "You landed on Goose Nesting. Collecting $" << gn->getAccumulated() << "." << endl;
         p->changeCash(gn->getAccumulated());
         gn->setAccumulated(0);
-    } else if (b.getIndex("Tuition") == newPos) {
-        cout << "Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
+    } else if (b.getIndex("Tuition") == newPos) { // tuition
+        cout << "Pay tuition. Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
         int opt = -1;
         cin >> opt;
         while (opt != 1 && opt != 2) {
@@ -354,13 +358,17 @@ int Game::handleMove(Player* p, int rollSum) {
         gn->setAccumulated(gn->getAccumulated() + to_pay);
 
         return processOwed(p, "the bank");
-    } else if (b.getIndex("Coop Fee") == newPos) {
-        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+    } else if (b.getIndex("Coop Fee") == newPos) { // coop fee
         const int coopFee = 150;
+        cout << "You landed on Coop Fee. You must pay $" << coopFee << "." << endl;
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
         p->changeCash(-coopFee);
         gn->setAccumulated(gn->getAccumulated() + coopFee);
 
         return processOwed(p, "the bank");
+    } else if (b.getIndex("Go To Tims") == newPos) { // go to tims
+        cout << "Uh Oh, you landed on Go to DC Tim's Line." << endl;
+        sendToJail(p);
     }
     return 0;
 }
@@ -381,21 +389,31 @@ void Game::play() {
         Player* currPlayer = players[playerTurn].get();
         // implement jail
         if (jailedTurns.count(currPlayer) == 1 && !jailMsg) {
-            cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
-            int resp = 55;
-            do {
-                cout << "(1) - Use cup" << endl;
-                cout << "(2) - Pay $50" << endl;
-                cout << "other - proceed to rolling" << endl;
-                cin >> resp;
-            } while (resp == 1 && numCups[currPlayer] == 0);
-            if (resp == 1 || resp == 2) {
-                if (resp == 1) --numCups[currPlayer];
-                else currPlayer->changeCash(-50);
-            } 
+            if (jailedTurns[currPlayer] == 3) {
+                cout << "You've waited 3 turns in jail. You may now leave jail." << endl;
+                jailedTurns.erase(currPlayer);
+            } else {
+                cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+                int resp = 55;
+                do {
+                    cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
+                    cout << "(2) - Pay $50" << endl;
+                    cout << "other - proceed to rolling" << endl;
+                    cin >> resp;
+                } while (resp == 1 && numCups[currPlayer] == 0);
+                if (resp == 1 || resp == 2) {
+                    if (resp == 1) {
+                        --numCups[currPlayer];
+                        --cupsDistributed;
+                    }
+                    else currPlayer->changeCash(-50);
+                    jailedTurns.erase(currPlayer);
+                    hasRolled = true;
+                } 
 
-            jailMsg = true;
-            moneyOwed = processOwed(currPlayer, "the bank");
+                jailMsg = true;
+                moneyOwed = processOwed(currPlayer, "the bank");
+            }
         }
 
         cout << currPlayer->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next," : "roll,") << "trade,improve,mortgage,mortgage,unmortgage,save,";
@@ -406,15 +424,26 @@ void Game::play() {
             int roll1 = dice.eventToInt(dice.generateEvent());
             int roll2 = dice.eventToInt(dice.generateEvent());
 
-            if (hasRolled) {
+            cout << "You rolled " << roll1 << " and " << roll2 << "." << endl;
+            if (jailedTurns.count(currPlayer) == 1) {
+                if (roll1 == roll2) {
+                    cout << "You rolled snake eyes and are now out of jail." << endl;
+                    jailedTurns.erase(currPlayer);
+                }
+                else {
+                    cout << "You did not roll snake eyes, you are still in jail." << endl;
+                    ++jailedTurns[currPlayer];
+                }
+                hasRolled = true;
+            } else if (!hasRolled) {
                 if (roll1 == roll2 && snakeEyes == 2) {
                     cout << "3 snake eyes in a row, sending you to jail!" << endl;
-                    
                 } else if (roll1 == roll2) {
-                    moneyOwed = handleMove(currPlayer, roll1 + roll2);
+                    cout << "You rolled snake eyes and must roll again before ending your turn." << endl;
+                    moneyOwed += handleMove(currPlayer, roll1 + roll2);
                     ++snakeEyes;
                 } else {
-                    moneyOwed = handleMove(currPlayer, roll1 + roll2);
+                    moneyOwed += handleMove(currPlayer, roll1 + roll2);
                     hasRolled = true;
                 }
             } else cerr << "You've already rolled this turn." << endl;
