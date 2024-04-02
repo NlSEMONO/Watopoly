@@ -33,7 +33,7 @@ class Academic: public Square {
     void upgrade(); // upgrading property
     void sellUpgrade();
     virtual void mortgage(int amountBack) override; // mortgage
-    void unmortgage();
+    virtual void unmortgage() override;
     virtual void buy(Player *p) override; // buying
     void payRent(Player *payer, bool monopoly_owned);
     virtual ~Academic();
@@ -41,8 +41,8 @@ class Academic: public Square {
     virtual void setOwner(Player *p) override;
     void setUpgrades(int u);
     virtual void setMortgage(bool mortgage) override;
-     std::string printImprovements() const;
-     virtual int getMortgageCost() const override;
+    std::string printImprovements() const;
+    virtual int getMortgageCost() const override;
 
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };

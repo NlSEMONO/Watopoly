@@ -517,7 +517,7 @@ void Game::play() {
 
                 if (sq->getOwner() == curr) {
                     if (!(sq->isMortgaged())){
-                        sq->setMortgage(true);  //Redunant not needed, just there becuase i dont want to remove the virtual methods
+                        sq->setMortgage(true);  //Redunant not needed, just there becuase i dont want to remove the virtual method
                         int mortgageBack = sq->getMortgageCost();
 
                         if (moneyOwed <= mortgageBack){
@@ -541,6 +541,33 @@ void Game::play() {
 
 
         } else if (cmd == "unmortgage"){
+            Player* curr = players[playerTurn].get();
+            int pos = curr->getPlayerPostion();
+            string propertyName;
+            iss2 >> propertyName;
+            if ((b.isAcademic(pos)) || (b.isGym(pos)) || (b.isResidence(pos))) {
+                Square* sq = nullptr;
+                if (b.isAcademic(pos)){
+                    Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
+                } else if (b.isGym(pos)){
+                    Gym* sq = dynamic_cast<Gym*>(b.getSquare(pos));
+                } else {
+                    Residence *sq = dynamic_cast<Residence*>(b.getSquare(pos));
+                }
+
+                if (sq->getOwner() == curr) {
+                    if ((sq->isMortgaged())){
+                        sq->setMortgage(false);  //Redunant not needed, just there becuase i dont want to remove the virtual method
+                        sq->unmortgage();
+                    } else {
+                        cerr << "This property is already unmortgaged!" << endl;
+                    }
+                } else {
+                    cerr << "You don't own this property!" << endl;
+                }
+            } else {
+                cerr << "You can't unmortgage this property." << endl;
+            }
             
         } else if (cmd == "bankrupt"){
             
