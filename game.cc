@@ -234,7 +234,7 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
             Academic* acaPtr = dynamic_cast<Academic*>(tile);
             rentOwed = acaPtr->getRent();
             cout << rentOwed << endl;
-            acaPtr->payRent(p);
+            acaPtr->payRent(p, b.ownsAll(p, newPos));
         }
         return processOwed(p, owner->getPlayerName());
     }
