@@ -157,10 +157,28 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
     }
 }
 
+
+// helper function to calculate how much money game p owes bank/other player.
+int processOwed(Player* p, string who) {
+    int owed = p->getLiquidCash() * -1;
+    if (owed > 0) {
+        cout << "You owe " << who << " " << owed << " money. Please mortgage properties, sell improvements or declare bankruptcy." << endl;
+        p->setLiquidCash(0);
+        return owed;
+    }
+    return 0;
+}
+
+void Game::sendToJail(Player* p) {
+    p->setPlayerPostion(b.getIndex("DC Tims Line"));
+    jailedTurns[p] = 0;
+}
+
 int Game::handleMove(Player* p, int rollSum) {
     int newPos = (p->getPlayerPostion() + rollSum) % BOARD_SIZE;
     p->setPlayerPostion(newPos);
     Square* tile = b.getSquare(newPos);
+
     if (b.isOwnable(newPos)) {
         // unowned property
         if (tile->getOwner() == nullptr) {
@@ -172,35 +190,62 @@ int Game::handleMove(Player* p, int rollSum) {
                 tile->buy(p);
                 if (b.isGym(newPos)) gymsOwned[p]++;
                 else if (b.isResidence(newPos)) residenceOwned[p]++;
-                int owed = p->getLiquidCash() * -1;
-                if (owed > 0) {
-                    cout << "You owe the bank " << owed << " money. Please mortgage properties, sell improvements or declare bankruptcy." << endl;
-                    p->setLiquidCash(0);
-                    return owed;
-                }
-                return 0;
+                return processOwed(p, "the bank");
             }
         }
         // owned property
         else {
             int rentOwed = 0;
             Player* owner = tile->getOwner();
+            cout << tile->getName() << " is owned by: " << owner->getPlayerName() << " paying them: ";
             if (b.isGym(newPos)) {
                 Gym* gymPtr = dynamic_cast<Gym*>(tile);
                 rentOwed = gymPtr->getRent(gymsOwned[owner], rollSum);
+                cout << rentOwed << endl;
+                gymPtr->payRent(p, gymsOwned[owner], rollSum);
             } else if (b.isResidence(newPos)) {
                 Residence* resPtr = dynamic_cast<Residence*>(tile);
                 rentOwed = resPtr->getRent(residenceOwned[owner]);
+                cout << rentOwed << endl;
+                resPtr->payRent(p, residenceOwned[owner]);
             } else {
                 Academic* acaPtr = dynamic_cast<Academic*>(tile);
                 rentOwed = acaPtr->getRent();
+                cout << rentOwed << endl;
+                acaPtr->payRent(p);
             }
-            cout << tile->getName() << " is owned by: " << owner->getPlayerName() << " paying them: " << rentOwed << endl;
-            
-            // TODO: finish paying owner
+            return processOwed(p, owner->getPlayerName());
         }
     } else if (b.isSLC(newPos)) {
-
+        Event evt = rngSLC.generateEvent();
+        if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+        if (evt == Event::OUTOFTIMS) {
+            cout << "You drew an SLC card and got a get out of Tim's line card!" << endl;
+            ++numCups[p];
+        } else if (evt == Event::MB3) {
+            cout << "You drew an SLC card telling you to move back 3 spaces." << endl;
+            this->handleMove(p, -3);
+        } else if (evt == Event::MB2) {
+            cout << "You drew an SLC card telling you to move back 2 spaces." << endl;
+            this->handleMove(p, -2);
+        } else if (evt == Event::MB1) {
+            cout << "You drew an SLC card telling you to move back 1 space." << endl;
+            this->handleMove(p, -1);
+        } else if (evt == Event::MF1) {
+            cout << "You drew an SLC card telling you to move forward 1 space." << endl;
+            this->handleMove(p, 1);
+        } else if (evt == Event::MF2) {
+            cout << "You drew an SLC card telling you to move forward 2 spaces." << endl;
+            this->handleMove(p, 2);
+        } else if (evt == Event::MF3) {
+            cout << "You drew an SLC card telling you to move forward 3 spaces." << endl;
+            this->handleMove(p, 3);
+        } else if (evt == Event::MDC_TIMS) {
+            cout << "You drew an SLC card and must now wait in DC Tim's Line :(" << endl;
+            sendToJail(p);
+        } else if (evt == Event::MCOLLECT_OSAP) {
+            this->handleMove(p, 40 - p->getPlayerPostion());
+        }
     } else if (b.isNeedles(newPos)) {
 
     }
@@ -241,7 +286,7 @@ void Game::play() {
             if (hasRolled) {
                 if (roll1 == roll2 && snakeEyes == 2) {
                     cout << "3 snake eyes in a row, sending you to jail!" << endl;
-                    currPlayer->setPlayerPostion(b.getIndex("DC Tims Line"));
+                    
                 } else if (roll1 == roll2) {
                     moneyOwed = handleMove(currPlayer, roll1 + roll2);
                     ++snakeEyes;

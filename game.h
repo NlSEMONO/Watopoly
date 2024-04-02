@@ -28,6 +28,7 @@ class Game {
 
     std::vector<Square*>& getAssets(Player* p) const;
     int handleMove(Player* p, int rollSum);
+    void sendToJail(Player* p);
 
     public:
         void loadFile(std::istream& in);
