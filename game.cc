@@ -6,8 +6,11 @@
 #include "academic.h"
 #include "gym.h"
 #include "residence.h"
+#include "goosenest.h"
 #include <stdexcept>
 using namespace std;
+
+const int BOARD_SIZE = 40;
 
 void Game::setPlayers(int pCount) { playerCount = pCount; }
 
@@ -140,27 +143,252 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
     }
 }
 
+
+// helper function to calculate how much money game p owes bank/other player.
+int processOwed(Player* p, string who) {
+    int owed = p->getLiquidCash() * -1;
+    if (owed > 0) {
+        cout << "You owe " << who << " " << owed << " money. Please mortgage properties, sell improvements or declare bankruptcy." << endl;
+        p->setLiquidCash(0);
+        return owed;
+    }
+    return 0;
+}
+
+void Game::sendToJail(Player* p) {
+    p->setPlayerPostion(b.getIndex("DC Tims Line"));
+    jailedTurns[p] = 0;
+}
+
+int Game::handleOwnable(Player* p, int newPos, int rollSum) {
+    Square* tile = b.getSquare(newPos);
+
+    // unowned property
+    if (tile->getOwner() == nullptr) {
+        cout << tile->getName() << " is unowned. Your balance is " << p->getLiquidCash();
+        cout << ". It costs " << tile->getCost() << ". Would you like to buy it? (y/n)" << endl;
+        string resp;
+        cin >> resp;
+        while (resp != "y" && resp != "n") {
+            cerr << "Invalid input, please enter again (y/n)." << endl;
+            cin >> resp;
+        }
+        if (resp == "y") {
+            tile->buy(p);
+            if (b.isGym(newPos)) gymsOwned[p]++;
+            else if (b.isResidence(newPos)) residenceOwned[p]++;
+            return processOwed(p, "the bank");
+        } else {
+            return -1;
+        }
+    }
+    // owned property
+    else {
+        int rentOwed = 0;
+        Player* owner = tile->getOwner();
+        cout << tile->getName() << " is owned by: " << owner->getPlayerName() << " paying them: ";
+        if (b.isGym(newPos)) {
+            Gym* gymPtr = dynamic_cast<Gym*>(tile);
+            rentOwed = gymPtr->getRent(gymsOwned[owner], rollSum);
+            cout << rentOwed << endl;
+            gymPtr->payRent(p, gymsOwned[owner], rollSum);
+        } else if (b.isResidence(newPos)) {
+            Residence* resPtr = dynamic_cast<Residence*>(tile);
+            rentOwed = resPtr->getRent(residenceOwned[owner]);
+            cout << rentOwed << endl;
+            resPtr->payRent(p, residenceOwned[owner]);
+        } else {
+            Academic* acaPtr = dynamic_cast<Academic*>(tile);
+            rentOwed = acaPtr->getRent();
+            cout << rentOwed << endl;
+            acaPtr->payRent(p);
+        }
+        return processOwed(p, owner->getPlayerName());
+    }
+}
+
+int Game::handleSLC(Player* p) {
+    Event evt = rngSLC.generateEvent();
+    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+    if (evt == Event::OUTOFTIMS) {
+        cout << "You drew an SLC card and got a get out of Tim's line card!" << endl;
+        ++numCups[p];
+        ++cupsDistributed;
+    } else if (evt == Event::MB3) {
+        cout << "You drew an SLC card telling you to move back 3 spaces." << endl;
+        this->handleMove(p, -3);
+    } else if (evt == Event::MB2) {
+        cout << "You drew an SLC card telling you to move back 2 spaces." << endl;
+        this->handleMove(p, -2);
+    } else if (evt == Event::MB1) {
+        cout << "You drew an SLC card telling you to move back 1 space." << endl;
+        this->handleMove(p, -1);
+    } else if (evt == Event::MF1) {
+        cout << "You drew an SLC card telling you to move forward 1 space." << endl;
+        this->handleMove(p, 1);
+    } else if (evt == Event::MF2) {
+        cout << "You drew an SLC card telling you to move forward 2 spaces." << endl;
+        this->handleMove(p, 2);
+    } else if (evt == Event::MF3) {
+        cout << "You drew an SLC card telling you to move forward 3 spaces." << endl;
+        this->handleMove(p, 3);
+    } else if (evt == Event::MDC_TIMS) {
+        cout << "You drew an SLC card and must now wait in DC Tim's Line :(" << endl;
+        sendToJail(p);
+    } else if (evt == Event::MCOLLECT_OSAP) {
+        this->handleMove(p, 40 - p->getPlayerPostion());
+    }
+    return 0;
+}
+
+int Game::handleNeedles(Player* p) {
+    Event evt = rngSLC.generateEvent();
+    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+    if (evt == Event::OUTOFTIMS) {
+        cout << "You drew a Needles Hall card and got a get out of Tim's line card!" << endl;
+        ++numCups[p];
+        ++cupsDistributed;
+    } else if (evt == Event::CM200) {
+        const int payment = 200;
+        cout << "You drew a Needles Hall card and need to pay $"<< payment << "!" << endl;
+        p->changeCash(-payment); 
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
+        gn->setAccumulated(gn->getAccumulated() - payment);
+    } else if (evt == Event::CM100) {
+        const int payment = 100;
+        cout << "You drew a Needles Hall card and need to pay $"<< payment << "!" << endl;
+        p->changeCash(-payment); 
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
+        gn->setAccumulated(gn->getAccumulated() - payment);
+    } else if (evt == Event::CM50) {
+        const int payment = 50;
+        cout << "You drew a Needles Hall card and need to pay $"<< payment << "!" << endl;
+        p->changeCash(-payment); 
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
+        gn->setAccumulated(gn->getAccumulated() - payment);
+    } else if (evt== Event::CP25) {
+        const int payment = 25;
+        cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
+        p->changeCash(payment);
+    } else if (evt == Event::CP50) {
+        const int payment = 50;
+        cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
+        p->changeCash(payment);
+    } else if (evt == Event::CP100) {
+        const int payment = 50;
+        cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
+        p->changeCash(payment);
+    } else if (evt == Event::CP200) {
+        const int payment = 200;
+        cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
+        p->changeCash(payment);
+    }
+
+    return processOwed(p, "the bank");
+}
+
+int Game::handleMove(Player* p, int rollSum) {
+    int newPos = p->getPlayerPostion() + rollSum;
+    if (newPos >= 40) {
+        newPos %= 40;
+        cout << "Collected OSAP." << endl;
+        p->changeCash(200);
+    }
+    p->setPlayerPostion(newPos);
+
+    if (b.isOwnable(newPos)) { // academic/residence/gym
+        int owed = handleOwnable(p, newPos, rollSum);
+        if (owed == -1) return handleAuction();
+        return owed;
+    } else if (b.isSLC(newPos)) { // SLC square
+        return handleSLC(p);
+    } else if (b.isNeedles(newPos)) { // Needles Hall square
+        return handleNeedles(p);
+    } else if (b.getIndex("Goose Nesting") == newPos) {
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        p->changeCash(gn->getAccumulated());
+        gn->setAccumulated(0);
+    } else if (b.getIndex("Tuition") == newPos) {
+        cout << "Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
+        int opt = -1;
+        cin >> opt;
+        while (opt != 1 && opt != 2) {
+            cout << "Please enter 1 or 2" << endl;
+            cin >> opt;
+        }
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        int to_pay = 300;
+        if (opt == 1) to_pay = p->getLiquidCash() / 10;
+        p->changeCash(-to_pay);
+        gn->setAccumulated(gn->getAccumulated() + to_pay);
+
+        return processOwed(p, "the bank");
+    } else if (b.getIndex("Coop Fee") == newPos) {
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        const int coopFee = 150;
+        p->changeCash(-coopFee);
+        gn->setAccumulated(gn->getAccumulated() + coopFee);
+
+        return processOwed(p, "the bank");
+    }
+    return 0;
+}
+
 void Game::play() {
     //CLI Interpreter
     string cmdWhole;
     int playerTurn = 0;
     int moneyOwed = 0;
     bool hasRolled = false;
+    int snakeEyes = 0;
+    bool jailMsg = false;
 
     while(getline(cin, cmdWhole)){
         istringstream iss2{cmdWhole};
         string cmd;
         iss2 >> cmd;
+        Player* currPlayer = players[playerTurn].get();
+        
+        
+        // implement jail
+        if (jailedTurns.count(currPlayer) == 1 && !jailMsg) {
+            cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+
+            string resp;
+            cin >> resp;
+
+            jailMsg = true;
+        }
+        // implement
         if (cmd == "roll"){
             // b.makeMove(players[playerTurn].get());  
             int roll1 = dice.eventToInt(dice.generateEvent());
             int roll2 = dice.eventToInt(dice.generateEvent());
+
+            if (hasRolled) {
+                if (roll1 == roll2 && snakeEyes == 2) {
+                    cout << "3 snake eyes in a row, sending you to jail!" << endl;
+                    
+                } else if (roll1 == roll2) {
+                    moneyOwed = handleMove(currPlayer, roll1 + roll2);
+                    ++snakeEyes;
+                } else {
+                    moneyOwed = handleMove(currPlayer, roll1 + roll2);
+                    hasRolled = true;
+                }
+            } else cerr << "You've already rolled this turn." << endl;
         } else if (cmd == "next"){
+            if (!hasRolled || moneyOwed > 0) {
+                cerr << "You can't end your turn yet!" << endl;
+                continue;
+            }
             playerTurn++;
             if (playerTurn == playerCount){
                 playerTurn = 0;
             }
             hasRolled = false;
+            jailMsg = false;
+            snakeEyes = 0;
         } else if (cmd == "trade"){
             string player_2;
             string to_give;
@@ -184,16 +412,18 @@ void Game::play() {
             if (b.isAcademic(pos)) {
                 Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
                 if (sq->getOwner() == curr) {
-                    string setting; 
-                    iss2 >> setting;
+                    if (b.ownsAll(curr, pos)) {
+                        string setting; 
+                        iss2 >> setting;
 
-                    if (setting == "buy" && curr->canAfford(sq->getUpgrade_cost())) { 
-                        if (sq->getUpgradeLevel() < 5) sq->upgrade();
-                        else cerr << "You can't upgrade this property anymore." << endl;
-                    } else if (setting == "sell") {
-                        if (sq->getUpgradeLevel() > 0) sq->sellUpgrade();
-                        else cerr << "You can't sell any more upgardes from this property." << endl; 
-                    } else cerr << "you can't afford to upgrade this property." << endl;
+                        if (setting == "buy" && curr->canAfford(sq->getUpgrade_cost())) { 
+                            if (sq->getUpgradeLevel() < 5) sq->upgrade();
+                            else cerr << "You can't upgrade this property anymore." << endl;
+                        } else if (setting == "sell") {
+                            if (sq->getUpgradeLevel() > 0) sq->sellUpgrade();
+                            else cerr << "You can't sell any more upgardes from this property." << endl; 
+                        } else cerr << "you can't afford to upgrade this property." << endl;
+                    } else cerr << "you don't own all properties of this monopoly!" << endl;
                 } else cerr << "You don't own this property!" << endl;
             } else cerr << "You can't upgrade this property." << endl;
         } else if (cmd == "mortgage"){

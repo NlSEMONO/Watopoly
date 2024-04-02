@@ -29,7 +29,7 @@ public:
 
     void upgrade(); // upgrading property
     void mortgage(); // mortgage
-    void buy(Player *p); // buying
+    virtual void buy(Player *p); // buying
     void payRent(Player *payer);
 
     virtual void setOwner(Player *p) override;
