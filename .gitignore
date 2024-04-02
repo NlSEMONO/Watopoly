@@ -5,3 +5,6 @@
 _temp
 a.out
 watopoly
+.vscode/
+tests/
+temp/
