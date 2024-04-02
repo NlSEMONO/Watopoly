@@ -19,7 +19,7 @@ void Game::loadFile(istream& in) {
     string line;
 
     // load players 
-    for (int i = 0; i < playerCount; ++i) {
+    for (size_t i = 0; i < playerCount; ++i) {
         getline(in, line);
         istringstream iss{line};
         string name = "";
@@ -50,7 +50,6 @@ void Game::loadFile(istream& in) {
     }
 
     // load buildings
-    const int BUILDING_COUNT = 40;
     while (getline(in, line)) {
         istringstream iss{line};
         string building, owner;

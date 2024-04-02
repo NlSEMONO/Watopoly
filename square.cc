@@ -44,6 +44,6 @@ void Square::mortgage(int amountBack) {}
 
 void Square::unmortgage() {}
 
-int Square::getMortgageCost() const{}
+int Square::getMortgageCost() const{return 0;}
 
 // string Square::getBlock() const { return ""; }

@@ -6,6 +6,7 @@
 #include "player.h"
 #include "square.h"
 #include "dice.h"
+#include <iostream>
 
 class Board {
     std::vector<std::unique_ptr<Square>> squares;
@@ -32,7 +33,7 @@ class Board {
         bool isResidence(int buildingCode);
         bool isSLC(int buildingCode);
         bool isNeedles(int buildingCode);
-        void saveProperties(ostream& out);
+        void saveProperties(std::ostream& out);
         bool ownsAll(Player* p, int position);
 };
 
