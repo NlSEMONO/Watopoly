@@ -166,46 +166,14 @@ void Game::play() {
             Player *trade_from = nameToPlayer[player_2];
 
             if (isdigit(to_give[0]) && isdigit(to_get[0])) {
-                // trading money for money
                 throw runtime_error("Invalid trade");
-            } else if (isdigit(to_give[0])) {
-                int money_given = stoi(to_give);
-                if (players[playerTurn]->canAfford(money_given)) {
-                    string response;
-                    cin >> response;
-
-                    if (response == "accept") {
-                        transaction(trade_from, to_give, to_get, playerTurn);
-                    } else {
-                        break;
-                    }
-                }
-            } else if (isdigit(to_get[0])) {
-                int money_recieved = stoi(to_get);
-                if (trade_from->canAfford(money_recieved)){
-                    string response;
-                    cin >> response;
-
-                    if (response == "accept") {
-                        transaction(trade_from, to_give, to_get, playerTurn);
-                        // accept
-                    } else {
-                        break;
-                    }
-                }
             } else {
                 string response;
-                iss2 >> response;
+                cin >> response;
 
-                if (response == "accept") {
-                    transaction(trade_from, to_give, to_get, playerTurn);
-                    // accept
-                } else {
-                    break;
-                }
+                if (response == "accept") {transaction(trade_from, to_give, to_get, playerTurn);}
+                else {break;}
             }
-
-
         } else if (cmd == "improve"){
             Player* curr = players[playerTurn].get();
             int pos = curr->getPlayerPostion();
