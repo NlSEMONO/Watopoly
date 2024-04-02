@@ -156,6 +156,39 @@ void Game::sendToJail(Player* p) {
     jailedTurns[p] = 0;
 }
 
+int Game::handleAuction(size_t start, Square* prize) {
+    std::map<Player*, bool> outOfAuction;
+    cout << "Starting auction for " << prize->getName() << endl;
+    int highest = 0;
+    Player* winner = nullptr;
+    while (outOfAuction.size() < players.size() - 1) {
+        Player* curr = players[start].get();
+        if (outOfAuction.count(curr) != 0) continue; // go next player if player is out
+        cout << curr->getPlayerName() << " do you want to bid? Highest bid is: $" << highest << " (y/n)" << endl;
+        string resp;
+        while (resp != "y" && resp != "n") {
+            cout << "Please enter (y/n)." << endl;
+            std::cin >> resp;
+        }
+        if (resp == "n") {
+            outOfAuction[curr] = true;
+            continue;
+        }
+        cout << "How much do you want to bid?" << endl;
+        int amt = -100;
+        std::cin >> amt;
+        if (amt != -100 && highest < amt) {
+            highest = amt;
+            winner = curr;
+        } else {
+            cerr << "Bid is too low, withdrawing from auction." << endl;
+            outOfAuction[curr] = true;
+            continue;
+        }
+    }
+    return processOwed(winner, "the bank");
+}
+
 int Game::handleOwnable(Player* p, int newPos, int rollSum) {
     Square* tile = b.getSquare(newPos);
 
@@ -164,7 +197,7 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
         cout << tile->getName() << " is unowned. Your balance is " << p->getLiquidCash();
         cout << ". It costs " << tile->getCost() << ". Would you like to buy it? (y/n)" << endl;
         string resp;
-        cin >> resp;
+        std::cin >> resp;
         while (resp != "y" && resp != "n") {
             cerr << "Invalid input, please enter again (y/n)." << endl;
             cin >> resp;
@@ -175,7 +208,7 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
             else if (b.isResidence(newPos)) residenceOwned[p]++;
             return processOwed(p, "the bank");
         } else {
-            return -1;
+            return handleAuction((currPlayer + 1) % players.size(), tile);
         }
     }
     // owned property
@@ -293,9 +326,7 @@ int Game::handleMove(Player* p, int rollSum) {
     p->setPlayerPostion(newPos);
 
     if (b.isOwnable(newPos)) { // academic/residence/gym
-        int owed = handleOwnable(p, newPos, rollSum);
-        if (owed == -1) return handleAuction();
-        return owed;
+        return handleOwnable(p, newPos, rollSum);
     } else if (b.isSLC(newPos)) { // SLC square
         return handleSLC(p);
     } else if (b.isNeedles(newPos)) { // Needles Hall square

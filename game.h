@@ -32,6 +32,7 @@ class Game {
     int handleOwnable(Player* p, int newPos, int rollSum);
     int handleSLC(Player* p);
     int handleNeedles(Player* p);
+    int handleAuction(size_t start, Square* prize);
 
     public:
         void loadFile(std::istream& in);
