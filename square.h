@@ -25,7 +25,7 @@ class Square {
         virtual void buy(Player* p);
         virtual int getCost() const;
         virtual void mortgage(int amountBack);
-        virtual int getPurchaseCost() const;
+        virtual int getMortgageCost() const;
         // virtual std::string getBlock() const;
 };
 

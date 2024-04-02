@@ -52,3 +52,5 @@ void Gym::payRent(Player *payer, int gymsOwned, int diceRoll) const {
 void Gym::setOwner(Player* p) {owner = p; }
 
 void Gym::setMortgage(bool mortgage) {mortgaged = mortgage; }
+
+int Gym::getMortgageCost() const {return purchase_cost/2;}
