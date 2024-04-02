@@ -6,6 +6,7 @@
 #include "academic.h"
 #include "gym.h"
 #include "residence.h"
+#include "goosenest.h"
 #include <stdexcept>
 using namespace std;
 
@@ -174,7 +175,7 @@ void Game::sendToJail(Player* p) {
     jailedTurns[p] = 0;
 }
 
-int Game::handleOwnable() {
+int Game::handleOwnable(Player* p, int newPos, int rollSum) {
     Square* tile = b.getSquare(newPos);
 
     // unowned property
@@ -183,6 +184,10 @@ int Game::handleOwnable() {
         cout << ". It costs " << tile->getCost() << ". Would you like to buy it? (y/n)" << endl;
         string resp;
         cin >> resp;
+        while (resp != "y" && resp != "n") {
+            cerr << "Invalid input, please enter again (y/n)." << endl;
+            cin >> resp;
+        }
         if (resp == "y") {
             tile->buy(p);
             if (b.isGym(newPos)) gymsOwned[p]++;
@@ -215,44 +220,127 @@ int Game::handleOwnable() {
     }
 }
 
+int Game::handleSLC(Player* p) {
+    Event evt = rngSLC.generateEvent();
+    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+    if (evt == Event::OUTOFTIMS) {
+        cout << "You drew an SLC card and got a get out of Tim's line card!" << endl;
+        ++numCups[p];
+        ++cupsDistributed;
+    } else if (evt == Event::MB3) {
+        cout << "You drew an SLC card telling you to move back 3 spaces." << endl;
+        this->handleMove(p, -3);
+    } else if (evt == Event::MB2) {
+        cout << "You drew an SLC card telling you to move back 2 spaces." << endl;
+        this->handleMove(p, -2);
+    } else if (evt == Event::MB1) {
+        cout << "You drew an SLC card telling you to move back 1 space." << endl;
+        this->handleMove(p, -1);
+    } else if (evt == Event::MF1) {
+        cout << "You drew an SLC card telling you to move forward 1 space." << endl;
+        this->handleMove(p, 1);
+    } else if (evt == Event::MF2) {
+        cout << "You drew an SLC card telling you to move forward 2 spaces." << endl;
+        this->handleMove(p, 2);
+    } else if (evt == Event::MF3) {
+        cout << "You drew an SLC card telling you to move forward 3 spaces." << endl;
+        this->handleMove(p, 3);
+    } else if (evt == Event::MDC_TIMS) {
+        cout << "You drew an SLC card and must now wait in DC Tim's Line :(" << endl;
+        sendToJail(p);
+    } else if (evt == Event::MCOLLECT_OSAP) {
+        this->handleMove(p, 40 - p->getPlayerPostion());
+    }
+    return 0;
+}
+
+int Game::handleNeedles(Player* p) {
+    Event evt = rngSLC.generateEvent();
+    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+    if (evt == Event::OUTOFTIMS) {
+        cout << "You drew a Needles Hall card and got a get out of Tim's line card!" << endl;
+        ++numCups[p];
+        ++cupsDistributed;
+    } else if (evt == Event::CM200) {
+        const int payment = 200;
+        cout << "You drew a Needles Hall card and need to pay $"<< payment << "!" << endl;
+        p->changeCash(-payment); 
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
+        gn->setAccumulated(gn->getAccumulated() - payment);
+    } else if (evt == Event::CM100) {
+        const int payment = 100;
+        cout << "You drew a Needles Hall card and need to pay $"<< payment << "!" << endl;
+        p->changeCash(-payment); 
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
+        gn->setAccumulated(gn->getAccumulated() - payment);
+    } else if (evt == Event::CM50) {
+        const int payment = 50;
+        cout << "You drew a Needles Hall card and need to pay $"<< payment << "!" << endl;
+        p->changeCash(-payment); 
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
+        gn->setAccumulated(gn->getAccumulated() - payment);
+    } else if (evt== Event::CP25) {
+        const int payment = 25;
+        cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
+        p->changeCash(payment);
+    } else if (evt == Event::CP50) {
+        const int payment = 50;
+        cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
+        p->changeCash(payment);
+    } else if (evt == Event::CP100) {
+        const int payment = 50;
+        cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
+        p->changeCash(payment);
+    } else if (evt == Event::CP200) {
+        const int payment = 200;
+        cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
+        p->changeCash(payment);
+    }
+
+    return processOwed(p, "the bank");
+}
+
 int Game::handleMove(Player* p, int rollSum) {
-    int newPos = (p->getPlayerPostion() + rollSum) % BOARD_SIZE;
+    int newPos = p->getPlayerPostion() + rollSum;
+    if (newPos >= 40) {
+        newPos %= 40;
+        cout << "Collected OSAP." << endl;
+        p->changeCash(200);
+    }
     p->setPlayerPostion(newPos);
 
-    if (b.isOwnable(newPos)) {
-        
-    } else if (b.isSLC(newPos)) {
-        Event evt = rngSLC.generateEvent();
-        if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
-        if (evt == Event::OUTOFTIMS) {
-            cout << "You drew an SLC card and got a get out of Tim's line card!" << endl;
-            ++numCups[p];
-        } else if (evt == Event::MB3) {
-            cout << "You drew an SLC card telling you to move back 3 spaces." << endl;
-            this->handleMove(p, -3);
-        } else if (evt == Event::MB2) {
-            cout << "You drew an SLC card telling you to move back 2 spaces." << endl;
-            this->handleMove(p, -2);
-        } else if (evt == Event::MB1) {
-            cout << "You drew an SLC card telling you to move back 1 space." << endl;
-            this->handleMove(p, -1);
-        } else if (evt == Event::MF1) {
-            cout << "You drew an SLC card telling you to move forward 1 space." << endl;
-            this->handleMove(p, 1);
-        } else if (evt == Event::MF2) {
-            cout << "You drew an SLC card telling you to move forward 2 spaces." << endl;
-            this->handleMove(p, 2);
-        } else if (evt == Event::MF3) {
-            cout << "You drew an SLC card telling you to move forward 3 spaces." << endl;
-            this->handleMove(p, 3);
-        } else if (evt == Event::MDC_TIMS) {
-            cout << "You drew an SLC card and must now wait in DC Tim's Line :(" << endl;
-            sendToJail(p);
-        } else if (evt == Event::MCOLLECT_OSAP) {
-            this->handleMove(p, 40 - p->getPlayerPostion());
+    if (b.isOwnable(newPos)) { // academic/residence/gym
+        return handleOwnable(p, newPos, rollSum);
+    } else if (b.isSLC(newPos)) { // SLC square
+        return handleSLC(p);
+    } else if (b.isNeedles(newPos)) { // Needles Hall square
+        return handleNeedles(p);
+    } else if (b.getIndex("Goose Nesting") == newPos) {
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        p->changeCash(gn->getAccumulated());
+        gn->setAccumulated(0);
+    } else if (b.getIndex("Tuition") == newPos) {
+        cout << "Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
+        int opt = -1;
+        cin >> opt;
+        while (opt != 1 && opt != 2) {
+            cout << "Please enter 1 or 2" << endl;
+            cin >> opt;
         }
-    } else if (b.isNeedles(newPos)) {
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        int to_pay = 300;
+        if (opt == 1) to_pay = p->getLiquidCash() / 10;
+        p->changeCash(-to_pay);
+        gn->setAccumulated(gn->getAccumulated() + to_pay);
 
+        return processOwed(p, "the bank");
+    } else if (b.getIndex("Coop Fee") == newPos) {
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        const int coopFee = 150;
+        p->changeCash(-coopFee);
+        gn->setAccumulated(gn->getAccumulated() + coopFee);
+
+        return processOwed(p, "the bank");
     }
     return 0;
 }
