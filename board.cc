@@ -135,16 +135,16 @@ void Board::initBuilding(std::string name, Player* owner, int upgrades) {
     if (isType("Residence", buildingCode)) {
         Residence& toChange = dynamic_cast<Residence&>(*squares[buildingCode].get());
         toChange.setOwner(owner);
-        if (upgrades == -1) toChange.setMortgaged();
+        if (upgrades == -1) toChange.setMortgage(true);
     } else if (isType("Gyms", buildingCode)) {
         Gym& toChange = dynamic_cast<Gym&>(*squares[buildingCode].get());
         toChange.setOwner(owner);
-        if (upgrades == -1) toChange.setMortgaged();
+        if (upgrades == -1) toChange.setMortgage(true);
     } else if (isAcademic(buildingCode)) {
         Academic& toChange = dynamic_cast<Academic&>(*squares[buildingCode].get());
         toChange.setOwner(owner);
         if (upgrades > -1) toChange.setUpgrades(upgrades);
-        else toChange.setMortgaged();
+        else toChange.setMortgage(true);
     }
 }
 

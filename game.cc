@@ -50,7 +50,6 @@ void Game::loadFile(istream& in) {
     }
 
     // load buildings
-    const int BUILDING_COUNT = 40;
     while (getline(in, line)) {
         istringstream iss{line};
         string building, owner;
@@ -96,7 +95,7 @@ void Game::initPlayers() {
             if (((playerSymbol == 'G') || (playerSymbol == 'B') || (playerSymbol == 'D') ||(playerSymbol == 'P') || (playerSymbol == 'S') ||
                 (playerSymbol == '$') || (playerSymbol == 'L') || (playerSymbol == 'T')) && (cnt1 == 1)) {
                 players[j]->setSymbol(playerSymbol);
-                for (int i = 0; i < possibleSymbols.size(); i++){
+                for (size_t i = 0; i < possibleSymbols.size(); i++){
                     if (possibleSymbols[i] == playerSymbol){
                         possibleSymbols.erase(possibleSymbols.begin() + i);
                         break;
@@ -507,14 +506,14 @@ void Game::play() {
             string propertyName;
             iss2 >> propertyName;
             if ((b.isAcademic(pos)) || (b.isGym(pos)) || (b.isResidence(pos))) {
-                Square* sq = nullptr;
-                if (b.isAcademic(pos)){
-                    Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
-                } else if (b.isGym(pos)){
-                    Gym* sq = dynamic_cast<Gym*>(b.getSquare(pos));
-                } else {
-                    Residence *sq = dynamic_cast<Residence*>(b.getSquare(pos));
-                }
+                Square* sq = b.getSquare(pos);
+                // if (b.isAcademic(pos)){
+                //     Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
+                // } else if (b.isGym(pos)){
+                //     Gym* sq = dynamic_cast<Gym*>(b.getSquare(pos));
+                // } else {
+                //     Residence *sq = dynamic_cast<Residence*>(b.getSquare(pos));
+                // }
 
                 if (sq->getOwner() == curr) {
                     if (!(sq->isMortgaged())){
@@ -552,7 +551,7 @@ void Game::play() {
             cout << "Player " << players[playerTurn]->getPlayerName() << " has these properties " << endl;
             vector<Square*> playerAssets;
             b.getOwnedSquares(players[playerTurn].get(), playerAssets);
-            for (int i = 0; i < playerAssets.size(); i++){
+            for (size_t i = 0; i < playerAssets.size(); i++){
                 cout << playerAssets[i]->getName() << endl;
             }
             cout << "Player " << players[playerTurn]->getPlayerName() << " total assets are: " << players[playerTurn]->getTotalAssetsValue() << endl;
@@ -564,7 +563,7 @@ void Game::play() {
                 cout << "Player " << players[j]->getPlayerName() << " has these properties " << endl;
                 vector<Square*> playerAssets;
                 b.getOwnedSquares(players[j].get(), playerAssets);
-                for (int i = 0; i < playerAssets.size(); i++){
+                for (size_t i = 0; i < playerAssets.size(); i++){
                     cout << playerAssets[i]->getName() << endl;
                 }
                 cout << "Player " << players[j]->getPlayerName() << " total assets are: " << players[j]->getTotalAssetsValue() << endl;
@@ -578,7 +577,7 @@ void Game::play() {
             out.open(filename);
 
             // player1 char TimsCups money position
-            for (int i = 0; i < players.size(); ++i) {
+            for (size_t i = 0; i < players.size(); ++i) {
                 Player* curr = players[i].get();
                 out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << curr->getPlayerPostion() << endl;
             }
@@ -682,7 +681,7 @@ ostream &operator<<(ostream &out, Game &game) {
 
     // printing bottom of top row
     out << divider;
-    for (int i = 0; i < 11; ++i) {
+    for (size_t i = 0; i < 11; ++i) {
         out << block_bottom;
     }
     out << endl;
@@ -706,7 +705,7 @@ ostream &operator<<(ostream &out, Game &game) {
 
     // fourth row of blocks
     out << divider << "SLC" << four_empty << empty_middle_section << "SLC" << four_empty << endl; // block_row1
-    for (int i = 0; i < 2; ++i) {
+    for (size_t i = 0; i < 2; ++i) {
         // printing the empty section in the middle
         out << blank_middle_section << endl;
     }
@@ -800,7 +799,7 @@ ostream &operator<<(ostream &out, Game &game) {
     out << endl;
 
     out << divider; // block_row5
-    for (int i = 0; i < 11; ++i) {
+    for (size_t i = 0; i < 11; ++i) {
         out << block_bottom;
     }
     out << endl;
