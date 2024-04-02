@@ -32,7 +32,7 @@ void Gym::mortgage(int amountBack) {
 
 void Gym::unmortgage() {
     mortgaged = false;
-    owner->changeCash((purchase_cost * 6) / 10, true);
+    owner->changeCash((purchase_cost * 6) / 10, false);
 }
 
 //buyProperty
