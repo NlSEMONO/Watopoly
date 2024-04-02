@@ -174,48 +174,53 @@ void Game::sendToJail(Player* p) {
     jailedTurns[p] = 0;
 }
 
+int Game::handleOwnable() {
+    Square* tile = b.getSquare(newPos);
+
+    // unowned property
+    if (tile->getOwner() == nullptr) {
+        cout << tile->getName() << " is unowned. Your balance is " << p->getLiquidCash();
+        cout << ". It costs " << tile->getCost() << ". Would you like to buy it? (y/n)" << endl;
+        string resp;
+        cin >> resp;
+        if (resp == "y") {
+            tile->buy(p);
+            if (b.isGym(newPos)) gymsOwned[p]++;
+            else if (b.isResidence(newPos)) residenceOwned[p]++;
+            return processOwed(p, "the bank");
+        }
+    }
+    // owned property
+    else {
+        int rentOwed = 0;
+        Player* owner = tile->getOwner();
+        cout << tile->getName() << " is owned by: " << owner->getPlayerName() << " paying them: ";
+        if (b.isGym(newPos)) {
+            Gym* gymPtr = dynamic_cast<Gym*>(tile);
+            rentOwed = gymPtr->getRent(gymsOwned[owner], rollSum);
+            cout << rentOwed << endl;
+            gymPtr->payRent(p, gymsOwned[owner], rollSum);
+        } else if (b.isResidence(newPos)) {
+            Residence* resPtr = dynamic_cast<Residence*>(tile);
+            rentOwed = resPtr->getRent(residenceOwned[owner]);
+            cout << rentOwed << endl;
+            resPtr->payRent(p, residenceOwned[owner]);
+        } else {
+            Academic* acaPtr = dynamic_cast<Academic*>(tile);
+            rentOwed = acaPtr->getRent();
+            cout << rentOwed << endl;
+            acaPtr->payRent(p);
+        }
+        return processOwed(p, owner->getPlayerName());
+    }
+}
+
 int Game::handleMove(Player* p, int rollSum) {
     int newPos = (p->getPlayerPostion() + rollSum) % BOARD_SIZE;
     p->setPlayerPostion(newPos);
-    Square* tile = b.getSquare(newPos);
 
     if (b.isOwnable(newPos)) {
-        // unowned property
-        if (tile->getOwner() == nullptr) {
-            cout << tile->getName() << " is unowned. Your balance is " << p->getLiquidCash();
-            cout << ". It costs " << tile->getCost() << ". Would you like to buy it? (y/n)" << endl;
-            string resp;
-            cin >> resp;
-            if (resp == "y") {
-                tile->buy(p);
-                if (b.isGym(newPos)) gymsOwned[p]++;
-                else if (b.isResidence(newPos)) residenceOwned[p]++;
-                return processOwed(p, "the bank");
-            }
-        }
-        // owned property
-        else {
-            int rentOwed = 0;
-            Player* owner = tile->getOwner();
-            cout << tile->getName() << " is owned by: " << owner->getPlayerName() << " paying them: ";
-            if (b.isGym(newPos)) {
-                Gym* gymPtr = dynamic_cast<Gym*>(tile);
-                rentOwed = gymPtr->getRent(gymsOwned[owner], rollSum);
-                cout << rentOwed << endl;
-                gymPtr->payRent(p, gymsOwned[owner], rollSum);
-            } else if (b.isResidence(newPos)) {
-                Residence* resPtr = dynamic_cast<Residence*>(tile);
-                rentOwed = resPtr->getRent(residenceOwned[owner]);
-                cout << rentOwed << endl;
-                resPtr->payRent(p, residenceOwned[owner]);
-            } else {
-                Academic* acaPtr = dynamic_cast<Academic*>(tile);
-                rentOwed = acaPtr->getRent();
-                cout << rentOwed << endl;
-                acaPtr->payRent(p);
-            }
-            return processOwed(p, owner->getPlayerName());
-        }
+        
     } else if (b.isSLC(newPos)) {
         Event evt = rngSLC.generateEvent();
         if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
@@ -373,16 +378,18 @@ void Game::play() {
             if (b.isAcademic(pos)) {
                 Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
                 if (sq->getOwner() == curr) {
-                    string setting; 
-                    iss2 >> setting;
+                    if (b.ownsAll(curr, pos)) {
+                        string setting; 
+                        iss2 >> setting;
 
-                    if (setting == "buy" && curr->canAfford(sq->getUpgrade_cost())) { 
-                        if (sq->getUpgradeLevel() < 5) sq->upgrade();
-                        else cerr << "You can't upgrade this property anymore." << endl;
-                    } else if (setting == "sell") {
-                        if (sq->getUpgradeLevel() > 0) sq->sellUpgrade();
-                        else cerr << "You can't sell any more upgardes from this property." << endl; 
-                    } else cerr << "you can't afford to upgrade this property." << endl;
+                        if (setting == "buy" && curr->canAfford(sq->getUpgrade_cost())) { 
+                            if (sq->getUpgradeLevel() < 5) sq->upgrade();
+                            else cerr << "You can't upgrade this property anymore." << endl;
+                        } else if (setting == "sell") {
+                            if (sq->getUpgradeLevel() > 0) sq->sellUpgrade();
+                            else cerr << "You can't sell any more upgardes from this property." << endl; 
+                        } else cerr << "you can't afford to upgrade this property." << endl;
+                    } else cerr << "you don't own all properties of this monopoly!" << endl;
                 } else cerr << "You don't own this property!" << endl;
             } else cerr << "You can't upgrade this property." << endl;
         } else if (cmd == "mortgage"){

@@ -5,13 +5,9 @@ Square::Square(std::string name): name{name}, players{} {}
 
 Square::~Square() {};
 
-std::string Square::getName() const {
-    return name;
-}
+std::string Square::getName() const { return name; }
 
-void Square::addPlayer(Player* player) {
-    players.push_back(player);
-}
+void Square::addPlayer(Player* player) { players.push_back(player); }
 
 void Square::removePlayer(Player* player) {
     for (auto it = players.begin(); it != players.end();) {
@@ -20,9 +16,7 @@ void Square::removePlayer(Player* player) {
     }
 }
 
-Player* Square::getOwner() const {
-    return nullptr;
-}
+Player* Square::getOwner() const { return nullptr; }
 
 string Square::printPlayers() {
     string tmp; 
@@ -45,3 +39,5 @@ bool Square::isMortgaged() const {
 }
 
 void Square::buy(Player* p) {}
+
+// string Square::getBlock() const { return ""; }

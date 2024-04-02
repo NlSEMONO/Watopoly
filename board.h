@@ -33,6 +33,7 @@ class Board {
         bool isSLC(int buildingCode);
         bool isNeedles(int buildingCode);
         void saveProperties(ostream& out);
+        bool ownsAll(Player* p, int position);
 };
 
 #endif
