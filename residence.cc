@@ -19,8 +19,8 @@ void Residence::upgrade(){
     owner->changeCash(purchase_cost, false);
 }
 
-void Residence::mortgage(){
-    owner->changeCash(purchase_cost / 2, true);
+void Residence::mortgage(int amountBack){
+    owner->changeCash(amountBack, true);
     mortgaged = true;  
 }
 
@@ -39,3 +39,5 @@ void Residence::payRent(Player *payer, int residencesOwned){
 void Residence::setOwner(Player* p) {owner = p; }
 
 void Residence::setMortgage(bool mortgage) {mortgaged = mortgage; }
+
+int Residence::getPurchaseCost() const {return purchase_cost;}

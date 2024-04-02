@@ -518,10 +518,10 @@ void Game::play() {
 
                 if (sq->getOwner() == curr) {
                     if (!(sq->isMortgaged())){
-                        sq->setMortgage(true);
-                        int moneyFromMortgage = sq->
+                        sq->setMortgage(true);  //Redunant not needed 
+                        int mortgageBack = sq->getPur
+                        if (moneyOwed <= sq->getPu)
                         moneyOwed -= 
-                        sq->getOwner()->setLiquidCash();
                     } else {
                         cerr << "This property is already mortgaged!" << endl;
                     }

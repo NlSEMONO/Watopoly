@@ -27,11 +27,13 @@ public:
 
     void upgrade(); // upgrading property
     void mortgage(); // mortgage
+    virtual void mortgage(int amountBack) override;
     virtual void buy(Player *p) override; // buying
     void payRent(Player *payer, int residencesOwned);
 
     virtual void setOwner(Player *p) override;
     virtual void setMortgage(bool mortagage) override;
+    virtual int getPurchaseCost() const override;
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };
 

@@ -25,8 +25,8 @@ int Gym::getRent(int gymsOwned, int diceRoll) const {
 
 
 // mortgageProperty
-void Gym::mortgage() {
-    owner->changeCash(purchase_cost / 2, true);
+void Gym::mortgage(int amountBack) {
+    owner->changeCash(amountBack, true);
     mortgaged = true;
 }
 
@@ -51,4 +51,4 @@ void Gym::payRent(Player *payer, int gymsOwned, int diceRoll) const {
 
 void Gym::setOwner(Player* p) {owner = p; }
 
-void Gym::setMortgage() {mortgaged = ; }
+void Gym::setMortgage(bool mortgage) {mortgaged = mortgage; }

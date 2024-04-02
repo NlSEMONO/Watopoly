@@ -19,17 +19,19 @@ class Gym: public Square {
     virtual Player *getOwner() const override;
     int getCost() const override;
     int getGymsOwned() const;
-    bool isBought() const;
+    bool isBought() const;void buy(Player *p) override;
     int getRent(int gymsOwned, int diceRoll) const;
     virtual bool isMortgaged() const override;
 
-    void mortgage(); // mortgage
+    void upgrade(); // upgrading property
+    virtual void mortgage(int amountBack) override; // mortgage
     void unmortgage(); // unmortgage
-    void buy(Player *p) override; // buying
+    virtual void buy(Player *p) override; // buying
     void payRent(Player *payer, int gymsOwned, int diceRoll) const;
 
     virtual void setOwner(Player* p) override;
     virtual void setMortgage(bool mortgage) override;
+    virtual int getPurchaseCost() const override;
 
     // to whoever does board, we are doing a map where each index will map to the tile we are on and its block type
 };

@@ -36,9 +36,8 @@ void Academic::sellUpgrade() {
 }
 
 // mortgageProperty
-void Academic::mortgage() {
-    owner->changeCash(purchase_cost / 2, true);
-    owner->changeCash(upgrade_level * upgrade_cost, true);
+void Academic::mortgage(int amountBack) {
+    owner->changeCash(amountBack, true);
     upgrade_level = 0;
     mortgaged = true;
 }
@@ -83,3 +82,5 @@ void Academic::setOwner(Player* p) {owner = p; }
 void Academic::setUpgrades(int u) { upgrade_level = u; }
 
 void Academic::setMortgage(bool mortgage) {mortgaged = mortgage; }
+
+int Academic::getPurchaseCost() const {return purchase_cost;}

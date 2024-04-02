@@ -39,4 +39,9 @@ bool Square::isMortgaged() const {
 }
 
 void Square::buy(Player* p) {}
+
+void Square::mortgage(int amountBack) {}
+
+int Square::getPurchaseCost() const{}
+
 // string Square::getBlock() const { return ""; }
