@@ -42,6 +42,8 @@ void Square::buy(Player* p) {}
 
 void Square::mortgage(int amountBack) {}
 
+void Square::unmortgage() {}
+
 int Square::getMortgageCost() const{}
 
 // string Square::getBlock() const { return ""; }

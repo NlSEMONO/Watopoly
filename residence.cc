@@ -20,7 +20,7 @@ void Residence::upgrade(){
 }
 
 void Residence::mortgage(int amountBack){
-    owner->changeCash(amountBack, true);
+    owner->changeCash(amountBack, false);
     mortgaged = true;  
 }
 

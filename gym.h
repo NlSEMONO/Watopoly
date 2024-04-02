@@ -25,7 +25,7 @@ class Gym: public Square {
 
     void upgrade(); // upgrading property
     virtual void mortgage(int amountBack) override; // mortgage
-    void unmortgage(); // unmortgage
+    virtual void unmortgage() override; // unmortgage
     virtual void buy(Player *p) override; // buying
     void payRent(Player *payer, int gymsOwned, int diceRoll) const;
 
