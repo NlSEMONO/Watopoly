@@ -38,6 +38,8 @@ void Academic::sellUpgrade() {
 // mortgageProperty
 void Academic::mortgage() {
     owner->changeCash(purchase_cost / 2, true);
+    owner->changeCash(upgrade_level * upgrade_cost, true);
+    upgrade_level = 0;
     mortgaged = true;
 }
 
