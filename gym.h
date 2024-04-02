@@ -18,15 +18,16 @@ class Gym: public Square {
 
     std::string getName() const;
     virtual Player *getOwner() const override;
-    int getCost() const;
+    int getCost() const override;
     int getGymsOwned() const;
     bool isBought() const;
+    int getRent(int gymsOwned, int diceRoll) const;
     virtual bool isMortgaged() const override;
 
     void upgrade(); // upgrading property
     void mortgage(); // mortgage
     void unmortgage(); // unmortgage
-    virtual void buy(Player *p); // buying
+    void buy(Player *p) override; // buying
     void payRent(Player *payer, int diceRoll) const;
 
     virtual void setOwner(Player* p) override;

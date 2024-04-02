@@ -1,11 +1,9 @@
-+ roll cmd
 + bankrupt cmd 
 + unmortgage cmd
 + mortgage cmd
 + implement jail/get out after 3 turns
 + fix all + assets, player doens't store their assets anymore [maybe?]
-+ fix mortgage method for academic, required to sell all upgrades on mortgage
++ fix mortgage method for academic, required to sell all upgrades on mortgage //done see Academic::Mortgage
 + fix how residence/gym pay rent works (don't use upgrade to increment them anymore, just make them take amt owned by value)
 + getter for rent, based on diceroll + owned for gym, based on owned for residence
-+ fix academic:
-  + pay double rent if owner owns the entire monopoly and no upgrades (just add a boolean parameter to pay rent) 
++ method to print improvements

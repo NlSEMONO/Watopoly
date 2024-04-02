@@ -38,6 +38,8 @@ void Academic::sellUpgrade() {
 // mortgageProperty
 void Academic::mortgage() {
     owner->changeCash(purchase_cost / 2, true);
+    owner->changeCash(upgrade_level * upgrade_cost, true);
+    upgrade_level = 0;
     mortgaged = true;
 }
 
@@ -55,9 +57,25 @@ void Academic::buy(Player *p) {
 }
 
 // payRent
-void Academic::payRent(Player *payer) {
-    owner->changeCash(getRent(), true);
-    payer->changeCash(getRent(), false);
+void Academic::payRent(Player *payer, bool monopoly_Owned) {
+    if (!monopoly_Owned) {
+        owner->changeCash(getRent(), true);
+        payer->changeCash(getRent(), false);
+    } else if (monopoly_Owned && (upgrade_level == 0)) {
+        owner->changeCash(getRent() * 2, true);
+        payer->changeCash(getRent() * 2, false);
+    } else {
+        owner->changeCash(getRent(), true);
+        payer->changeCash(getRent(), false);
+    }
+}
+
+string Academic::printImprovements() const {
+    string tmp = "";
+    tmp += string("I", upgrade_level);
+    tmp += string(" ", 7 - upgrade_level);
+    tmp += "|";
+    return tmp;
 }
 
 void Academic::setOwner(Player* p) {owner = p; } 
