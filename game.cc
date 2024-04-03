@@ -454,41 +454,9 @@ void Game::play() {
         string cmd;
         iss2 >> cmd;
         Player* currPlayer = players[playerTurn].get();
-        // cout << cmd;
-        // implement jail
-        if (jailedTurns.count(currPlayer) == 1 && !jailMsg) {
-            if (jailedTurns[currPlayer] == 3) {
-                cout << "You've waited 3 turns in jail. You may now leave jail." << endl;
-                jailedTurns.erase(currPlayer);
-            } else {
-                cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
-                int resp = 55;
-                do {
-                    cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
-                    cout << "(2) - Pay $50" << endl;
-                    cout << "other - proceed to rolling" << endl;
-                    cin >> resp;
-                } while (resp == 1 && numCups[currPlayer] == 0);
-                if (resp == 1 || resp == 2) {
-                    if (resp == 1) {
-                        --numCups[currPlayer];
-                        --cupsDistributed;
-                    }
-                    else currPlayer->changeCash(-50);
-                    jailedTurns.erase(currPlayer);
-                    hasRolled = true;
-                } 
-
-                jailMsg = true;
-                moneyOwed = processOwed(currPlayer, "the bank");
-            }
-        }
-        // cout << boolalpha << (cmd == "next") << endl;
-        // cout << playerTurn << endl;
         // implement
         if (cmd == "roll"){
             prevCmd = "roll";
-            // b.makeMove(players[playerTurn].get());  
 
             int roll1 = dice.eventToInt(dice.generateEvent());
             int roll2 = dice.eventToInt(dice.generateEvent());
@@ -505,10 +473,13 @@ void Game::play() {
                     jailedTurns.erase(currPlayer);
                 } else if (jailedTurns.count(currPlayer) == 1) {
                     cout << "You did not roll snake eyes, you are still in jail." << endl;
-                    ++jailedTurns[currPlayer];
+                    if (jailedTurns[currPlayer] == 3) {
+                        
+                    }
                 }
                 else if (roll1 == roll2 && snakeEyes == 2) {
                     cout << "3 snake eyes in a row, sending you to jail!" << endl;
+                    sendToJail(currPlayer);
                 } else if (roll1 == roll2) {
                     cout << "You rolled snake eyes and must roll again before ending your turn." << endl;
                     moneyOwed += handleMove(currPlayer, roll1 + roll2);
@@ -534,6 +505,32 @@ void Game::play() {
             if (playerTurn == playerCount){
                 playerTurn = 0;
             }
+            if (jailedTurns.count(currPlayer) == 1) {
+                ++jailedTurns[currPlayer];
+            }
+            // implement jail
+            // if (jailedTurns.count(currPlayer) == 1 && jailedTurns[currPlayer] != 0 && !jailMsg) {
+            //     cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+            //     string resp = "garbage";
+            //     do {
+            //         cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
+            //         cout << "(2) - Pay $50" << endl;
+            //         cout << "other - proceed to rolling" << endl;
+            //         cin >> resp;
+            //     } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
+            //     if (resp == "1" || resp == "2") {
+            //         if (resp == "1") {
+            //             --numCups[currPlayer];
+            //             --cupsDistributed;
+            //         }
+            //         else currPlayer->changeCash(-50);
+            //         jailedTurns.erase(currPlayer);
+            //         hasRolled = true;
+            //     } 
+
+            //     jailMsg = true;
+            //     moneyOwed = processOwed(currPlayer, "the bank");
+            // }
             hasRolled = false;
             jailMsg = false;
             snakeEyes = 0;
@@ -543,6 +540,10 @@ void Game::play() {
             string to_get;
             iss2 >> player_2 >> to_give >> to_get;
             Player *trade_from = nameToPlayer[player_2];
+            if (trade_from == currPlayer) {
+                cerr << "you can't trade with yourself!" << endl;
+                continue;
+            }
 
             if (isdigit(to_give[0]) && isdigit(to_get[0])) {
                 cerr << "Invalid Trade" << endl;
@@ -622,13 +623,6 @@ void Game::play() {
             iss2 >> propertyName;
             if ((b.isAcademic(pos)) || (b.isGym(pos)) || (b.isResidence(pos))) {
                 Square* sq = b.getSquare(pos);
-                // if (b.isAcademic(pos)){
-                //     Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
-                // } else if (b.isGym(pos)){
-                //     Gym* sq = dynamic_cast<Gym*>(b.getSquare(pos));
-                // } else {
-                //     Residence *sq = dynamic_cast<Residence*>(b.getSquare(pos));
-                // }
 
                 if (sq->getOwner() == curr) {
                     if ((sq->isMortgaged())){
@@ -645,6 +639,11 @@ void Game::play() {
             }
             
         } else if (cmd == "bankrupt") {
+            /*
+            if they declare bankruptcy because they owe money to another player, the player who is owed receives all of the assets
+            of the player declaring bankruptcy. Otherwise (if the player owes money to the Bank), the buildings are returned to the open
+            market as unmortgaged properties (see Auctions below) and all Roll Up the Rim cups are destroyed
+            */
             if (players[playerTurn]->getTotalAssetsValue() >= moneyOwed){
                 // has more assets than owed money
                 cout << "Player " << players[playerTurn]->getPlayerName() << " has $";
