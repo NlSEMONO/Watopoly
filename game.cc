@@ -150,22 +150,31 @@ void Game::countResidenceGym(int code1, int code2, Player* tradee, Player* trade
 // trader.
 void Game::transaction(Player *trader, string to_trade, string to_get, int playerTurn) {
     if (isdigit(to_trade[0])) {
-        // changing money
         int money_traded = stoi(to_trade);
-        players[playerTurn]->changeCash(money_traded, false);
-        trader->changeCash(money_traded, true);
-
-        // changing property
-        b.getSquare(to_get)->setOwner(players[playerTurn].get());
-        countResidenceGym(b.getIndex(to_get), -1, players[playerTurn].get(), trader);
+        if (players[playerTurn]->canAfford(money_traded)) {
+             // changing money
+            players[playerTurn]->changeCash(money_traded, false);
+            trader->changeCash(money_traded, true);
+             // changing property
+            b.getSquare(to_get)->setOwner(players[playerTurn].get());
+            countResidenceGym(b.getIndex(to_get), -1, players[playerTurn].get(), trader);
+        } else {
+            cerr << "Trade failed! Player " << players[playerTurn]->getPlayerName();
+            cerr << " does not have the assets to fulfill this trade." << endl;
+        }
     } else if (isdigit(to_get[0])) {
         // changing money
         int money_recieved = stoi(to_get);
-        players[playerTurn]->changeCash(money_recieved, true);
-        trader->changeCash(money_recieved, false);
-        // changing property
-        b.getSquare(to_trade)->setOwner(trader);
-        countResidenceGym(-1, b.getIndex(to_trade), players[playerTurn].get(), trader);
+        if (trader->canAfford(money_recieved)){
+            players[playerTurn]->changeCash(money_recieved, true);
+            trader->changeCash(money_recieved, false);
+            // changing property
+            b.getSquare(to_trade)->setOwner(trader);
+            countResidenceGym(-1, b.getIndex(to_trade), players[playerTurn].get(), trader);
+        } else {
+            cerr << "Trade failed! Player " << trader->getPlayerName();
+            cerr << " does not have the assets to fulfill this trade." << endl;
+        }
     } else {
         Square* p = b.getSquare(to_get);
         Square* q = b.getSquare(to_trade);
@@ -386,7 +395,8 @@ int Game::handleMove(Player* p, int rollSum) {
         p->changeCash(gn->getAccumulated());
         gn->setAccumulated(0);
     } else if (b.getIndex("TUITION") == newPos) { // tuition
-        cout << "Pay tuition. Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
+        cout << "Pay tuition. You currently have $" << p->getLiquidCash();
+        cout << "Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
         int opt = -1;
         cin >> opt;
         while (opt != 1 && opt != 2) {
@@ -633,9 +643,28 @@ void Game::play() {
                 cerr << "You can't unmortgage this property." << endl;
             }
             
-        } else if (cmd == "bankrupt"){
-            
-            
+        } else if (cmd == "bankrupt") {
+            if (players[playerTurn]->getTotalAssetsValue() >= moneyOwed){
+                // has more assets than owed money
+                cout << "Player " << players[playerTurn]->getPlayerName() << " has $";
+                cout << players[playerTurn]->getTotalAssetsValue() << " and owes ";
+                cout << moneyOwed << " so " << players[playerTurn]->getPlayerName();
+                cout << " cannot declare bankrupcy" << endl;
+            } else {
+                // can safely declare bankrupcy
+                int block_index = players[playerTurn]->getPlayerPostion();
+                Player *square_owner = b.getSquare(block_index)->getOwner();
+                square_owner->changeCash(players[playerTurn]->getLiquidCash()); // increasing cash
+
+                vector<Square*> playerAssets;
+                b.getOwnedSquares(players[playerTurn].get(), playerAssets);
+                for (size_t i = 0; i < playerAssets.size(); i++){
+                    playerAssets[i]->setOwner(square_owner); // setting owner to player owed
+                }
+
+                players.erase(players.begin() + playerTurn); // deletes unique ptr
+                playerCount--; // reduces playerCount
+            }            
         } else if (cmd == "assets"){
             //Logic to check is player is paying tuition if yes:
             cout << "Player " << players[playerTurn]->getPlayerName() << " has this much cash: " << players[playerTurn]->getLiquidCash() << endl;
