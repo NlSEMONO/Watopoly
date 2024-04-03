@@ -7,3 +7,4 @@
 + fix how residence/gym pay rent works (don't use upgrade to increment them anymore, just make them take amt owned by value) // Aagam to Do
 + fix gym payRent, residence get/payRent // DONE
 + method to print improvements // DONE
++ handle payTuition (segfault)
