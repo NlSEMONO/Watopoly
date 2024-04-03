@@ -7,3 +7,4 @@
 + test improve (test can't improve mortgage property)
 + test assets (test that you can't see assets while deciding how to pay rent)
 + test player wins
++ fix file write

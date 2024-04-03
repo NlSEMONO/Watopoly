@@ -41,7 +41,7 @@ void Game::loadFile(istream& in) {
             players.push_back(unique_ptr<Player>(new Player{name, chr, money, 0, 0, position}));
             Player* p = players[i].get();
             numCups[p] = cups;
-            b.getSquare(0)->addPlayer(p);
+            b.getSquare(position)->addPlayer(p);
             if (mode == 1) {
                 if (!(iss >> turns)) throw runtime_error{"Please specify # of turns in jail."};
                 jailedTurns[p] = turns;
