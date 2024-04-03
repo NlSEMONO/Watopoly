@@ -35,7 +35,7 @@ class Game {
     int handleSLC(Player* p);
     int handleNeedles(Player* p);
     int handleAuction(size_t start, Square* prize);
-    void printBoardAndActions(const std::string& prevCmd, int playerTurn, bool hasRolled, int moneyOwed);
+    void printBoardAndActions(const std::string& prevCmd, int playerTurn, bool hasRolled, int moneyOwed, bool delayedMoveJail = false);
     void countResidenceGym(int code1, int code2, Player* tradee, Player* trader);
 
     public:

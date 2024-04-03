@@ -454,8 +454,11 @@ int Game::handleMove(Player* p, int rollSum) {
 const vector<string> PRINT_AGAIN = {"roll", "improve", "bankrupt", "mortgage", "garbage value"};
 const auto PAGAINEND = PRINT_AGAIN.end();
 
-void Game::printBoardAndActions(const string& prevCmd, int playerTurn, bool hasRolled, int moneyOwed) {
+void Game::printBoardAndActions(const string& prevCmd, int playerTurn, bool hasRolled, int moneyOwed, bool delayedMoveJail) {
     if (find(PRINT_AGAIN.begin(), PRINT_AGAIN.end(), prevCmd) != PAGAINEND) cout << *this;
+    if (delayedMoveJail) {
+        cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << "mortgage, bankrupt, trade" << endl;
+    }
     cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next, " : "roll, ") << "trade, improve, mortgage, unmortgage, save, ";
     cout << (moneyOwed > 0 ? "bankrupt " : "assets, all") << endl;
 }
@@ -517,8 +520,11 @@ void Game::play() {
                             moneyOwed = processOwed(currPlayer, "the bank");
                             if (moneyOwed == 0) moneyOwed = handleMove(currPlayer, roll1 + roll2);
                             else {
+                                cout << "You owe the bank money, please mortgage/declare bankruptcy to have your roll executed." << endl;
+                                printBoardAndActions(prevCmd, playerTurn, hasRolled, 0, true);
                                 r1 = roll1;
                                 r2 = roll2;
+                                jailOwedMoney = true;
                             }
                         }
                     }
@@ -768,7 +774,11 @@ void Game::play() {
             b.saveProperties(out);
             out.close();
         } 
-        else continue;
+        else continue; 
+        if (jailOwedMoney && moneyOwed == 0) {
+            moneyOwed = handleMove(currPlayer, r1 + r2);
+            jailOwedMoney = false;
+        }
         prevCmd = cmd;
         printBoardAndActions(prevCmd, playerTurn, hasRolled, moneyOwed);
     }
