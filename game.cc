@@ -562,27 +562,6 @@ void Game::play() {
                 playerTurn = 0;
             }
             currPlayer = players[playerTurn].get();
-            if (jailedTurns.count(currPlayer) == 1) {
-                ++jailedTurns[currPlayer];
-                cout << currPlayer->getPlayerName() << ", you are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
-                string resp = "garbage";
-                do {
-                    cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
-                    cout << "(2) - Pay $50" << endl;
-                    cout << "other - proceed to rolling" << endl;
-                    cin >> resp;
-                    if (cin.eof()) break;
-                } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
-                if (resp == "1" || resp == "2") {
-                    if (resp == "1") {
-                        --numCups[currPlayer];
-                        --cupsDistributed;
-                    }
-                    else currPlayer->changeCash(-50);
-                    jailedTurns.erase(currPlayer);
-                    hasRolled = true;
-                } 
-            }
             // implement jail
             // if (jailedTurns.count(currPlayer) == 1 && jailedTurns[currPlayer] != 0 && !jailMsg) {
             //     cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
@@ -775,7 +754,7 @@ void Game::play() {
             // player1 char TimsCups money position
             for (size_t i = 0; i < players.size(); ++i) {
                 Player* curr = players[i].get();
-                out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << curr->getPlayerPostion() << endl;
+                out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << " " << curr->getPlayerPostion() << endl;
             }
             b.saveProperties(out);
             out.close();
@@ -784,6 +763,27 @@ void Game::play() {
         if (jailOwedMoney && moneyOwed == 0) {
             moneyOwed = handleMove(currPlayer, r1 + r2);
             jailOwedMoney = false;
+        }
+        if (jailedTurns.count(currPlayer) == 1) {
+            ++jailedTurns[currPlayer];
+            cout << currPlayer->getPlayerName() << ", you are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+            string resp = "garbage";
+            do {
+                cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
+                cout << "(2) - Pay $50" << endl;
+                cout << "other - proceed to rolling" << endl;
+                cin >> resp;
+                if (cin.eof()) break;
+            } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
+            if (resp == "1" || resp == "2") {
+                if (resp == "1") {
+                    --numCups[currPlayer];
+                    --cupsDistributed;
+                }
+                else currPlayer->changeCash(-50);
+                jailedTurns.erase(currPlayer);
+                hasRolled = true;
+            } 
         }
         prevCmd = cmd;
         printBoardAndActions(prevCmd, playerTurn, hasRolled, moneyOwed);
