@@ -220,6 +220,7 @@ int Game::handleAuction(size_t start, Square* prize) {
         while (resp != "y" && resp != "n") {
             cout << "Please enter (y/n)." << endl;
             std::cin >> resp;
+            if (cin.eof()) break;
         }
         if (resp == "n") {
             outOfAuction[curr] = true;
@@ -257,6 +258,7 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
             cin.ignore(IGNORE_CHARS, '\n');
             cerr << "Invalid input, please enter again (y/n)." << endl;
             cin >> resp;
+            if (cin.eof()) break;
         }
         if (resp == "y") {
             tile->buy(p);
@@ -397,7 +399,7 @@ int Game::handleMove(Player* p, int rollSum) {
         gn->setAccumulated(0);
     } else if (b.getIndex("TUITION") == newPos) { // tuition
         cout << "Pay tuition. You currently have $" << p->getLiquidCash();
-        cout << "Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
+        cout << ". Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
         int opt = -1;
         cin >> opt;
         while (opt != 1 && opt != 2) {
@@ -405,6 +407,7 @@ int Game::handleMove(Player* p, int rollSum) {
             cin.ignore(IGNORE_CHARS, '\n');
             cout << "Please enter 1 or 2" << endl;
             cin >> opt;
+            if (cin.eof()) break;
         }
         GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
         int to_pay = 300;
@@ -444,8 +447,10 @@ void Game::play() {
     int moneyOwed = 0;
     bool hasRolled = false;
     int snakeEyes = 0;
-    bool jailMsg = false;
+    bool jailOwedMoney = false;
     string prevCmd = "garbage value";
+    Player* currPlayer = players[playerTurn].get();
+    int r1 = -1, r2 = -1;
     
     printBoardAndActions(prevCmd, 0, hasRolled, moneyOwed);
     while(getline(cin, cmdWhole)){    
@@ -453,7 +458,6 @@ void Game::play() {
         istringstream iss2{cmdWhole};
         string cmd;
         iss2 >> cmd;
-        Player* currPlayer = players[playerTurn].get();
         // implement
         if (cmd == "roll"){
             prevCmd = "roll";
@@ -471,10 +475,32 @@ void Game::play() {
                 if (roll1 == roll2 && jailedTurns.count(currPlayer) == 1) {
                     cout << "You rolled snake eyes and are now out of jail." << endl;
                     jailedTurns.erase(currPlayer);
+                    moneyOwed = handleMove(currPlayer, roll1 + roll2);
                 } else if (jailedTurns.count(currPlayer) == 1) {
                     cout << "You did not roll snake eyes, you are still in jail." << endl;
                     if (jailedTurns[currPlayer] == 3) {
-                        
+                        cout << "You have spent 3 turns in jail and must get out. Pick an option:" << endl;
+                        string resp = "garbage";
+                        do {
+                            cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
+                            cout << "(2) - Pay $50" << endl;
+                            cin >> resp;
+                            if (cin.eof()) break;
+                        } while (resp != "2" && !(resp == "1" && numCups[currPlayer] > 0));
+                        if (resp == "1" || resp == "2") {
+                            if (resp == "1") {
+                                --numCups[currPlayer];
+                                --cupsDistributed;
+                            }
+                            else currPlayer->changeCash(-50);
+                            jailedTurns.erase(currPlayer);
+                            moneyOwed = processOwed(currPlayer, "the bank");
+                            if (moneyOwed == 0) moneyOwed = handleMove(currPlayer, roll1 + roll2);
+                            else {
+                                r1 = roll1;
+                                r2 = roll2;
+                            }
+                        }
                     }
                 }
                 else if (roll1 == roll2 && snakeEyes == 2) {
@@ -502,14 +528,14 @@ void Game::play() {
                 continue;
             }
             playerTurn++;
+            hasRolled = false;
+            snakeEyes = 0;
             if (playerTurn == playerCount){
                 playerTurn = 0;
             }
+            currPlayer = players[playerTurn].get();
             if (jailedTurns.count(currPlayer) == 1) {
                 ++jailedTurns[currPlayer];
-                hasRolled = false;
-                jailMsg = false;
-                snakeEyes = 0;
                 cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
                 string resp = "garbage";
                 do {
@@ -517,6 +543,7 @@ void Game::play() {
                     cout << "(2) - Pay $50" << endl;
                     cout << "other - proceed to rolling" << endl;
                     cin >> resp;
+                    if (cin.eof()) break;
                 } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
                 if (resp == "1" || resp == "2") {
                     if (resp == "1") {
