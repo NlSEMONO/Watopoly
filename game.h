@@ -25,7 +25,7 @@ class Game {
     Dice dice;
     int testing_roll1;
     int testing_roll2;
-    bool testingOn;
+    bool testingOn = false;
     Board b;
 
     std::vector<Square*>& getAssets(Player* p) const;
@@ -35,6 +35,8 @@ class Game {
     int handleSLC(Player* p);
     int handleNeedles(Player* p);
     int handleAuction(size_t start, Square* prize);
+    void printBoardAndActions(const std::string& prevCmd, int playerTurn, bool hasRolled, int moneyOwed);
+    void countResidenceGym(int code1, int code2, Player* tradee, Player* trader);
 
     public:
         void loadFile(std::istream& in);
@@ -43,7 +45,6 @@ class Game {
         void setPlayers(int pCount);
         void transaction(Player *trader, std::string to_trade, std::string to_get, int playerTurn);
         void setTestingOn();
-        void setRolls(int roll1, int roll2);
 
     friend std::ostream &operator<<(std::ostream &out, Game &game);    
 };

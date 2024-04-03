@@ -1,0 +1,19 @@
+2
+f
+s
+$
+G
+roll 1 0
+y
+next
+trade f 1 AL
+accept
+roll 1 2
+y
+improve buy
+improve sell
+improve buy
+assets
+mortgage ML
+assets
+next

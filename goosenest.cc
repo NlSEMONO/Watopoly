@@ -2,7 +2,7 @@
 
 GooseNest::~GooseNest() {}
 
-GooseNest::GooseNest(): Square{"Goose Nesting"} {}
+GooseNest::GooseNest(): Square{"Goose Nesting"}, accumulated{0} {}
 
 int GooseNest::getAccumulated() const {return accumulated;}
 

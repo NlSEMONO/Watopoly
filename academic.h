@@ -27,7 +27,7 @@ class Academic: public Square {
     std::string getName() const;
     bool isBought() const;
     virtual bool isMortgaged() const override;
-    int getRent() const;
+    int getRent(bool monopoly) const;
     virtual Player *getOwner() const override;
 
     void upgrade(); // upgrading property

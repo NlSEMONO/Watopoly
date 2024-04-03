@@ -10,7 +10,6 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    bool testing = false;
     string file = "";
     Game game;
 
@@ -20,15 +19,7 @@ int main(int argc, char** argv) {
             string str;
             iss >> str;
             // cout << str << endl;
-            if (str == "-testing") {
-                int roll1;
-                int roll2;
-                if (cin >> roll1 >> roll2) {
-                    game.setTestingOn();
-                    game.setRolls(roll1, roll2);
-                }
-                testing = true;
-            }
+            if (str == "-testing") game.setTestingOn();
             else if (str == "-load") {
                 if (i + 1 >= argc) {
                     cerr << "Please specify a file name" << endl;

@@ -1,10 +1,2 @@
 + bankrupt cmd 
-+ unmortgage cmd // Malhar to Do
-+ mortgage cmd // Malhar to Do
-+ implement jail/get out after 3 turns
-+ fix all + assets, player doens't store their assets anymore [maybe?]
-+ fix mortgage method for academic, required to sell all upgrades on mortgage //DONE see Academic::Mortgage
-+ fix how residence/gym pay rent works (don't use upgrade to increment them anymore, just make them take amt owned by value) // Aagam to Do
-+ fix gym payRent, residence get/payRent // DONE
-+ method to print improvements // DONE
-+ handle payTuition (segfault)
++ mortgage must sell improvements at half price [check that test_improve ends with cash 1419]

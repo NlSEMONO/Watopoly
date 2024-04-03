@@ -21,7 +21,7 @@ int Academic::getUpgrade_cost() const {return upgrade_cost;}
 int Academic::getUpgradeLevel() const {return upgrade_level;}
 bool Academic::isBought() const {return bought;}
 bool Academic::isMortgaged() const {return mortgaged;}
-int Academic::getRent() const {return rentMoney[upgrade_level];}
+int Academic::getRent(bool monopoly) const {return (monopoly && upgrade_level == 0) ? rentMoney[0] * 2 :  rentMoney[upgrade_level];}
 Player *Academic::getOwner() const {return owner;}
 
 // upgradeProperty
@@ -57,16 +57,18 @@ void Academic::buy(Player *p) {
 
 // payRent
 void Academic::payRent(Player *payer, bool monopoly_Owned) {
-    if (!monopoly_Owned) {
-        owner->changeCash(getRent(), true);
-        payer->changeCash(getRent(), false);
-    } else if (monopoly_Owned && (upgrade_level == 0)) {
-        owner->changeCash(getRent() * 2, true);
-        payer->changeCash(getRent() * 2, false);
-    } else {
-        owner->changeCash(getRent(), true);
-        payer->changeCash(getRent(), false);
-    }
+    owner->changeCash(getRent(monopoly_Owned), true);
+    payer->changeCash(getRent(monopoly_Owned), false);
+    // if (!monopoly_Owned) {
+    //     owner->changeCash(getRent(monopoly_Owned), true);
+    //     payer->changeCash(getRent(monopoly_Owned), false);
+    // } else if (monopoly_Owned && (upgrade_level == 0)) {
+    //     owner->changeCash(getRent(monopoly_Owned), true);
+    //     payer->changeCash(getRent() * 2, false);
+    // } else {
+    //     owner->changeCash(getRent(), true);
+    //     payer->changeCash(getRent(), false);
+    // }
 }
 
 string Academic::printImprovements() const {

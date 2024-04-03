@@ -4,14 +4,10 @@ SOURCES=$(wildcard *.cc)   # list of all .cc files in the current directory
 OBJECTS=${SOURCES:.cc=.o}  # .o files depend upon .cc files with same names
 DEPENDS=${OBJECTS:.o=.d}   # .d file is list of dependencies for corresponding .cc file
 EXEC=watopoly
-DD1TGT = a4q3a
-DD2TGT = a4q3b
-DD1ZIP = a4q3a.zip
-DD2ZIP = a4q3b.zip
 DD1FILES = $(wildcard *.txt *.out *.in *.err *.ret)
 DD2FILES = $(wildcard *.cc *.h Makefile)
 TESTARGS = -v
-SUITE = suiteq3.txt
+SUITE = suite.txt
 PROVIDED = ../execs/a4q3-provided
 
 # First target in the makefile is the default target.

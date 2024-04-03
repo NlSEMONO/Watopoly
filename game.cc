@@ -12,6 +12,9 @@
 using namespace std;
 
 const int BOARD_SIZE = 40;
+const int IGNORE_CHARS = 1000;
+
+void Game::setTestingOn() { testingOn = true; }
 
 void Game::setPlayers(int pCount) { playerCount = pCount; }
 
@@ -77,6 +80,7 @@ void Game::initPlayers() {
         if (cin && cnt == 0){
           players.push_back(unique_ptr<Player>{new Player{nameOfPLayer, '\0', 1500, 0, 0, 0}});
           b.getSquare(0)->addPlayer(players[i].get());
+          nameToPlayer[nameOfPLayer] = players[i].get();
           i++;
           names.push_back(nameOfPLayer);
         } else {
@@ -119,6 +123,27 @@ void Game::initPlayers() {
     cout << "Game has been intialized with " << playerCount << "!" << endl;
 }
 
+void Game::countResidenceGym(int code1, int code2, Player* tradee, Player* trader) {
+    if (code1 > -1) {
+            if (b.isResidence(code1)) {
+            residenceOwned[tradee]++;
+            residenceOwned[trader]--;
+        } else if (b.isGym(code1)) {
+            gymsOwned[tradee]++;
+            gymsOwned[trader]--;
+        }
+    }
+    if (code2 > -1) {
+        if (b.isResidence(code2)) {
+            residenceOwned[trader]++;
+            residenceOwned[tradee]--;
+        } else if (b.isGym(code2)) {
+            gymsOwned[trader]++;
+            gymsOwned[tradee]--;
+        }
+    }
+}
+
 // transaction(trader, to_trade, to_get, playerTurn) will initiate a trade transaction
 // between the currentPlayer who can be accessed through playerTurn and trader.
 // The current player will send to_trade to trader and will get to_get in return from
@@ -132,6 +157,7 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
 
         // changing property
         b.getSquare(to_get)->setOwner(players[playerTurn].get());
+        countResidenceGym(b.getIndex(to_get), -1, players[playerTurn].get(), trader);
     } else if (isdigit(to_get[0])) {
         // changing money
         int money_recieved = stoi(to_get);
@@ -139,10 +165,13 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
         trader->changeCash(money_recieved, false);
         // changing property
         b.getSquare(to_trade)->setOwner(trader);
-
+        countResidenceGym(-1, b.getIndex(to_trade), players[playerTurn].get(), trader);
     } else {
-        b.getSquare(to_get)->setOwner(players[playerTurn].get());
-        b.getSquare(to_trade)->setOwner(trader);
+        Square* p = b.getSquare(to_get);
+        Square* q = b.getSquare(to_trade);
+        p->setOwner(players[playerTurn].get());
+        q->setOwner(trader);
+        countResidenceGym(b.getIndex(to_get), b.getIndex(to_trade), players[playerTurn].get(), trader);
     }
 }
 
@@ -159,7 +188,10 @@ int processOwed(Player* p, string who) {
 }
 
 void Game::sendToJail(Player* p) {
+    b.getSquare(p->getPlayerPostion())->removePlayer(p);
     p->setPlayerPostion(b.getIndex("DC Tims Line"));
+    b.getSquare(b.getIndex("DC Tims Line"))->addPlayer(p);
+    
     jailedTurns[p] = 0;
 }
 
@@ -167,7 +199,8 @@ int Game::handleAuction(size_t start, Square* prize) {
     std::map<Player*, bool> outOfAuction;
     cout << "Starting auction for " << prize->getName() << endl;
     int highest = 0;
-    Player* winner = players[start].get();
+    int s = start;
+    Player* winner = players[(s - 1) % players.size()].get();
     while (outOfAuction.size() < players.size() - 1) {
         Player* curr = players[start].get();
         if (outOfAuction.count(curr) != 0) continue; // go next player if player is out
@@ -207,9 +240,10 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
         cout << tile->getName() << " is unowned. Your balance is " << p->getLiquidCash();
         cout << ". It costs " << tile->getCost() << ". Would you like to buy it? (y/n)" << endl;
         string resp;
-        std::cin >> resp;
+        cin >> resp;
         while (resp != "y" && resp != "n") {
             cin.clear();
+            cin.ignore(IGNORE_CHARS, '\n');
             cerr << "Invalid input, please enter again (y/n)." << endl;
             cin >> resp;
         }
@@ -239,9 +273,10 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
             resPtr->payRent(p, residenceOwned[owner]);
         } else {
             Academic* acaPtr = dynamic_cast<Academic*>(tile);
-            rentOwed = acaPtr->getRent();
+            bool ownsMonopoly = b.ownsAll(owner, newPos);
+            rentOwed = acaPtr->getRent(ownsMonopoly);
             cout << rentOwed << endl;
-            acaPtr->payRent(p, b.ownsAll(p, newPos));
+            acaPtr->payRent(p, ownsMonopoly);
         }
         return processOwed(p, owner->getPlayerName());
     }
@@ -282,7 +317,7 @@ int Game::handleSLC(Player* p) {
 }
 
 int Game::handleNeedles(Player* p) {
-    Event evt = rngSLC.generateEvent();
+    Event evt = rngNH.generateEvent();
     if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
     if (evt == Event::OUTOFTIMS) {
         cout << "You drew a Needles Hall card and got a get out of Tim's line card!" << endl;
@@ -322,7 +357,7 @@ int Game::handleNeedles(Player* p) {
         const int payment = 200;
         cout << "You drew a Needles Hall card and have recieved $"<< payment << "!" << endl;
         p->changeCash(payment);
-    }
+    } 
 
     return processOwed(p, "the bank");
 }
@@ -355,10 +390,11 @@ int Game::handleMove(Player* p, int rollSum) {
         cin >> opt;
         while (opt != 1 && opt != 2) {
             cin.clear();
+            cin.ignore(IGNORE_CHARS, '\n');
             cout << "Please enter 1 or 2" << endl;
             cin >> opt;
         }
-        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
         int to_pay = 300;
         if (opt == 1) to_pay = p->getLiquidCash() / 10;
         p->changeCash(-to_pay);
@@ -368,7 +404,7 @@ int Game::handleMove(Player* p, int rollSum) {
     } else if (b.getIndex("Coop Fee") == newPos) { // coop fee
         const int coopFee = 150;
         cout << "You landed on Coop Fee. You must pay $" << coopFee << "." << endl;
-        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
+        GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(b.getIndex("Goose Nesting")));
         p->changeCash(-coopFee);
         gn->setAccumulated(gn->getAccumulated() + coopFee);
 
@@ -380,6 +416,15 @@ int Game::handleMove(Player* p, int rollSum) {
     return 0;
 }
 
+const vector<string> PRINT_AGAIN = {"roll", "improve", "bankrupt", "mortgage", "garbage value"};
+const auto PAGAINEND = PRINT_AGAIN.end();
+
+void Game::printBoardAndActions(const string& prevCmd, int playerTurn, bool hasRolled, int moneyOwed) {
+    if (find(PRINT_AGAIN.begin(), PRINT_AGAIN.end(), prevCmd) != PAGAINEND) cout << *this;
+    cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next," : "roll,") << "trade,improve,mortgage,unmortgage,save,";
+    cout << (moneyOwed > 0 ? "bankrupt" : "assets,all") << endl;
+}
+
 void Game::play() {
     //CLI Interpreter
     string cmdWhole;
@@ -389,15 +434,15 @@ void Game::play() {
     int snakeEyes = 0;
     bool jailMsg = false;
     string prevCmd = "garbage value";
-    vector<string> printAgain = {"roll", "improve", "bankrupt", "garbage value"};
-    const auto pAgainEnd = printAgain.end();
-
-    while(getline(cin, cmdWhole)){
-        if (find(printAgain.begin(), printAgain.end(), prevCmd) != pAgainEnd) cout << *this;
+    
+    printBoardAndActions(prevCmd, 0, hasRolled, moneyOwed);
+    while(getline(cin, cmdWhole)){    
+        // cout << cmdWhole;
         istringstream iss2{cmdWhole};
         string cmd;
         iss2 >> cmd;
         Player* currPlayer = players[playerTurn].get();
+        // cout << cmd;
         // implement jail
         if (jailedTurns.count(currPlayer) == 1 && !jailMsg) {
             if (jailedTurns[currPlayer] == 3) {
@@ -426,23 +471,19 @@ void Game::play() {
                 moneyOwed = processOwed(currPlayer, "the bank");
             }
         }
-
-        cout << currPlayer->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next," : "roll,") << "trade,improve,mortgage,mortgage,unmortgage,save,";
-        cout << (moneyOwed > 0 ? "bankrupt" : "assets,all") << endl;
+        // cout << boolalpha << (cmd == "next") << endl;
+        // cout << playerTurn << endl;
         // implement
         if (cmd == "roll"){
-            prevCmd = cmd;
+            prevCmd = "roll";
             // b.makeMove(players[playerTurn].get());  
 
-            int roll1;
-            int roll2;
-
-            if (!testingOn) {
-                roll1 = dice.eventToInt(dice.generateEvent());
-                roll2 = dice.eventToInt(dice.generateEvent());
-            } else {
-                roll1 = testing_roll1;
-                roll2 = testing_roll2;
+            int roll1 = dice.eventToInt(dice.generateEvent());
+            int roll2 = dice.eventToInt(dice.generateEvent());
+        
+            if (testingOn) {
+                iss2 >> roll1;
+                iss2 >> roll2;
             }
 
             if (!hasRolled) {
@@ -460,6 +501,7 @@ void Game::play() {
                     cout << "You rolled snake eyes and must roll again before ending your turn." << endl;
                     moneyOwed += handleMove(currPlayer, roll1 + roll2);
                     ++snakeEyes;
+                    printBoardAndActions(prevCmd, playerTurn, hasRolled, moneyOwed);
                     continue;
                 } else {
                     moneyOwed += handleMove(currPlayer, roll1 + roll2);
@@ -467,7 +509,7 @@ void Game::play() {
                 hasRolled = true;
             } else cerr << "You've already rolled this turn." << endl;
         } else if (cmd == "next"){
-            prevCmd = cmd;
+            prevCmd = "next";
             if (!hasRolled) {
                 cerr << "You must roll before ending your turn!" << endl;
                 continue;
@@ -491,7 +533,8 @@ void Game::play() {
             Player *trade_from = nameToPlayer[player_2];
 
             if (isdigit(to_give[0]) && isdigit(to_get[0])) {
-                throw runtime_error("Invalid trade");
+                cerr << "Invalid Trade" << endl;
+                continue;
             } else {
                 string response;
                 cin >> response;
@@ -510,13 +553,20 @@ void Game::play() {
                         string setting; 
                         iss2 >> setting;
 
-                        if (setting == "buy" && curr->canAfford(sq->getUpgrade_cost())) { 
-                            if (sq->getUpgradeLevel() < 5) sq->upgrade();
+                        if (setting == "buy") { 
+                            if (sq->getUpgradeLevel() < 5) {
+                                sq->upgrade();
+                                cout << "Upgraded: " << sq->getName() << endl;
+                                moneyOwed = processOwed(currPlayer, "the bank");
+                            }
                             else cerr << "You can't upgrade this property anymore." << endl;
                         } else if (setting == "sell") {
-                            if (sq->getUpgradeLevel() > 0) sq->sellUpgrade();
+                            if (sq->getUpgradeLevel() > 0) {
+                                sq->sellUpgrade();
+                                cout << "Sold upgrade from: " << sq->getName() << endl;
+                            }
                             else cerr << "You can't sell any more upgardes from this property." << endl; 
-                        } else cerr << "you can't afford to upgrade this property." << endl;
+                        } // else cerr << "you can't afford to upgrade this property." << endl;
                     } else cerr << "you don't own all properties of this monopoly!" << endl;
                 } else cerr << "You don't own this property!" << endl;
             } else cerr << "You can't upgrade this property." << endl;
@@ -526,7 +576,7 @@ void Game::play() {
             string propertyName;
             iss2 >> propertyName;
             if ((b.isAcademic(pos)) || (b.isGym(pos)) || (b.isResidence(pos))) {
-                Square* sq = b.getSquare(pos);
+                Square* sq = b.getSquare(b.getIndex(propertyName));
 
                 if (sq->getOwner() == curr) {
                     if (!(sq->isMortgaged())){
@@ -615,7 +665,7 @@ void Game::play() {
             iss2 >> filename;
             ofstream out;
             out.open(filename);
-
+            out << playerCount << endl;
             // player1 char TimsCups money position
             for (size_t i = 0; i < players.size(); ++i) {
                 Player* curr = players[i].get();
@@ -624,10 +674,9 @@ void Game::play() {
             b.saveProperties(out);
             out.close();
         } 
-        // else {
-        //     throw runtime_error{"Not a valid command"};
-        // }
+        else continue;
         prevCmd = cmd;
+        printBoardAndActions(prevCmd, playerTurn, hasRolled, moneyOwed);
     }
 }
 
@@ -717,7 +766,7 @@ ostream &operator<<(ostream &out, Game &game) {
     out << game.b.getSquare("B1")->printPlayers();
     out << game.b.getSquare("CIF")->printPlayers();
     out << game.b.getSquare("B2")->printPlayers();
-    out << game.b.getSquare("GO TO TIMS")->printPlayers();
+    out << game.b.getSquare("Go To Tims")->printPlayers();
     out << endl;
 
     // printing bottom of top row
@@ -826,7 +875,7 @@ ostream &operator<<(ostream &out, Game &game) {
 
     // printing row4
     out << divider;
-    out << game.b.getSquare("Go To Tims")->printPlayers();
+    out << game.b.getSquare("DC Tims Line")->printPlayers();
     out << game.b.getSquare("HH")->printPlayers();
     out << game.b.getSquare("PAS")->printPlayers();
     out << game.b.getSquare("NEEDLES HALL1")->printPlayers();
