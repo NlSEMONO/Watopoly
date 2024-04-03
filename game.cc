@@ -164,7 +164,7 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
                 cerr << " does not have the assets to fulfill this trade." << endl;
             } else {
                 cerr << "Trade failed! Player " << trader->getPlayerName();
-                cerr << "does not own " << to_get << endl;
+                cerr << " does not own " << to_get << endl;
             }
         }
     } else if (isdigit(to_get[0])) {
@@ -192,8 +192,8 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
                 cerr << "Trade failed! Player " << trader->getPlayerName() << " does";
                 cerr << " not own " << p->getName() << endl;
             } if (q->getOwner() != players[playerTurn].get()) {
-                cerr << "Trade failed! Player " << players[playerTurn].get() << " does";
-                cerr << " not own" << q->getName() << endl;
+                cerr << "Trade failed! Player " << players[playerTurn].get()->getPlayerName() << " does";
+                cerr << " not own " << q->getName() << endl;
             }
         }
     }
