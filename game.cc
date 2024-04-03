@@ -267,6 +267,8 @@ int Game::handleAuction(size_t start, Square* prize) {
 int Game::handleOwnable(Player* p, int newPos, int rollSum) {
     Square* tile = b.getSquare(newPos);
 
+    if (tile->getOwner() == p) {return 0;}
+
     // unowned property
     if (tile->getOwner() == nullptr) {
         cout << tile->getName() << " is unowned. Your balance is " << p->getLiquidCash();
@@ -544,7 +546,7 @@ void Game::play() {
                 continue;
             }
             if (moneyOwed > 0) {
-                cerr << "You still owe money, please buy/sell improvements, mortgage a property or declare bankruptcy." << endl;
+                cerr << "You still owe $" << moneyOwed << " please buy/sell improvements, mortgage a property or declare bankruptcy." << endl;
                 continue;
             }
             playerTurn++;
@@ -736,7 +738,11 @@ void Game::play() {
             vector<Square*> playerAssets;
             b.getOwnedSquares(players[playerTurn].get(), playerAssets);
             for (size_t i = 0; i < playerAssets.size(); i++){
-                cout << playerAssets[i]->getName() << endl;
+                cout << playerAssets[i]->getName();
+                if (playerAssets[i]->isMortgaged()) {
+                    cout << "[Mortgaged]";
+                }
+                cout << endl;
             }
             cout << "Player " << players[playerTurn]->getPlayerName() << " total assets are: " << players[playerTurn]->getTotalAssetsValue() << endl;
 
