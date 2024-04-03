@@ -644,7 +644,7 @@ void Game::play() {
             of the player declaring bankruptcy. Otherwise (if the player owes money to the Bank), the buildings are returned to the open
             market as unmortgaged properties (see Auctions below) and all Roll Up the Rim cups are destroyed
             */
-            if (players[playerTurn]->getTotalAssetsValue() >= moneyOwed){
+            if (moneyOwed <= 0){
                 // has more assets than owed money
                 cout << "Player " << players[playerTurn]->getPlayerName() << " has $";
                 cout << players[playerTurn]->getTotalAssetsValue() << " and owes ";
