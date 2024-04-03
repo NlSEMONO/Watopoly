@@ -23,7 +23,9 @@ class Game {
     int cupsDistributed;
     int currPlayer;
     Dice dice;
-
+    int testing_roll1;
+    int testing_roll2;
+    bool testingOn;
     Board b;
 
     std::vector<Square*>& getAssets(Player* p) const;
@@ -40,6 +42,8 @@ class Game {
         void initPlayers();
         void setPlayers(int pCount);
         void transaction(Player *trader, std::string to_trade, std::string to_get, int playerTurn);
+        void setTestingOn();
+        void setRolls(int roll1, int roll2);
 
     friend std::ostream &operator<<(std::ostream &out, Game &game);    
 };

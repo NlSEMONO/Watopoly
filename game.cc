@@ -433,8 +433,17 @@ void Game::play() {
         if (cmd == "roll"){
             prevCmd = cmd;
             // b.makeMove(players[playerTurn].get());  
-            int roll1 = dice.eventToInt(dice.generateEvent());
-            int roll2 = dice.eventToInt(dice.generateEvent());
+
+            int roll1;
+            int roll2;
+
+            if (!testingOn) {
+                roll1 = dice.eventToInt(dice.generateEvent());
+                roll2 = dice.eventToInt(dice.generateEvent());
+            } else {
+                roll1 = testing_roll1;
+                roll2 = testing_roll2;
+            }
 
             if (!hasRolled) {
                 cout << "You rolled " << roll1 << " and " << roll2 << "." << endl;
