@@ -551,7 +551,7 @@ void Game::play() {
             currPlayer = players[playerTurn].get();
             if (jailedTurns.count(currPlayer) == 1) {
                 ++jailedTurns[currPlayer];
-                cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+                cout << currPlayer->getPlayerName() << ", you are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
                 string resp = "garbage";
                 do {
                     cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
