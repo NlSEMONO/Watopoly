@@ -1,6 +1,6 @@
 + mortgage must sell improvements at half price [check that test_improve ends with cash 1419]
 + test jail // FRANCIS
-+ test bankrupt
++ test bankrupt //Malhar
 + test trade more in depth (test reject not enough money, test property not owned) // AAGAM
 + test auction
 + test mortgage
