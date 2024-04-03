@@ -185,7 +185,8 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
 }
 
 
-// helper function to calculate how much money game p owes bank/other player.
+// processOwed(p, who) will process the transaction of p owing who their entire
+// sum of money incase of bankrupcy
 int processOwed(Player* p, string who) {
     int owed = p->getLiquidCash() * -1;
     if (owed > 0) {
@@ -196,6 +197,7 @@ int processOwed(Player* p, string who) {
     return 0;
 }
 
+// sendToJail(p) will process the game in order to send p to DcTims 
 void Game::sendToJail(Player* p) {
     b.getSquare(p->getPlayerPostion())->removePlayer(p);
     p->setPlayerPostion(b.getIndex("DC Tims Line"));
