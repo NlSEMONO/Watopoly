@@ -150,22 +150,31 @@ void Game::countResidenceGym(int code1, int code2, Player* tradee, Player* trade
 // trader.
 void Game::transaction(Player *trader, string to_trade, string to_get, int playerTurn) {
     if (isdigit(to_trade[0])) {
-        // changing money
         int money_traded = stoi(to_trade);
-        players[playerTurn]->changeCash(money_traded, false);
-        trader->changeCash(money_traded, true);
-
-        // changing property
-        b.getSquare(to_get)->setOwner(players[playerTurn].get());
-        countResidenceGym(b.getIndex(to_get), -1, players[playerTurn].get(), trader);
+        if (players[playerTurn]->canAfford(money_traded)) {
+             // changing money
+            players[playerTurn]->changeCash(money_traded, false);
+            trader->changeCash(money_traded, true);
+             // changing property
+            b.getSquare(to_get)->setOwner(players[playerTurn].get());
+            countResidenceGym(b.getIndex(to_get), -1, players[playerTurn].get(), trader);
+        } else {
+            cerr << "Trade failed! Player " << players[playerTurn]->getPlayerName();
+            cerr << " does not have the assets to fulfill this trade." << endl;
+        }
     } else if (isdigit(to_get[0])) {
         // changing money
         int money_recieved = stoi(to_get);
-        players[playerTurn]->changeCash(money_recieved, true);
-        trader->changeCash(money_recieved, false);
-        // changing property
-        b.getSquare(to_trade)->setOwner(trader);
-        countResidenceGym(-1, b.getIndex(to_trade), players[playerTurn].get(), trader);
+        if (trader->canAfford(money_recieved)){
+            players[playerTurn]->changeCash(money_recieved, true);
+            trader->changeCash(money_recieved, false);
+            // changing property
+            b.getSquare(to_trade)->setOwner(trader);
+            countResidenceGym(-1, b.getIndex(to_trade), players[playerTurn].get(), trader);
+        } else {
+            cerr << "Trade failed! Player " << trader->getPlayerName();
+            cerr << " does not have the assets to fulfill this trade." << endl;
+        }
     } else {
         Square* p = b.getSquare(to_get);
         Square* q = b.getSquare(to_trade);
