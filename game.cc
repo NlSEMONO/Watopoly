@@ -151,7 +151,7 @@ void Game::countResidenceGym(int code1, int code2, Player* tradee, Player* trade
 void Game::transaction(Player *trader, string to_trade, string to_get, int playerTurn) {
     if (isdigit(to_trade[0])) {
         int money_traded = stoi(to_trade);
-        if (players[playerTurn]->canAfford(money_traded)) {
+        if (players[playerTurn]->canAfford(money_traded) && b.getSquare(to_get)->getOwner() == trader) {
              // changing money
             players[playerTurn]->changeCash(money_traded, false);
             trader->changeCash(money_traded, true);
@@ -159,13 +159,18 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
             b.getSquare(to_get)->setOwner(players[playerTurn].get());
             countResidenceGym(b.getIndex(to_get), -1, players[playerTurn].get(), trader);
         } else {
-            cerr << "Trade failed! Player " << players[playerTurn]->getPlayerName();
-            cerr << " does not have the assets to fulfill this trade." << endl;
+            if (!players[playerTurn]->canAfford(money_traded)){
+                cerr << "Trade failed! Player " << players[playerTurn]->getPlayerName();
+                cerr << " does not have the assets to fulfill this trade." << endl;
+            } else {
+                cerr << "Trade failed! Player " << trader->getPlayerName();
+                cerr << "does not own " << to_get << endl;
+            }
         }
     } else if (isdigit(to_get[0])) {
         // changing money
         int money_recieved = stoi(to_get);
-        if (trader->canAfford(money_recieved)){
+        if (trader->canAfford(money_recieved) && b.getSquare(to_get)->getOwner() == players[playerTurn].get()){
             players[playerTurn]->changeCash(money_recieved, true);
             trader->changeCash(money_recieved, false);
             // changing property
@@ -178,9 +183,19 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
     } else {
         Square* p = b.getSquare(to_get);
         Square* q = b.getSquare(to_trade);
-        p->setOwner(players[playerTurn].get());
-        q->setOwner(trader);
-        countResidenceGym(b.getIndex(to_get), b.getIndex(to_trade), players[playerTurn].get(), trader);
+        if (p->getOwner() == trader && q->getOwner() == players[playerTurn].get()){
+            p->setOwner(players[playerTurn].get());
+            q->setOwner(trader);
+            countResidenceGym(b.getIndex(to_get), b.getIndex(to_trade), players[playerTurn].get(), trader);
+        } else {
+            if (p->getOwner() != trader) {
+                cerr << "Trade failed! Player " << trader->getPlayerName() << " does";
+                cerr << " not own " << p->getName() << endl;
+            } if (q->getOwner() != players[playerTurn].get()) {
+                cerr << "Trade failed! Player " << players[playerTurn].get() << " does";
+                cerr << " not own" << q->getName() << endl;
+            }
+        }
     }
 }
 
@@ -558,7 +573,7 @@ void Game::play() {
             iss2 >> player_2 >> to_give >> to_get;
             Player *trade_from = nameToPlayer[player_2];
             if (trade_from == currPlayer) {
-                cerr << "you can't trade with yourself!" << endl;
+                cerr << "You can't trade with yourself!" << endl;
                 continue;
             }
 
