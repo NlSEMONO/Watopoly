@@ -193,6 +193,7 @@ void Game::sendToJail(Player* p) {
     b.getSquare(b.getIndex("DC Tims Line"))->addPlayer(p);
     
     jailedTurns[p] = 0;
+    // cout << jailedTurns.count(p) << endl;
 }
 
 int Game::handleAuction(size_t start, Square* prize) {
@@ -444,32 +445,28 @@ void Game::play() {
         Player* currPlayer = players[playerTurn].get();
         // cout << cmd;
         // implement jail
-        if (jailedTurns.count(currPlayer) == 1 && !jailMsg) {
-            if (jailedTurns[currPlayer] == 3) {
-                cout << "You've waited 3 turns in jail. You may now leave jail." << endl;
+        // cout << jailedTurns.count(currPlayer) << endl;
+        if (jailedTurns.count(currPlayer) == 1 && jailedTurns[currPlayer] != 0 && !jailMsg) {
+            cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+            string resp = "garbage";
+            do {
+                cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
+                cout << "(2) - Pay $50" << endl;
+                cout << "other - proceed to rolling" << endl;
+                cin >> resp;
+            } while (resp == "1" && numCups[currPlayer] == 0);
+            if (resp == "1" || resp == "2") {
+                if (resp == "1") {
+                    --numCups[currPlayer];
+                    --cupsDistributed;
+                }
+                else currPlayer->changeCash(-50);
                 jailedTurns.erase(currPlayer);
-            } else {
-                cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
-                int resp = 55;
-                do {
-                    cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
-                    cout << "(2) - Pay $50" << endl;
-                    cout << "other - proceed to rolling" << endl;
-                    cin >> resp;
-                } while (resp == 1 && numCups[currPlayer] == 0);
-                if (resp == 1 || resp == 2) {
-                    if (resp == 1) {
-                        --numCups[currPlayer];
-                        --cupsDistributed;
-                    }
-                    else currPlayer->changeCash(-50);
-                    jailedTurns.erase(currPlayer);
-                    hasRolled = true;
-                } 
+                hasRolled = true;
+            } 
 
-                jailMsg = true;
-                moneyOwed = processOwed(currPlayer, "the bank");
-            }
+            jailMsg = true;
+            moneyOwed = processOwed(currPlayer, "the bank");
         }
         // cout << boolalpha << (cmd == "next") << endl;
         // cout << playerTurn << endl;
@@ -493,10 +490,13 @@ void Game::play() {
                     jailedTurns.erase(currPlayer);
                 } else if (jailedTurns.count(currPlayer) == 1) {
                     cout << "You did not roll snake eyes, you are still in jail." << endl;
-                    ++jailedTurns[currPlayer];
+                    if (jailedTurns[currPlayer] == 3) {
+                        
+                    }
                 }
                 else if (roll1 == roll2 && snakeEyes == 2) {
                     cout << "3 snake eyes in a row, sending you to jail!" << endl;
+                    sendToJail(currPlayer);
                 } else if (roll1 == roll2) {
                     cout << "You rolled snake eyes and must roll again before ending your turn." << endl;
                     moneyOwed += handleMove(currPlayer, roll1 + roll2);
@@ -522,6 +522,7 @@ void Game::play() {
             if (playerTurn == playerCount){
                 playerTurn = 0;
             }
+            if (jailedTurns.count(currPlayer) == 1) ++jailedTurns[currPlayer];
             hasRolled = false;
             jailMsg = false;
             snakeEyes = 0;
