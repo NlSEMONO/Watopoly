@@ -169,7 +169,7 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
                 cerr << " does not have the assets to fulfill this trade." << endl;
             } else {
                 cerr << "Trade failed! Player " << trader->getPlayerName();
-                cerr << "does not own " << to_get << endl;
+                cerr << " does not own " << to_get << endl;
             }
         }
     } else if (isdigit(to_get[0])) {
@@ -197,8 +197,8 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
                 cerr << "Trade failed! Player " << trader->getPlayerName() << " does";
                 cerr << " not own " << p->getName() << endl;
             } if (q->getOwner() != players[playerTurn].get()) {
-                cerr << "Trade failed! Player " << players[playerTurn].get() << " does";
-                cerr << " not own" << q->getName() << endl;
+                cerr << "Trade failed! Player " << players[playerTurn].get()->getPlayerName() << " does";
+                cerr << " not own " << q->getName() << endl;
             }
         }
     }
@@ -266,6 +266,8 @@ int Game::handleAuction(size_t start, Square* prize) {
 
 int Game::handleOwnable(Player* p, int newPos, int rollSum) {
     Square* tile = b.getSquare(newPos);
+
+    if (tile->getOwner() == p) {return 0;}
 
     // unowned property
     if (tile->getOwner() == nullptr) {
@@ -550,7 +552,7 @@ void Game::play() {
                 continue;
             }
             if (moneyOwed > 0) {
-                cerr << "You still owe money, please buy/sell improvements, mortgage a property or declare bankruptcy." << endl;
+                cerr << "You still owe $" << moneyOwed << " please buy/sell improvements, mortgage a property or declare bankruptcy." << endl;
                 continue;
             }
             playerTurn++;
@@ -742,7 +744,11 @@ void Game::play() {
             vector<Square*> playerAssets;
             b.getOwnedSquares(players[playerTurn].get(), playerAssets);
             for (size_t i = 0; i < playerAssets.size(); i++){
-                cout << playerAssets[i]->getName() << endl;
+                cout << playerAssets[i]->getName();
+                if (playerAssets[i]->isMortgaged()) {
+                    cout << "[Mortgaged]";
+                }
+                cout << endl;
             }
             cout << "Player " << players[playerTurn]->getPlayerName() << " total assets are: " << players[playerTurn]->getTotalAssetsValue() << endl;
 
@@ -782,7 +788,11 @@ void Game::play() {
         prevCmd = cmd;
         printBoardAndActions(prevCmd, playerTurn, hasRolled, moneyOwed);
     }
-    cout << "Player " << players[0]->getPlayerName() << " has won!" << endl;
+    if (players.size() > 1){
+        cout << "End of File Detected " << endl;
+    } else {
+        cout << "Player " << players[0]->getPlayerName() << " has won!" << endl;
+    }
 }
 
 const int sqr_len = 7;
