@@ -507,6 +507,26 @@ void Game::play() {
             }
             if (jailedTurns.count(currPlayer) == 1) {
                 ++jailedTurns[currPlayer];
+                hasRolled = false;
+                jailMsg = false;
+                snakeEyes = 0;
+                cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+                string resp = "garbage";
+                do {
+                    cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
+                    cout << "(2) - Pay $50" << endl;
+                    cout << "other - proceed to rolling" << endl;
+                    cin >> resp;
+                } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
+                if (resp == "1" || resp == "2") {
+                    if (resp == "1") {
+                        --numCups[currPlayer];
+                        --cupsDistributed;
+                    }
+                    else currPlayer->changeCash(-50);
+                    jailedTurns.erase(currPlayer);
+                    hasRolled = true;
+                } 
             }
             // implement jail
             // if (jailedTurns.count(currPlayer) == 1 && jailedTurns[currPlayer] != 0 && !jailMsg) {
@@ -531,9 +551,6 @@ void Game::play() {
             //     jailMsg = true;
             //     moneyOwed = processOwed(currPlayer, "the bank");
             // }
-            hasRolled = false;
-            jailMsg = false;
-            snakeEyes = 0;
         } else if (cmd == "trade"){
             string player_2;
             string to_give;
