@@ -385,7 +385,8 @@ int Game::handleMove(Player* p, int rollSum) {
         p->changeCash(gn->getAccumulated());
         gn->setAccumulated(0);
     } else if (b.getIndex("TUITION") == newPos) { // tuition
-        cout << "Pay tuition. Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
+        cout << "Pay tuition. You currently have $" << p->getLiquidCash();
+        cout << "Do you want to (1) pay 10\% of your cash or (2) $300?" << endl;
         int opt = -1;
         cin >> opt;
         while (opt != 1 && opt != 2) {
@@ -632,9 +633,28 @@ void Game::play() {
                 cerr << "You can't unmortgage this property." << endl;
             }
             
-        } else if (cmd == "bankrupt"){
-            
-            
+        } else if (cmd == "bankrupt") {
+            if (players[playerTurn]->getTotalAssetsValue() >= moneyOwed){
+                // has more assets than owed money
+                cout << "Player " << players[playerTurn]->getPlayerName() << " has $";
+                cout << players[playerTurn]->getTotalAssetsValue() << " and owes ";
+                cout << moneyOwed << " so " << players[playerTurn]->getPlayerName();
+                cout << " cannot declare bankrupcy" << endl;
+            } else {
+                // can safely declare bankrupcy
+                int block_index = players[playerTurn]->getPlayerPostion();
+                Player *square_owner = b.getSquare(block_index)->getOwner();
+                square_owner->changeCash(players[playerTurn]->getLiquidCash()); // increasing cash
+
+                vector<Square*> playerAssets;
+                b.getOwnedSquares(players[playerTurn].get(), playerAssets);
+                for (size_t i = 0; i < playerAssets.size(); i++){
+                    playerAssets[i]->setOwner(square_owner); // setting owner to player owed
+                }
+
+                players.erase(players.begin() + playerTurn); // deletes unique ptr
+                playerCount--; // reduces playerCount
+            }            
         } else if (cmd == "assets"){
             //Logic to check is player is paying tuition if yes:
             cout << "Player " << players[playerTurn]->getPlayerName() << " has this much cash: " << players[playerTurn]->getLiquidCash() << endl;
