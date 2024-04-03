@@ -74,7 +74,7 @@ void Game::initPlayers() {
     vector<string> names = {};
     int cnt = 0;
     while(i < playerCount){
-        cout << "Name of player " << i << ":" << endl;
+        cout << "Name of player " << i+1 << ":" << endl;
         cin >> nameOfPLayer;
         cnt = count(names.begin(), names.end(), nameOfPLayer);
         if (cin && cnt == 0){
@@ -94,7 +94,12 @@ void Game::initPlayers() {
     char playerSymbol;
     int cnt1 = 0;
     while(j < playerCount){
-        cout << "Symbol of player " << j << ":" << endl;
+        cout << "Symbol of player " << j+1 << ":" << endl;
+        cout << "Possible Symbols are: ";
+        for (int i = 0; i < (int) possibleSymbols.size(); i++){
+            cout << possibleSymbols[i] << " ";
+        }
+        cout << endl;
         cin >> s1;
         istringstream iss{s1};
         if (iss >> playerSymbol){
@@ -451,8 +456,8 @@ const auto PAGAINEND = PRINT_AGAIN.end();
 
 void Game::printBoardAndActions(const string& prevCmd, int playerTurn, bool hasRolled, int moneyOwed) {
     if (find(PRINT_AGAIN.begin(), PRINT_AGAIN.end(), prevCmd) != PAGAINEND) cout << *this;
-    cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next," : "roll,") << "trade,improve,mortgage,unmortgage,save,";
-    cout << (moneyOwed > 0 ? "bankrupt" : "assets,all") << endl;
+    cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next, " : "roll, ") << "trade, improve, mortgage, unmortgage, save, ";
+    cout << (moneyOwed > 0 ? "bankrupt " : "assets, all") << endl;
 }
 
 void Game::play() {
@@ -468,7 +473,7 @@ void Game::play() {
     int r1 = -1, r2 = -1;
     
     printBoardAndActions(prevCmd, 0, hasRolled, moneyOwed);
-    while(getline(cin, cmdWhole)){    
+    while((getline(cin, cmdWhole) && (players.size() > 1))){    
         // cout << cmdWhole;
         istringstream iss2{cmdWhole};
         string cmd;
@@ -767,6 +772,7 @@ void Game::play() {
         prevCmd = cmd;
         printBoardAndActions(prevCmd, playerTurn, hasRolled, moneyOwed);
     }
+    cout << "Player " << players[0]->getPlayerName() << " has won!" << endl;
 }
 
 const int sqr_len = 7;
