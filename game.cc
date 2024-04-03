@@ -778,7 +778,11 @@ void Game::play() {
         prevCmd = cmd;
         printBoardAndActions(prevCmd, playerTurn, hasRolled, moneyOwed);
     }
-    cout << "Player " << players[0]->getPlayerName() << " has won!" << endl;
+    if (players.size() > 1){
+        cout << "End of File Detected " << endl;
+    } else {
+        cout << "Player " << players[0]->getPlayerName() << " has won!" << endl;
+    }
 }
 
 const int sqr_len = 7;
