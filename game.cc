@@ -637,23 +637,25 @@ void Game::play() {
                 Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
                 if (sq->getOwner() == curr) {
                     if (b.ownsAll(curr, pos)) {
-                        string setting; 
-                        iss2 >> setting;
+                        if (!sq->isMortgaged()) {
+                            string setting; 
+                            iss2 >> setting;
 
-                        if (setting == "buy") { 
-                            if (sq->getUpgradeLevel() < 5) {
-                                sq->upgrade();
-                                cout << "Upgraded: " << sq->getName() << endl;
-                                moneyOwed = processOwed(currPlayer, "the bank");
-                            }
-                            else cerr << "You can't upgrade this property anymore." << endl;
-                        } else if (setting == "sell") {
-                            if (sq->getUpgradeLevel() > 0) {
-                                sq->sellUpgrade();
-                                cout << "Sold upgrade from: " << sq->getName() << endl;
-                            }
-                            else cerr << "You can't sell any more upgardes from this property." << endl; 
-                        } // else cerr << "you can't afford to upgrade this property." << endl;
+                            if (setting == "buy") { 
+                                if (sq->getUpgradeLevel() < 5) {
+                                    sq->upgrade();
+                                    cout << "Upgraded: " << sq->getName() << endl;
+                                    moneyOwed = processOwed(currPlayer, "the bank");
+                                }
+                                else cerr << "You can't upgrade this property anymore." << endl;
+                            } else if (setting == "sell") {
+                                if (sq->getUpgradeLevel() > 0) {
+                                    sq->sellUpgrade();
+                                    cout << "Sold upgrade from: " << sq->getName() << endl;
+                                }
+                                else cerr << "You can't sell any more upgardes from this property." << endl; 
+                            } // else cerr << "you can't afford to upgrade this property." << endl;
+                        } else cerr << "you can't improve a mortgaged property!" << endl;
                     } else cerr << "you don't own all properties of this monopoly!" << endl;
                 } else cerr << "You don't own this property!" << endl;
             } else cerr << "You can't upgrade this property." << endl;
