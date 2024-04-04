@@ -5,6 +5,7 @@
 #include <string>
 #include <unistd.h>
 #include "window.h"
+#include <vector>
 
 using namespace std;
 
@@ -32,7 +33,7 @@ Xwindow::Xwindow(int width, int height) : width{width}, height{height} {
   XColor xcolour;
   Colormap cmap;
   const int numCol = 11;
-  char color_vals[numCol][numCol]={"white", "black", "red", "green", "blue", "brown", "light blue", "pink", "orange", "yellow"};
+  std::vector<char *> color_vals ={"white", "black", "red", "green", "blue", "brown", "light blue", "pink", "orange", "yellow"};
 
   cmap=DefaultColormap(d,DefaultScreen(d));
   for(int i=0; i < numCol; ++i) {
