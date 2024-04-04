@@ -13,7 +13,7 @@ PROVIDED = ../execs/a4q3-provided
 # First target in the makefile is the default target.
 # Note that the LIBFLAGS must come last in the command
 $(EXEC): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXEC)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXEC) -lX11 -L/usr/X11/lib -I/usr/X11/include # Graphics
 
 %.o: %.cc 
 	$(CXX) -c -o $@ $< $(CXXFLAGS) 
