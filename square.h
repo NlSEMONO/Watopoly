@@ -27,7 +27,6 @@ class Square {
         virtual void mortgage(int amountBack);
         virtual void unmortgage();
         virtual int getMortgageCost() const;
-        // virtual std::string getBlock() const;
 };
 
 #endif

@@ -28,7 +28,6 @@ class Game {
     bool testingOn = false;
     Board b;
 
-    std::vector<Square*>& getAssets(Player* p) const;
     int handleMove(Player* p, int rollSum);
     void sendToJail(Player* p);
     int handleOwnable(Player* p, int newPos, int rollSum);

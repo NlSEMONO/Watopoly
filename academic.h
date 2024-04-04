@@ -20,11 +20,11 @@ class Academic: public Square {
     Academic(std::string monopoly_block, std::string name, int purchase_cost, 
              int upgrade_cost, int upgrade_level, std::vector<int> rentMoney);
     
-    int getCost() const override;
+    virtual int getCost() const override;
     int getUpgrade_cost() const;
     int getUpgradeLevel() const;
     std::string getBlock() const;
-    std::string getName() const;
+    virtual std::string getName() const;
     bool isBought() const;
     virtual bool isMortgaged() const override;
     int getRent(bool monopoly) const;
