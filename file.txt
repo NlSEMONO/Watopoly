@@ -1,6 +1,6 @@
 2
-Goose G 0 0 1
-Lapto L 0 0 4
+Goose G 0 1500 1
+Lapto L 0 1500 4
 AL Lapto 0
 ML Lapto 0
 MKV Goose 0
