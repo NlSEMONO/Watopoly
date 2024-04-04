@@ -9,10 +9,6 @@
 #include <utility>
 
 class boardGraphics {
-    int height;
-    int width;
-    int tile_height;
-    int tile_width;
     const int IMPROVEMENT_OFFSET = 20;
     const int NUM_SQUARES = 40;
     const int NAME_OFFSET = 3;
