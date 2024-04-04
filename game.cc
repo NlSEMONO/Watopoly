@@ -7,12 +7,20 @@
 #include "gym.h"
 #include "residence.h"
 #include "goosenest.h"
+#include "extendedslcrng.h"
 #include <stdexcept>
 #include <iostream>
 using namespace std;
 
 const int BOARD_SIZE = 40;
 const int IGNORE_CHARS = 1000;
+
+void Game::setGooseNesting(bool gn) {gooseNesting = gn; }
+
+void Game::setSLC(bool more) {
+    if (more) rngSLC.push_back(unique_ptr<ExtendedSLCRng>{new ExtendedSLCRng{}});
+    else rngSLC.push_back(unique_ptr<SLCRng>{new SLCRng{}});
+}
 
 void Game::setTestingOn() { testingOn = true; }
 
@@ -322,8 +330,8 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
 }
 
 int Game::handleSLC(Player* p) {
-    Event evt = rngSLC.generateEvent();
-    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+    Event evt = rngSLC[0].get()->generateEvent();
+    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC[0].get()->generateEvent();
     if (evt == Event::OUTOFTIMS) {
         cout << "You drew an SLC card and got a get out of Tim's line card!" << endl;
         ++numCups[p];
@@ -350,14 +358,33 @@ int Game::handleSLC(Player* p) {
         cout << "You drew an SLC card and must now wait in DC Tim's Line :(" << endl;
         sendToJail(p);
     } else if (evt == Event::MCOLLECT_OSAP) {
+        cout << "You drew an SLC card telling you to collect OSAP." << endl;
         this->handleMove(p, 40 - p->getPlayerPostion());
+    } else if (evt == Event::GOTOEV3) {
+        cout << "You drew an SLC card telling you to go to EV3." << endl;
+        this->handleMove(p, (b.getIndex("EV3") - p->getPlayerPostion()) % 40);
+    } else if (evt == Event::GOTODC) {
+        cout << "You drew an SLC card telling you to go to DC." << endl;
+        this->handleMove(p, 39 - p->getPlayerPostion());
+    } else if (evt == Event::GOTORES) {
+        cout << "You drew an SLC card telling you to go to the nearest res." << endl;
+        int pos = p->getPlayerPostion();
+        int amtMove = 0;
+        if (36 >= pos || pos <= 5) amtMove = (5 - pos) % 40;
+        else if (5 < pos && pos <= 15) amtMove = (15 - pos) % 40;
+        else if (15 < pos && pos <= 25) amtMove = (25 - pos) % 40;
+        else if (25 < pos && pos <= 35) amtMove = (35 - pos) % 40;
+        this->handleMove(p, amtMove);
+    } else if (evt == Event::GOTORCH) {
+        cout << "You drew an SLC card telling you to go to RCH." << endl;
+        this->handleMove(p, (b.getIndex("RCH") - p->getPlayerPostion()) % 40);
     }
     return 0;
 }
 
 int Game::handleNeedles(Player* p) {
     Event evt = rngNH.generateEvent();
-    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngNH.generateEvent();
     if (evt == Event::OUTOFTIMS) {
         cout << "You drew a Needles Hall card and got a get out of Tim's line card!" << endl;
         ++numCups[p];

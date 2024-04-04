@@ -1,6 +1,8 @@
 #include "factory.h"
 #include "dice.h"
 
+Dice::~Dice() {}
+
 Dice::Dice(): Factory{} {
     possibleEvents.push_back(Event::MF1);
     possibleEvents.push_back(Event::MF2);
