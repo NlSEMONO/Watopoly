@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-enum Colour {White=0, Black, Red, Green, Blue}; // Available colours.
+enum Colour {White=0, Black, Red, Green, Blue, Brown, LightBlue, Pink, Orange, Yellow}; // Available colours.
 
 class Xwindow {
   Display *d;
