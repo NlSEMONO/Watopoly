@@ -9,6 +9,7 @@
 #include "player.h"
 #include "board.h"
 #include "dice.h"
+#include "board_graphics.h"
 
 class Game {
     int playerCount;
@@ -26,6 +27,7 @@ class Game {
     bool testingOn = false;
     bool gooseNesting = false;
     Board b;
+    BoardGraphics bg;
 
     int handleMove(Player* p, int rollSum);
     void sendToJail(Player* p);
