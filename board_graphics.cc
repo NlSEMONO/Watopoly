@@ -50,10 +50,10 @@ void BoardGraphics::printImprovements(Board &b) {
             std::pair<int, int> coords = indexToCoords(i);
             int x = coords.first;
             int y = coords.second;
-            for (int i = 0; i < upgradeLevel; ++i) {
-                w.drawString(x + i + 3, y + i + 3 + IMPROVEMENT_OFFSET, "/\
-                                                                        /__\
-                                                                        |__|");
+            for (int j = 0; j < upgradeLevel; ++j) {
+                w.drawString(x + j + 3, y + 3 + IMPROVEMENT_OFFSET, "/\\");
+                w.drawString(x + j + 3, y + 3 + 1 + IMPROVEMENT_OFFSET, "/__\\");
+                w.drawString(x + j + 3, y + 3 + + 2 + IMPROVEMENT_OFFSET, "|__|");
             }
         }
     }
