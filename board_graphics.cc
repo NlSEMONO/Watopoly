@@ -38,4 +38,19 @@ void BoardGraphics::printPlayers(int tile_index) {
     
 }
 
-void board
+void BoardGraphics::printImprovements(Board &b) {
+    for (int i = 0; i < 40; ++i) {
+        if (b.isAcademic(i)) {
+            Academic *cur = dynamic_cast<Academic *> (b.getSquare(i));
+            int upgradeLevel = cur->getUpgradeLevel();
+            std::pair<int, int> coords = indexToCoords(i);
+            int x = coords.first;
+            int y = coords.second;
+            for (int i = 0; i < upgradeLevel; ++i) {
+                w.drawString(x + i + 3, y + i + 3 + IMPROVEMENT_OFFSET, "/\
+                                                                        /__\
+                                                                        |__|");
+            }
+        }
+    }
+}

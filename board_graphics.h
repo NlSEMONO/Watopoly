@@ -23,7 +23,8 @@ class BoardGraphics {
     public: 
     BoardGraphics();
     void drawTiles(Board& b);
-    
+    void printPlayers(int tile_index);
+    void printImprovements(Board &b);
 };
 
 #endif
