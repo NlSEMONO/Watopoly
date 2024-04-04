@@ -43,8 +43,12 @@ void BoardGraphics::drawTiles(Board& b) {
             istringstream iss{curr->getName()};
             string data;
             int offset_counter = 1;
+            bool removeNH = b.isNeedles(i);
+            bool removeSLC = b.isSLC(i);
             while (iss >> data) {
-                w.drawString(location.first + NAME_OFFSET, location.second + (offset_counter * FONT_OFFSET), data);
+                w.drawString(location.first + NAME_OFFSET, location.second + (offset_counter * FONT_OFFSET), 
+                    (removeNH && offset_counter == 2) ? data.substr(0, data.size() - 1) : 
+                    (removeSLC && offset_counter) ? data.substr(0, data.size() - 1) : data);
                 ++offset_counter;
             }
         } 
@@ -69,7 +73,7 @@ void BoardGraphics::printImprovements(Board &b) {
             int x = coords.first;
             int y = coords.second;
             for (int j = 0; j < upgradeLevel; ++j) {
-                w.fillRectangle(x + 2 *j, y ,2 ,2, Colour::Black);
+                w.fillRectangle(x + 12 *j, y + 1,8 ,8, Colour::Black);
             }
         }
     }
