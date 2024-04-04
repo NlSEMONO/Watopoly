@@ -76,7 +76,7 @@ Board::Board(): squares{}, nameToIndex{}, monopolies{} {
     monopolies["Eng"] = {11, 13, 14};
     monopolies["Health"] = {16, 18, 19};
     monopolies["Env"] = {21, 23, 24};
-    monopolies["Sci1"] = {26, 28, 29};
+    monopolies["Sci1"] = {26, 27, 29};
     monopolies["Sci2"] = {31, 32, 34};
     monopolies["Math"] = {37, 39};
     monopolies["Residence"] = {5, 15, 25, 35};
