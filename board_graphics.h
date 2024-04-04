@@ -24,6 +24,7 @@ class BoardGraphics {
 
     public: 
     BoardGraphics();
+    ~BoardGraphics();
     void drawTiles(Board& b);
     void printImprovements(Board &b);
     friend std::ostream &operator<<(std::ostream &out, BoardGraphics &bg);   

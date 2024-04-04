@@ -13,6 +13,10 @@ BoardGraphics::BoardGraphics(): w{}, block_to_colour{} {
     block_to_colour["Math"] = Colour::Blue;
 }
 
+BoardGraphics::~BoardGraphics(){
+    b = nullptr;
+}
+
 pair<int, int> BoardGraphics::indexToCoords(int index) const {
     if (20 <= index && index <= 30) return make_pair((index - 20) * tile_width, 0);
     else if (index >= 30) return make_pair(10 * tile_width, (index - 30) * tile_height);
