@@ -41,3 +41,26 @@ void BoardGraphics::drawTiles(Board& b) {
     }
 }
 
+
+void BoardGraphics::printImprovements(Board &b) {
+    for (int i = 0; i < 40; ++i) {
+        if (b.isAcademic(i)) {
+            Academic *cur = dynamic_cast<Academic *> (b.getSquare(i));
+            int upgradeLevel = cur->getUpgradeLevel();
+            std::pair<int, int> coords = indexToCoords(i);
+            int x = coords.first;
+            int y = coords.second;
+            for (int j = 0; j < upgradeLevel; ++j) {
+                w.drawString(x + j + 3, y + 3 + IMPROVEMENT_OFFSET, "/\\");
+                w.drawString(x + j + 3, y + 3 + 1 + IMPROVEMENT_OFFSET, "/__\\");
+                w.drawString(x + j + 3, y + 3 + + 2 + IMPROVEMENT_OFFSET, "|__|");
+            }
+        }
+    }
+}
+
+ostream &operator<<(ostream &out, BoardGraphics &bg) {
+    bg.drawTiles(*bg.b);
+    bg.printImprovements(*bg.b);
+    return out;
+}
