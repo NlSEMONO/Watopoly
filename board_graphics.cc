@@ -36,6 +36,7 @@ void BoardGraphics::drawTiles(Board& b) {
         int j = 0;
         while (players[j] != ' ' && players[j] != '|') {
             to_print += string(1, players[j]);
+            ++j;
         }
         w.drawString(location.first, location.second + PLAYER_OFFSET, to_print);
     }
