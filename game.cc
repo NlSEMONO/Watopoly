@@ -445,7 +445,7 @@ int Game::handleMove(Player* p, int rollSum) {
         return handleSLC(p);
     } else if (b.isNeedles(newPos)) { // Needles Hall square
         return handleNeedles(p);
-    } else if (b.getIndex("Goose Nesting") == newPos) { // free parking
+    } else if (b.getIndex("Goose Nesting") == newPos && gooseNesting) { // free parking
         GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
         cout << "You landed on Goose Nesting. Collecting $" << gn->getAccumulated() << "." << endl;
         p->changeCash(gn->getAccumulated());
