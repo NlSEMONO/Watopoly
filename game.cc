@@ -65,6 +65,8 @@ void Game::loadFile(istream& in) {
         if (!(iss >> owner)) throw runtime_error{"Could not read owner."};
         if (!(iss >> upgs)) throw runtime_error{"Could not read # of upgrades."};
         b.initBuilding(building, owner == "BANK" ? nullptr : nameToPlayer[owner], upgs);
+        if (b.isResidence(b.getIndex(building)) && owner != "BANK") ++residenceOwned[nameToPlayer[owner]];
+        if (b.isGym(b.getIndex(building)) && owner != "BANK") ++gymsOwned[nameToPlayer[owner]];
     }
 }
 
@@ -177,7 +179,7 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
     } else if (isdigit(to_get[0])) {
         // changing money
         int money_recieved = stoi(to_get);
-        if (trader->canAfford(money_recieved) && b.getSquare(to_get)->getOwner() == players[playerTurn].get()){
+        if (trader->canAfford(money_recieved) && b.getSquare(to_trade)->getOwner() == players[playerTurn].get()){
             players[playerTurn]->changeCash(money_recieved, true);
             trader->changeCash(money_recieved, false);
             // changing property
@@ -779,7 +781,13 @@ void Game::play() {
             // player1 char TimsCups money position
             for (size_t i = 0; i < players.size(); ++i) {
                 Player* curr = players[i].get();
-                out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << " " << curr->getPlayerPostion() << endl;
+                out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << " " << curr->getPlayerPostion();
+                if (curr->getPlayerPostion() == 10) {
+                    cout << " ";
+                    if (jailedTurns.count(curr) == 0) cout << 0;
+                    else cout << 1 << " " << jailedTurns[curr]; 
+                }
+                cout << endl;
             }
             b.saveProperties(out);
             out.close();
