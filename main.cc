@@ -11,7 +11,10 @@ using namespace std;
 
 int main(int argc, char** argv) {
     string file = "";
-    Game game;
+    bool testing = false;
+    bool gooseNesting = false;
+    bool moreCards = false;
+    bool moreSLC = false;
 
     if (argc > 1) {
         for (int i = 1; i < argc; ++i) {
@@ -19,18 +22,17 @@ int main(int argc, char** argv) {
             string str;
             iss >> str;
             // cout << str << endl;
-            if (str == "-testing") game.setTestingOn();
+            if (str == "-testing") testing = true;
             else if (str == "-load") {
                 if (i + 1 >= argc) {
                     cerr << "Please specify a file name" << endl;
                     return 1;
                 }
-                // cout << "lol" << endl;
-                // cout << argv[i + 1] << endl;
                 file = argv[i + 1];
-                // cout << argv[i] << endl;
                 ++i;
             }
+            else if (str == "-morecards") moreCards = true;
+            else if (str == "-moreslc") moreSLC = true;
         }
     }
     istream* input = &cin; 
@@ -59,6 +61,10 @@ int main(int argc, char** argv) {
         throw runtime_error{"Please enter a valid number between 1 and 8"};
     }
 
+    Game game;
+    game.setSLC(moreSLC || moreCards);
+    game.setGooseNesting(gooseNesting);
+    if (testing) game.setTestingOn();
     // load state
     // string line;
     game.setPlayers(numPlayers);

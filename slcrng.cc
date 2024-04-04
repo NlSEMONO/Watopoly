@@ -2,6 +2,8 @@
 #include "slcrng.h"
 #include <algorithm>
 
+SLCRng::~SLCRng() {};
+
 SLCRng::SLCRng(): Factory{}, distribution(0.0, 1.0), qPos{0} {
     // initialize possible events
     possibleEvents = {Event::MB3, Event::MB3, Event::MB3,

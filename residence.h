@@ -6,7 +6,6 @@
 #include "square.h"
 
 class Residence: public Square {
-    std::string name;
     int purchase_cost;
     std::vector<int> rentMoney;
     bool bought = false;

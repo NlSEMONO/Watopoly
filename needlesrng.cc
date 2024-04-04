@@ -2,6 +2,8 @@
 #include "needlesrng.h"
 #include <algorithm>
 
+NeedlesRng::~NeedlesRng() {}
+
 NeedlesRng::NeedlesRng(): Factory{}, distribution((float)0, (float)1), qPos{0} {
     // initialize possible events
     possibleEvents = {Event::CM200, 

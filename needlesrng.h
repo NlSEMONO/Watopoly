@@ -10,6 +10,7 @@ class NeedlesRng : public Factory {
         NeedlesRng();
         virtual Event generateEvent() override;
         virtual int eventToInt(Event e) override;
+        virtual ~NeedlesRng() override;
         
 };
 

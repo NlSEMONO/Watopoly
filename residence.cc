@@ -12,7 +12,7 @@ string Residence::getName() const {return name;}
 int Residence::getCost() const {return purchase_cost;}
 bool Residence::isBought() const {return bought;}
 bool Residence::isMortgaged() const {return mortgaged;}
-int Residence::getRent(int residencesOwned) const {return rentMoney[residencesOwned];}
+int Residence::getRent(int residencesOwned) const {return rentMoney[residencesOwned - 1];}
 Player *Residence::getOwner() const {return owner;}
 
 void Residence::upgrade(){

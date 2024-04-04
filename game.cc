@@ -7,12 +7,20 @@
 #include "gym.h"
 #include "residence.h"
 #include "goosenest.h"
+#include "extendedslcrng.h"
 #include <stdexcept>
 #include <iostream>
 using namespace std;
 
 const int BOARD_SIZE = 40;
 const int IGNORE_CHARS = 1000;
+
+void Game::setGooseNesting(bool gn) {gooseNesting = gn; }
+
+void Game::setSLC(bool more) {
+    if (more) rngSLC.push_back(unique_ptr<ExtendedSLCRng>{new ExtendedSLCRng{}});
+    else rngSLC.push_back(unique_ptr<SLCRng>{new SLCRng{}});
+}
 
 void Game::setTestingOn() { testingOn = true; }
 
@@ -48,7 +56,9 @@ void Game::loadFile(istream& in) {
             }
         } else {
             players.push_back(unique_ptr<Player>(new Player{name, chr, money, 0, 0, position}));
-            numCups[players[i].get()] = cups;
+            Player* p = players[i].get();
+            numCups[p] = cups;
+            b.getSquare(position)->addPlayer(p);
         }
         nameToPlayer[name] = players[i].get();
         cupsDistributed += cups;
@@ -63,6 +73,8 @@ void Game::loadFile(istream& in) {
         if (!(iss >> owner)) throw runtime_error{"Could not read owner."};
         if (!(iss >> upgs)) throw runtime_error{"Could not read # of upgrades."};
         b.initBuilding(building, owner == "BANK" ? nullptr : nameToPlayer[owner], upgs);
+        if (b.isResidence(b.getIndex(building)) && owner != "BANK") ++residenceOwned[nameToPlayer[owner]];
+        if (b.isGym(b.getIndex(building)) && owner != "BANK") ++gymsOwned[nameToPlayer[owner]];
     }
 }
 
@@ -175,7 +187,7 @@ void Game::transaction(Player *trader, string to_trade, string to_get, int playe
     } else if (isdigit(to_get[0])) {
         // changing money
         int money_recieved = stoi(to_get);
-        if (trader->canAfford(money_recieved) && b.getSquare(to_get)->getOwner() == players[playerTurn].get()){
+        if (trader->canAfford(money_recieved) && b.getSquare(to_trade)->getOwner() == players[playerTurn].get()){
             players[playerTurn]->changeCash(money_recieved, true);
             trader->changeCash(money_recieved, false);
             // changing property
@@ -318,8 +330,8 @@ int Game::handleOwnable(Player* p, int newPos, int rollSum) {
 }
 
 int Game::handleSLC(Player* p) {
-    Event evt = rngSLC.generateEvent();
-    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+    Event evt = rngSLC[0].get()->generateEvent();
+    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC[0].get()->generateEvent();
     if (evt == Event::OUTOFTIMS) {
         cout << "You drew an SLC card and got a get out of Tim's line card!" << endl;
         ++numCups[p];
@@ -346,14 +358,33 @@ int Game::handleSLC(Player* p) {
         cout << "You drew an SLC card and must now wait in DC Tim's Line :(" << endl;
         sendToJail(p);
     } else if (evt == Event::MCOLLECT_OSAP) {
+        cout << "You drew an SLC card telling you to collect OSAP." << endl;
         this->handleMove(p, 40 - p->getPlayerPostion());
+    } else if (evt == Event::GOTOEV3) {
+        cout << "You drew an SLC card telling you to go to EV3." << endl;
+        this->handleMove(p, (b.getIndex("EV3") - p->getPlayerPostion()) % 40);
+    } else if (evt == Event::GOTODC) {
+        cout << "You drew an SLC card telling you to go to DC." << endl;
+        this->handleMove(p, 39 - p->getPlayerPostion());
+    } else if (evt == Event::GOTORES) {
+        cout << "You drew an SLC card telling you to go to the nearest res." << endl;
+        int pos = p->getPlayerPostion();
+        int amtMove = 0;
+        if (36 >= pos || pos <= 5) amtMove = (5 - pos) % 40;
+        else if (5 < pos && pos <= 15) amtMove = (15 - pos) % 40;
+        else if (15 < pos && pos <= 25) amtMove = (25 - pos) % 40;
+        else if (25 < pos && pos <= 35) amtMove = (35 - pos) % 40;
+        this->handleMove(p, amtMove);
+    } else if (evt == Event::GOTORCH) {
+        cout << "You drew an SLC card telling you to go to RCH." << endl;
+        this->handleMove(p, (b.getIndex("RCH") - p->getPlayerPostion()) % 40);
     }
     return 0;
 }
 
 int Game::handleNeedles(Player* p) {
     Event evt = rngNH.generateEvent();
-    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngSLC.generateEvent();
+    if (cupsDistributed >= 4) while (evt == Event::OUTOFTIMS) evt = rngNH.generateEvent();
     if (evt == Event::OUTOFTIMS) {
         cout << "You drew a Needles Hall card and got a get out of Tim's line card!" << endl;
         ++numCups[p];
@@ -414,7 +445,7 @@ int Game::handleMove(Player* p, int rollSum) {
         return handleSLC(p);
     } else if (b.isNeedles(newPos)) { // Needles Hall square
         return handleNeedles(p);
-    } else if (b.getIndex("Goose Nesting") == newPos) { // free parking
+    } else if (b.getIndex("Goose Nesting") == newPos && gooseNesting) { // free parking
         GooseNest* gn = dynamic_cast<GooseNest*>(b.getSquare(newPos));
         cout << "You landed on Goose Nesting. Collecting $" << gn->getAccumulated() << "." << endl;
         p->changeCash(gn->getAccumulated());
@@ -478,6 +509,28 @@ void Game::play() {
     int r1 = -1, r2 = -1;
     
     printBoardAndActions(prevCmd, 0, hasRolled, moneyOwed);
+    if (jailedTurns.count(currPlayer) == 1) {
+        ++jailedTurns[currPlayer];
+        cout << currPlayer->getPlayerName() << ", you are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+        string resp = "garbage";
+        do {
+            cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
+            cout << "(2) - Pay $50" << endl;
+            cout << "other - proceed to rolling" << endl;
+            cin >> resp;
+            if (cin.eof()) break;
+        } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
+        if (resp == "1" || resp == "2") {
+            if (resp == "1") {
+                --numCups[currPlayer];
+                --cupsDistributed;
+            }
+            else currPlayer->changeCash(-50);
+            jailedTurns.erase(currPlayer);
+            hasRolled = true;
+            cout << "You are out of jail and cannot roll. Please end your turn." << endl;
+        } 
+    }
     while((getline(cin, cmdWhole) && (players.size() > 1))){    
         // cout << cmdWhole;
         istringstream iss2{cmdWhole};
@@ -562,29 +615,28 @@ void Game::play() {
                 playerTurn = 0;
             }
             currPlayer = players[playerTurn].get();
-            // implement jail
-            // if (jailedTurns.count(currPlayer) == 1 && jailedTurns[currPlayer] != 0 && !jailMsg) {
-            //     cout << "You are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
-            //     string resp = "garbage";
-            //     do {
-            //         cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
-            //         cout << "(2) - Pay $50" << endl;
-            //         cout << "other - proceed to rolling" << endl;
-            //         cin >> resp;
-            //     } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
-            //     if (resp == "1" || resp == "2") {
-            //         if (resp == "1") {
-            //             --numCups[currPlayer];
-            //             --cupsDistributed;
-            //         }
-            //         else currPlayer->changeCash(-50);
-            //         jailedTurns.erase(currPlayer);
-            //         hasRolled = true;
-            //     } 
-
-            //     jailMsg = true;
-            //     moneyOwed = processOwed(currPlayer, "the bank");
-            // }
+            if (jailedTurns.count(currPlayer) == 1) {
+                ++jailedTurns[currPlayer];
+                cout << currPlayer->getPlayerName() << ", you are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
+                string resp = "garbage";
+                do {
+                    cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
+                    cout << "(2) - Pay $50" << endl;
+                    cout << "other - proceed to rolling" << endl;
+                    cin >> resp;
+                    if (cin.eof()) break;
+                } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
+                if (resp == "1" || resp == "2") {
+                    if (resp == "1") {
+                        --numCups[currPlayer];
+                        --cupsDistributed;
+                    }
+                    else currPlayer->changeCash(-50);
+                    jailedTurns.erase(currPlayer);
+                    hasRolled = true;
+                    cout << "You are out of jail and cannot roll. Please end your turn." << endl;
+                } 
+            }
         } else if (cmd == "trade"){
             string player_2;
             string to_give;
@@ -614,23 +666,25 @@ void Game::play() {
                 Academic* sq = dynamic_cast<Academic*>(b.getSquare(pos));
                 if (sq->getOwner() == curr) {
                     if (b.ownsAll(curr, pos)) {
-                        string setting; 
-                        iss2 >> setting;
+                        if (!sq->isMortgaged()) {
+                            string setting; 
+                            iss2 >> setting;
 
-                        if (setting == "buy") { 
-                            if (sq->getUpgradeLevel() < 5) {
-                                sq->upgrade();
-                                cout << "Upgraded: " << sq->getName() << endl;
-                                moneyOwed = processOwed(currPlayer, "the bank");
-                            }
-                            else cerr << "You can't upgrade this property anymore." << endl;
-                        } else if (setting == "sell") {
-                            if (sq->getUpgradeLevel() > 0) {
-                                sq->sellUpgrade();
-                                cout << "Sold upgrade from: " << sq->getName() << endl;
-                            }
-                            else cerr << "You can't sell any more upgardes from this property." << endl; 
-                        } // else cerr << "you can't afford to upgrade this property." << endl;
+                            if (setting == "buy") { 
+                                if (sq->getUpgradeLevel() < 5) {
+                                    sq->upgrade();
+                                    cout << "Upgraded: " << sq->getName() << endl;
+                                    moneyOwed = processOwed(currPlayer, "the bank");
+                                }
+                                else cerr << "You can't upgrade this property anymore." << endl;
+                            } else if (setting == "sell") {
+                                if (sq->getUpgradeLevel() > 0) {
+                                    sq->sellUpgrade();
+                                    cout << "Sold upgrade from: " << sq->getName() << endl;
+                                }
+                                else cerr << "You can't sell any more upgardes from this property." << endl; 
+                            } // else cerr << "you can't afford to upgrade this property." << endl;
+                        } else cerr << "you can't improve a mortgaged property!" << endl;
                     } else cerr << "you don't own all properties of this monopoly!" << endl;
                 } else cerr << "You don't own this property!" << endl;
             } else cerr << "You can't upgrade this property." << endl;
@@ -754,7 +808,13 @@ void Game::play() {
             // player1 char TimsCups money position
             for (size_t i = 0; i < players.size(); ++i) {
                 Player* curr = players[i].get();
-                out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << " " << curr->getPlayerPostion() << endl;
+                out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << " " << curr->getPlayerPostion();
+                if (curr->getPlayerPostion() == 10) {
+                    out << " ";
+                    if (jailedTurns.count(curr) == 0) out << 0;
+                    else out << 1 << " " << jailedTurns[curr]; 
+                }
+                out << endl;
             }
             b.saveProperties(out);
             out.close();
@@ -763,27 +823,6 @@ void Game::play() {
         if (jailOwedMoney && moneyOwed == 0) {
             moneyOwed = handleMove(currPlayer, r1 + r2);
             jailOwedMoney = false;
-        }
-        if (jailedTurns.count(currPlayer) == 1) {
-            ++jailedTurns[currPlayer];
-            cout << currPlayer->getPlayerName() << ", you are in jail, and you have " << numCups[currPlayer]  << " cups. Options: "<< endl;
-            string resp = "garbage";
-            do {
-                cout << "(1) - Use cup (You have: " << numCups[currPlayer] << ")." << endl;
-                cout << "(2) - Pay $50" << endl;
-                cout << "other - proceed to rolling" << endl;
-                cin >> resp;
-                if (cin.eof()) break;
-            } while (resp == "garbage" || (resp == "1" && numCups[currPlayer] == 0));
-            if (resp == "1" || resp == "2") {
-                if (resp == "1") {
-                    --numCups[currPlayer];
-                    --cupsDistributed;
-                }
-                else currPlayer->changeCash(-50);
-                jailedTurns.erase(currPlayer);
-                hasRolled = true;
-            } 
         }
         prevCmd = cmd;
         printBoardAndActions(prevCmd, playerTurn, hasRolled, moneyOwed);
