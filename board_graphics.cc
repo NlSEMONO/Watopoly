@@ -28,12 +28,16 @@ void BoardGraphics::drawTiles(Board& b) {
         if (b.isAcademic(i)) {
             Academic* acaPtr = dynamic_cast<Academic*>(curr);
             w.drawString(location.first + NAME_OFFSET, location.second + IMPROVEMENT_OFFSET, curr->getName());
-            w.fillRectangle(location.first, location.second, tile_width, IMPROVEMENT_OFFSET, block_to_colour[]);
+            w.fillRectangle(location.first, location.second, tile_width, IMPROVEMENT_OFFSET, block_to_colour[acaPtr->getBlock()]);
         }
         else w.drawString(location.first + NAME_OFFSET, location.second, curr->getName());
+        string players = curr->printPlayers();
+        string to_print = "";
+        int j = 0;
+        while (players[j] != ' ' && players[j] != '|') {
+            to_print += string(1, players[j]);
+        }
+        w.drawString(location.first, location.second + PLAYER_OFFSET, to_print);
     }
 }
 
-void BoardGraphics::printPlayers(int tile_index) {
-    
-}

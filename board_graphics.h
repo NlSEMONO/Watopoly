@@ -12,6 +12,7 @@ class BoardGraphics {
     const int IMPROVEMENT_OFFSET = 20;
     const int NUM_SQUARES = 40;
     const int NAME_OFFSET = 3;
+    const int PLAYER_OFFSET = 30;
     std::map<std::string, Colour> block_to_colour;
     const int height = 500;
     const int width = 500;
@@ -23,6 +24,7 @@ class BoardGraphics {
     public: 
     BoardGraphics();
     void drawTiles(Board& b);
+    void printPlayers(vector<Player*> players);
 };
 
 #endif
