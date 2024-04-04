@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+enum Colour {White=0, Black, Red, Green, Blue}; // Available colours.
+
 class Xwindow {
   Display *d;
   Window w;
@@ -14,8 +16,6 @@ class Xwindow {
  public:
   Xwindow(int width=500, int height=500);  // Constructor; displays the window.
   ~Xwindow();                              // Destructor; destroys the window.
-
-  enum {White=0, Black, Red, Green, Blue}; // Available colours.
 
   int getWidth() const;
   int getHeight() const;
