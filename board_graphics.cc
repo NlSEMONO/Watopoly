@@ -60,9 +60,7 @@ void BoardGraphics::printImprovements(Board &b) {
             int x = coords.first;
             int y = coords.second;
             for (int j = 0; j < upgradeLevel; ++j) {
-                w.drawString(x + j + 3, y + 3 + IMPROVEMENT_OFFSET, "/\\");
-                w.drawString(x + j + 3, y + 3 + 1 + IMPROVEMENT_OFFSET, "/__\\");
-                w.drawString(x + j + 3, y + 3 + + 2 + IMPROVEMENT_OFFSET, "|__|");
+                w.fillRectangle(x + 2 *j, y ,2 ,2, Colour::Black);
             }
         }
     }
