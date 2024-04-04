@@ -12,7 +12,7 @@ class BoardGraphics {
     const int IMPROVEMENT_OFFSET = 10;
     const int NUM_SQUARES = 40;
     const int NAME_OFFSET = 3;
-    const int PLAYER_OFFSET = 30;
+    const int PLAYER_OFFSET = 50;
     const int FONT_OFFSET = 10;
     std::map<std::string, Colour> block_to_colour;
     const int height = 660;

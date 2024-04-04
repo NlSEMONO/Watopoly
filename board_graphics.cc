@@ -1,4 +1,5 @@
 #include "board_graphics.h"
+#include <sstream>
 #include "academic.h"
 using namespace std;
 
@@ -38,7 +39,15 @@ void BoardGraphics::drawTiles(Board& b) {
             w.drawString(location.first + NAME_OFFSET, location.second + FONT_OFFSET + IMPROVEMENT_OFFSET, curr->getName());
             w.fillRectangle(location.first, location.second, tile_width, IMPROVEMENT_OFFSET, block_to_colour[acaPtr->getBlock()]);
         }
-        else w.drawString(location.first + NAME_OFFSET, location.second + FONT_OFFSET, curr->getName());
+        else {
+            istringstream iss{curr->getName()};
+            string data;
+            int offset_counter = 1;
+            while (iss >> data) {
+                w.drawString(location.first + NAME_OFFSET, location.second + (offset_counter * FONT_OFFSET), data);
+                ++offset_counter;
+            }
+        } 
         string players = curr->printPlayers();
         string to_print = "";
         int j = 0;
@@ -46,7 +55,7 @@ void BoardGraphics::drawTiles(Board& b) {
             to_print += string(1, players[j]);
             ++j;
         }
-        w.drawString(location.first, location.second + PLAYER_OFFSET, to_print);
+        w.drawString(location.first + NAME_OFFSET, location.second + PLAYER_OFFSET, to_print);
     }
 }
 
