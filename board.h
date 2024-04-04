@@ -13,15 +13,9 @@ class Board {
     std::map<std::string, int> nameToIndex;
     std::map<std::string, std::vector<int>> monopolies;
     bool isType(std::string type, int buildingCode);
-    // std::vector<std::unique_ptr<Player>> players;
-    // int currentPlayer;
-    // Dice dice;
 
     public: 
         Board();
-        // int rollDice();
-        // void makeMove(Player *p);
-        // void addPlayer(std::string name);
         void initBuilding(std::string name, Player* owner, int upgrades);
         Square *getSquare(std::string name);
         Square *getSquare(int buildingCode);

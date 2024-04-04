@@ -85,26 +85,6 @@ Board::Board(): squares{}, nameToIndex{}, monopolies{} {
     monopolies["Needles"] = {7, 22, 36};
 }
 
-// int Board::rollDice(){
-//     Dice Dice1;
-//     Dice Dice2;
-//     Event e1 = Dice1.generateEvent();
-//     Event e2 = Dice2.generateEvent();
-//     int roll1 = Dice1.eventToInt(e1);
-//     int roll2 = Dice1.eventToInt(e2);
-//     return roll1 + roll2;
-// }
-
-// void Board::makeMove(Player *p) {
-//     int diceRoll = rollDice();
-//     p->movePlayer(diceRoll);
-// }
-
-// void Board::addPlayer(std::string name) {
-//     players.push_back(std::unique_ptr<Player>{new Player{name, 0, 0, 0, 0}});
-//     currentPlayer++;
-// }
-
 bool Board::isType(string type, int buildingCode) {
     if (monopolies.count(type) == 0) return false;
     vector<int>& toSearch = monopolies[type];

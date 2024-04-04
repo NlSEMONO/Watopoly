@@ -48,7 +48,9 @@ void Game::loadFile(istream& in) {
             }
         } else {
             players.push_back(unique_ptr<Player>(new Player{name, chr, money, 0, 0, position}));
-            numCups[players[i].get()] = cups;
+            Player* p = players[i].get();
+            numCups[p] = cups;
+            b.getSquare(position)->addPlayer(p);
         }
         nameToPlayer[name] = players[i].get();
         cupsDistributed += cups;
