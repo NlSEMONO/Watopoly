@@ -784,7 +784,7 @@ void Game::play() {
                 out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << " " << curr->getPlayerPostion();
                 if (curr->getPlayerPostion() == 10) {
                     out << " ";
-                    if (jailedTurns.count(curr) == 0) cout << 0;
+                    if (jailedTurns.count(curr) == 0) out << 0;
                     else out << 1 << " " << jailedTurns[curr]; 
                 }
                 out << endl;
