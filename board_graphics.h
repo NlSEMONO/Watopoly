@@ -22,6 +22,7 @@ class boardGraphics {
 
     public: 
     void drawTiles(Board& b);
+    
 };
 
 #endif
