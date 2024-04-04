@@ -23,8 +23,6 @@ class Game {
     int cupsDistributed;
     int currPlayer;
     Dice dice;
-    int testing_roll1;
-    int testing_roll2;
     bool testingOn = false;
     Board b;
 
