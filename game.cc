@@ -783,11 +783,11 @@ void Game::play() {
                 Player* curr = players[i].get();
                 out << curr->getPlayerName() << " " << curr->getSymbol() << " " << numCups[curr] << " " << curr->getLiquidCash() << " " << curr->getPlayerPostion();
                 if (curr->getPlayerPostion() == 10) {
-                    cout << " ";
+                    out << " ";
                     if (jailedTurns.count(curr) == 0) cout << 0;
-                    else cout << 1 << " " << jailedTurns[curr]; 
+                    else out << 1 << " " << jailedTurns[curr]; 
                 }
-                cout << endl;
+                out << endl;
             }
             b.saveProperties(out);
             out.close();
