@@ -18,14 +18,17 @@ class BoardGraphics {
     const int width = 500;
     const int tile_height = 45;
     const int tile_width = 45;
+    Board *b;
     Xwindow w;
     std::pair<int, int> indexToCoords(int index) const;
 
     public: 
     BoardGraphics();
     void drawTiles(Board& b);
-    void printPlayers(int tile_index);
     void printImprovements(Board &b);
+    friend std::ostream &operator<<(std::ostream &out, BoardGraphics &bg);    
 };
+
+std::ostream &operator<<(std::ostream &out, BoardGraphics &bg);
 
 #endif

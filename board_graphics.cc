@@ -41,9 +41,6 @@ void BoardGraphics::drawTiles(Board& b) {
     }
 }
 
-void BoardGraphics::printPlayers(int tile_index) {
-    
-}
 
 void BoardGraphics::printImprovements(Board &b) {
     for (int i = 0; i < 40; ++i) {
@@ -60,4 +57,10 @@ void BoardGraphics::printImprovements(Board &b) {
             }
         }
     }
+}
+
+ostream &operator<<(ostream &out, BoardGraphics &bg) {
+    bg.drawTiles(*bg.b);
+    bg.printImprovements(*bg.b);
+    return out;
 }
