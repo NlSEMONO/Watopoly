@@ -21,13 +21,13 @@ class Game {
     std::map<Player*, int> gymsOwned;
     std::vector<std::unique_ptr<Factory>> rngSLC;
     NeedlesRng rngNH;
+    std::vector<std::unique_ptr<BoardGraphics>> bg;
     int cupsDistributed;
     int currPlayer;
     Dice dice;
     bool testingOn = false;
     bool gooseNesting = false;
     Board b;
-    BoardGraphics bg;
 
     int handleMove(Player* p, int rollSum);
     void sendToJail(Player* p);
@@ -47,6 +47,7 @@ class Game {
         void setTestingOn();
         void setGooseNesting(bool gn);
         void setSLC(bool more);
+        void setGraphics(bool graphics);
 
     friend std::ostream &operator<<(std::ostream &out, Game &game);    
 };

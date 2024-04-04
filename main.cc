@@ -15,6 +15,7 @@ int main(int argc, char** argv) {
     bool gooseNesting = false;
     bool moreCards = false;
     bool moreSLC = false;
+    bool graphics = false;
 
     if (argc > 1) {
         for (int i = 1; i < argc; ++i) {
@@ -33,6 +34,7 @@ int main(int argc, char** argv) {
             }
             else if (str == "-morecards") moreCards = true;
             else if (str == "-moreslc") moreSLC = true;
+            else if (str == "-graphics") graphics = true;
         }
     }
     istream* input = &cin; 
@@ -65,6 +67,7 @@ int main(int argc, char** argv) {
     game.setSLC(moreSLC || moreCards);
     game.setGooseNesting(gooseNesting);
     if (testing) game.setTestingOn();
+    game.setGraphics(graphics);
     // load state
     // string line;
     game.setPlayers(numPlayers);

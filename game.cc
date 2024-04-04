@@ -22,6 +22,11 @@ void Game::setSLC(bool more) {
     else rngSLC.push_back(unique_ptr<SLCRng>{new SLCRng{}});
 }
 
+void Game::setGraphics(bool graphics) {
+    if (graphics) bg.push_back(unique_ptr<BoardGraphics>(new BoardGraphics{}));
+    bg[0].get()->setBoard(&b);
+}
+
 void Game::setTestingOn() { testingOn = true; }
 
 void Game::setPlayers(int pCount) { playerCount = pCount; }
@@ -490,7 +495,7 @@ const auto PAGAINEND = PRINT_AGAIN.end();
 void Game::printBoardAndActions(const string& prevCmd, int playerTurn, bool hasRolled, int moneyOwed, bool delayedMoveJail) {
     if (find(PRINT_AGAIN.begin(), PRINT_AGAIN.end(), prevCmd) != PAGAINEND) {
         cout << *this;
-        cout << bg;
+        if (bg.size() > 0) cout << *bg[0].get();
     }
     if (delayedMoveJail) {
         cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << "mortgage, bankrupt, trade" << endl;
@@ -510,7 +515,6 @@ void Game::play() {
     string prevCmd = "garbage value";
     Player* currPlayer = players[playerTurn].get();
     int r1 = -1, r2 = -1;
-    bg.setBoard(&b);
     
     printBoardAndActions(prevCmd, 0, hasRolled, moneyOwed);
     if (jailedTurns.count(currPlayer) == 1) {
