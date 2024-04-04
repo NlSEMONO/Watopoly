@@ -64,3 +64,6 @@ ostream &operator<<(ostream &out, BoardGraphics &bg) {
     bg.printImprovements(*bg.b);
     return out;
 }
+
+
+void BoardGraphics::setBoard(Board* board) { b = board;}
