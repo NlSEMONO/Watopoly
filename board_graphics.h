@@ -9,20 +9,18 @@
 #include <utility>
 
 class boardGraphics {
-    int height;
-    int width;
-    int tile_height;
-    int tile_width;
     const int IMPROVEMENT_OFFSET = 20;
     const int NUM_SQUARES = 40;
     const int NAME_OFFSET = 3;
     std::map<std::string, Colour> block_to_colour;
-    int height = 500;
-    int width = 500;
-    int tile_height = 45;
-    int tile_width = 45;
+    const int height = 500;
+    const int width = 500;
+    const int tile_height = 45;
+    const int tile_width = 45;
     Xwindow w;
     std::pair<int, int> indexToCoords(int index) const;
+
+    public: 
     void drawTiles(Board& b);
 };
 
