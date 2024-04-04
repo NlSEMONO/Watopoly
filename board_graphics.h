@@ -8,7 +8,7 @@
 #include <map>
 #include <utility>
 
-class boardGraphics {
+class BoardGraphics {
     const int IMPROVEMENT_OFFSET = 20;
     const int NUM_SQUARES = 40;
     const int NAME_OFFSET = 3;
@@ -21,6 +21,7 @@ class boardGraphics {
     std::pair<int, int> indexToCoords(int index) const;
 
     public: 
+    BoardGraphics();
     void drawTiles(Board& b);
 };
 
