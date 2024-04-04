@@ -23,8 +23,10 @@ void Game::setSLC(bool more) {
 }
 
 void Game::setGraphics(bool graphics) {
-    if (graphics) bg.push_back(unique_ptr<BoardGraphics>(new BoardGraphics{}));
-    bg[0].get()->setBoard(&b);
+    if (graphics) {
+        bg.push_back(unique_ptr<BoardGraphics>(new BoardGraphics{}));
+        bg[0].get()->setBoard(&b);
+    }
 }
 
 void Game::setTestingOn() { testingOn = true; }
@@ -499,9 +501,10 @@ void Game::printBoardAndActions(const string& prevCmd, int playerTurn, bool hasR
     }
     if (delayedMoveJail) {
         cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << "mortgage, bankrupt, trade" << endl;
+    } else {
+        cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next, " : "roll, ") << "trade, improve, mortgage, unmortgage, save, ";
+        cout << (moneyOwed > 0 ? "bankrupt " : "assets, all") << endl;
     }
-    cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next, " : "roll, ") << "trade, improve, mortgage, unmortgage, save, ";
-    cout << (moneyOwed > 0 ? "bankrupt " : "assets, all") << endl;
 }
 
 void Game::play() {

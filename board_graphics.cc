@@ -2,7 +2,7 @@
 #include "academic.h"
 using namespace std;
 
-BoardGraphics::BoardGraphics(): w{}, block_to_colour{} {
+BoardGraphics::BoardGraphics(): w{width, height}, block_to_colour{} {
     block_to_colour["Arts1"] = Colour::Brown;
     block_to_colour["Arts2"] = Colour::LightBlue;
     block_to_colour["Eng"] = Colour::Pink;

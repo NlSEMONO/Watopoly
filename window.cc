@@ -32,11 +32,10 @@ Xwindow::Xwindow(int width, int height) : width{width}, height{height} {
   // Set up colours.
   XColor xcolour;
   Colormap cmap;
-  const int numCol = 11;
   std::vector<char *> color_vals ={"white", "black", "red", "green", "blue", "brown", "light blue", "pink", "orange", "yellow"};
 
   cmap=DefaultColormap(d,DefaultScreen(d));
-  for(int i=0; i < numCol; ++i) {
+  for(size_t i=0; i < color_vals.size(); ++i) {
       XParseColor(d,cmap,color_vals[i],&xcolour);
       XAllocColor(d,cmap,&xcolour);
       colours[i]=xcolour.pixel;

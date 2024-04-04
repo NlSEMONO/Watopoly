@@ -3,6 +3,7 @@
 #include <X11/Xlib.h>
 #include <iostream>
 #include <string>
+#define __NUMCOL__ 11
 
 enum Colour {White=0, Black, Red, Green, Blue, Brown, LightBlue, Pink, Orange, Yellow}; // Available colours.
 
@@ -11,7 +12,8 @@ class Xwindow {
   Window w;
   int s, width, height;
   GC gc;
-  unsigned long colours[5];
+  const int numCol = 11;
+  unsigned long colours[__NUMCOL__];
 
  public:
   Xwindow(int width=500, int height=500);  // Constructor; displays the window.
