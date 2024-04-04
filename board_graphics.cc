@@ -28,7 +28,7 @@ void BoardGraphics::drawTiles(Board& b) {
         if (b.isAcademic(i)) {
             Academic* acaPtr = dynamic_cast<Academic*>(curr);
             w.drawString(location.first + NAME_OFFSET, location.second + IMPROVEMENT_OFFSET, curr->getName());
-            w.fillRectangle(location.first, location.second, tile_width, IMPROVEMENT_OFFSET, block_to_colour[]);
+            w.fillRectangle(location.first, location.second, tile_width, IMPROVEMENT_OFFSET, block_to_colour[acaPtr->getBlock()]);
         }
         else w.drawString(location.first + NAME_OFFSET, location.second, curr->getName());
     }
