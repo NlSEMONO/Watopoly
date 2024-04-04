@@ -24,7 +24,6 @@ class BoardGraphics {
     public: 
     BoardGraphics();
     void drawTiles(Board& b);
-    void printPlayers(vector<Player*> players);
 };
 
 #endif
