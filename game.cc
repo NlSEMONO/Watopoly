@@ -664,6 +664,7 @@ void Game::play() {
                 continue;
             } else {
                 string response;
+                cout << "Print accept, if you'd like to accept this trade and reject otherwise" << endl;
                 cin >> response;
 
                 if (response == "accept") {transaction(trade_from, to_give, to_get, playerTurn);}
