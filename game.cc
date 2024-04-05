@@ -503,7 +503,13 @@ void Game::printBoardAndActions(const string& prevCmd, int playerTurn, bool hasR
         cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << "mortgage, bankrupt, trade" << endl;
     } else {
         cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next, " : "roll, ") << "trade, improve, mortgage, unmortgage, save, ";
-        cout << (moneyOwed > 0 ? "bankrupt " : "assets, all") << endl;
+        cout << (moneyOwed > 0 ? "bankrupt " : "");
+        int pos = players[playerTurn]->getPlayerPostion();
+        if ((moneyOwed <= 0 || (!b.isNeedles(pos) && (b.getSquare(pos) != b.getSquare("COOP FEE")) 
+                && b.getSquare(pos) != b.getSquare("TUITION")))) {
+                cout << "assets, all";
+        }
+        cout << endl;
     }
 }
 
@@ -784,18 +790,25 @@ void Game::play() {
             }            
         } else if (cmd == "assets"){
             //Logic to check is player is paying tuition if yes:
-            cout << "Player " << players[playerTurn]->getPlayerName() << " has this much cash: " << players[playerTurn]->getLiquidCash() << endl;
-            cout << "Player " << players[playerTurn]->getPlayerName() << " has these properties " << endl;
-            vector<Square*> playerAssets;
-            b.getOwnedSquares(players[playerTurn].get(), playerAssets);
-            for (size_t i = 0; i < playerAssets.size(); i++){
-                cout << playerAssets[i]->getName();
-                if (playerAssets[i]->isMortgaged()) {
-                    cout << "[Mortgaged]";
+            int pos = players[playerTurn]->getPlayerPostion();
+            if ((moneyOwed <= 0 || (!b.isNeedles(pos) && (b.getSquare(pos) != b.getSquare("COOP FEE")) 
+                && b.getSquare(pos) != b.getSquare("TUITION")))) {
+                cout << "Player " << players[playerTurn]->getPlayerName() << " has this much cash: " << players[playerTurn]->getLiquidCash() << endl;
+                cout << "Player " << players[playerTurn]->getPlayerName() << " has these properties " << endl;
+                vector<Square*> playerAssets;
+                b.getOwnedSquares(players[playerTurn].get(), playerAssets);
+                for (size_t i = 0; i < playerAssets.size(); i++){
+                    cout << playerAssets[i]->getName();
+                    if (playerAssets[i]->isMortgaged()) {
+                        cout << "[Mortgaged]";
+                    }
+                    cout << endl;
                 }
-                cout << endl;
+                // cout << "Player " << players[playerTurn]->getPlayerName() << " total assets are: " << players[playerTurn]->getTotalAssetsValue() << endl;
+            } else {
+                cout << "Player " << players[playerTurn]->getPlayerName() << " cannot pay";
+                cout << " Tuition. Cannot display assets" << endl;
             }
-            cout << "Player " << players[playerTurn]->getPlayerName() << " total assets are: " << players[playerTurn]->getTotalAssetsValue() << endl;
 
         } else if (cmd == "all"){
             //Logic to check is player is paying tuition if yes:

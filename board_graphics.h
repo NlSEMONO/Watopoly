@@ -14,13 +14,13 @@ class BoardGraphics {
     const int NAME_OFFSET = 3;
     const int PLAYER_OFFSET = 50;
     const int FONT_OFFSET = 10;
-    std::map<std::string, Colour> block_to_colour;
-    const int height = 660;
     const int width = 660;
+    const int height = 660;
+    Xwindow w;
+    std::map<std::string, Colour> block_to_colour;
     const int tile_height = 60;
     const int tile_width = 60;
     Board *b;
-    Xwindow w;
     std::pair<int, int> indexToCoords(int index) const;
 
     public: 
