@@ -505,7 +505,7 @@ void Game::printBoardAndActions(const string& prevCmd, int playerTurn, bool hasR
         cout << players[playerTurn].get()->getPlayerName() << "'s turn. Options: " << (hasRolled ? "next, " : "roll, ") << "trade, improve, mortgage, unmortgage, save, ";
         cout << (moneyOwed > 0 ? "bankrupt " : "");
         int pos = players[playerTurn]->getPlayerPostion();
-        if ((moneyOwed <= 0 || (!b.isNeedles(pos) && (b.getSquare(pos) != b.getSquare("COOP FEE")) 
+        if ((moneyOwed <= 0 || (!b.isNeedles(pos) && (b.getSquare(pos) != b.getSquare("Coop Fee")) 
                 && b.getSquare(pos) != b.getSquare("TUITION")))) {
                 cout << "assets, all";
         }
@@ -791,7 +791,7 @@ void Game::play() {
         } else if (cmd == "assets"){
             //Logic to check is player is paying tuition if yes:
             int pos = players[playerTurn]->getPlayerPostion();
-            if ((moneyOwed <= 0 || (!b.isNeedles(pos) && (b.getSquare(pos) != b.getSquare("COOP FEE")) 
+            if ((moneyOwed <= 0 || (!b.isNeedles(pos) && (b.getSquare(pos) != b.getSquare("Coop Fee")) 
                 && b.getSquare(pos) != b.getSquare("TUITION")))) {
                 cout << "Player " << players[playerTurn]->getPlayerName() << " has this much cash: " << players[playerTurn]->getLiquidCash() << endl;
                 cout << "Player " << players[playerTurn]->getPlayerName() << " has these properties " << endl;
@@ -804,7 +804,6 @@ void Game::play() {
                     }
                     cout << endl;
                 }
-                // cout << "Player " << players[playerTurn]->getPlayerName() << " total assets are: " << players[playerTurn]->getTotalAssetsValue() << endl;
             } else {
                 cout << "Player " << players[playerTurn]->getPlayerName() << " cannot pay";
                 cout << " Tuition. Cannot display assets" << endl;
@@ -812,18 +811,24 @@ void Game::play() {
 
         } else if (cmd == "all"){
             //Logic to check is player is paying tuition if yes:
-            for (int j = 0; j < playerCount; j++){
-                cout << "Player " << players[j]->getPlayerName() << " has this much cash: " << players[j]->getLiquidCash() << endl;
-                cout << "Player " << players[j]->getPlayerName() << " has these properties " << endl;
-                vector<Square*> playerAssets;
-                b.getOwnedSquares(players[j].get(), playerAssets);
-                for (size_t i = 0; i < playerAssets.size(); i++){
-                    cout << playerAssets[i]->getName() << endl;
+            int pos = players[playerTurn]->getPlayerPostion();
+            if ((moneyOwed <= 0 || (!b.isNeedles(pos) && (b.getSquare(pos) != b.getSquare("Coop Fee")) 
+                && b.getSquare(pos) != b.getSquare("TUITION")))) {
+                for (int j = 0; j < playerCount; j++){
+                    cout << "Player " << players[j]->getPlayerName() << " has this much cash: " << players[j]->getLiquidCash() << endl;
+                    cout << "Player " << players[j]->getPlayerName() << " has these properties " << endl;
+                    vector<Square*> playerAssets;
+                    b.getOwnedSquares(players[j].get(), playerAssets);
+                    for (size_t i = 0; i < playerAssets.size(); i++){
+                        cout << playerAssets[i]->getName() << endl;
+                    }
+                    cout << "Player " << players[j]->getPlayerName() << " total assets are: " << players[j]->getTotalAssetsValue() << endl;
+                    cout << endl;
                 }
-                cout << "Player " << players[j]->getPlayerName() << " total assets are: " << players[j]->getTotalAssetsValue() << endl;
-                cout << endl;
+            } else {
+                cout << "Player " << players[playerTurn]->getPlayerName() << " cannot pay";
+                cout << " Tuition. Cannot display all player's assets" << endl;
             }
-            
         } else if (cmd == "save"){
             string filename;
             iss2 >> filename;
