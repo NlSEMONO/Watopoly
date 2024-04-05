@@ -35,6 +35,7 @@ int main(int argc, char** argv) {
             else if (str == "-morecards") moreCards = true;
             else if (str == "-moreslc") moreSLC = true;
             else if (str == "-graphics") graphics = true;
+            else if (str == "-goosenesting") gooseNesting = true;
         }
     }
     istream* input = &cin; 
